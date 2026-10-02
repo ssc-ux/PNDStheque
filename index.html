@@ -46,7 +46,7 @@ footer a{color:var(--accent)}
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
   <footer>Source : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a>. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
-  <span class="b new">récent</span> &lt; 2 ans · <span class="b old">ancien</span> &gt; 5 ans · ☆ favoris enregistrés dans ce navigateur.</footer>
+  <span class="b new">récent</span> &lt; 1 an · <span class="b old">ancien</span> &gt; 5 ans · ☆ favoris enregistrés dans ce navigateur.</footer>
 </div>
 <script>
 // DATA-START
@@ -100,13 +100,15 @@ $("cats").onclick = e => { if (e.target.tagName !== "BUTTON") return; cat = e.ta
   [...$("cats").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
 list.onclick = e => { const b = e.target.closest(".fav"); if (!b) return;
   const t = b.dataset.t; favs.has(t) ? favs.delete(t) : favs.add(t); store.set([...favs]); render(); };
-const badge = y => y == null ? "" : Y - y <= 2 ? `<span class="b new">récent</span>` : Y - y > 5 ? `<span class="b old">ancien</span>` : "";
+// "récent" = mis en ligne par la HAS il y a moins de 12 mois (mois tiré du chemin du PDF, ex. "2026-02/…")
+const NOW = new Date(), months = pdf => { const [a, m] = pdf.split("/")[0].split("-").map(Number); return (NOW.getFullYear() - a) * 12 + NOW.getMonth() + 1 - m; };
+const badge = (y, pdf) => pdf && months(pdf) < 12 ? `<span class="b new">récent</span>` : y != null && Y - y > 5 ? `<span class="b old">ancien</span>` : "";
 function card([t, c, y, pdf, page]){
   const main = pdf ? H + pdf : J + page, on = favs.has(t);
   return `<div class="card">
     <a class="t" href="${main}" target="_blank" rel="noopener">${t}</a>
     <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori">${on ? "★" : "☆"}</button>
-    <div class="m"><span>${c}</span>${badge(y)}<span class="sp"></span>
+    <div class="m"><span>${c}</span>${badge(y, pdf)}<span class="sp"></span>
       ${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }
