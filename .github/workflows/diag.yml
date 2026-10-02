@@ -1,0 +1,14 @@
+name: diag (temporaire)
+on: workflow_dispatch
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+          echo "== robots"; curl -sA "$UA" https://www.has-sante.fr/robots.txt | head -40
+          curl -sA "$UA" -o l.html "https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds"
+          echo "== landing size"; wc -c l.html
+          echo "== hrefs"; grep -o 'href="[^"]*"' l.html | sort -u | grep -v '\.css\|\.js\|\.png\|\.svg' | head -150
+          echo "== forms/ajax"; grep -io '<form[^>]*>\|data-[a-z-]*url="[^"]*"\|rss[^"]*"' l.html | sort -u | head -40
+          for u in /sitemap.xml /jcms/sitemap.xml /plan-du-site; do echo "== $u"; curl -sA "$UA" -o s -w "%{http_code} %{content_type}\n" "https://www.has-sante.fr$u"; head -c 600 s; echo; done
