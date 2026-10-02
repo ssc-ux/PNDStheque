@@ -18,6 +18,9 @@ const KEYWORDS = [
   "aplasie", "deficit immunitaire", "lymphohistiocytose", "connectivite", "mastocytose",
 ];
 const PNDS = /\bpnds\b|protocole national de diagnostic/;
+// Publications qui ne sont jamais des PNDS (évaluations, notes de cadrage, avis, alertes…).
+const EXCLUDE = /rapport|evaluation|note de cadrage|cadrage|\blabel\b|flash securite|\bavis\b|decision|vaccin|depistage/;
+const KW = KEYWORDS.map(k => new RegExp("\\b" + k)); // début de mot : « still » ne matche pas « instillations »
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const decode = s => s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/<[^>]+>/g, " ")
@@ -32,7 +35,7 @@ export function candidates(xml, strict = true) {
     const tag = t => decode(item.match(new RegExp(`<${t}\\b[^>]*>([\\s\\S]*?)</${t}>`))?.[1] || "");
     const title = tag("title"), url = tag("link"), text = norm(title + " " + tag("description") + " " + url);
     const id = url.match(/\/jcms\/([pc]_\d+)/)?.[1] || url.split("/").pop();
-    if (!url || known.has(id) || (strict && !PNDS.test(text)) || !KEYWORDS.some(k => text.includes(k))) continue;
+    if (!url || known.has(id) || EXCLUDE.test(norm(title)) || (strict && !PNDS.test(text)) || !KW.some(k => k.test(norm(title)))) continue;
     out.push({ title, url });
   }
   return out;
