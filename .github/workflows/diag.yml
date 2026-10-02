@@ -6,8 +6,7 @@ jobs:
     steps:
       - run: |
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          for id in c_2867360 c_2666858 p_3921776 p_3431519; do
-            echo "=== $id"
-            curl -sLA "$UA" "https://www.has-sante.fr/jcms/$id" > p.html; wc -c p.html
-            tr '\n' ' ' < p.html | grep -o '<a [^>]*>[^<]*\(<[^/a][^>]*>[^<]*\)*' | grep -i 'upload\|pnds\|texte\|lecharg\|\.pdf\|argumentaire\|synth' | sed 's/\s\+/ /g' | cut -c1-300 | sort -u | head -20
+          for id in c_2867359 c_2666857 p_3921774 p_3431517; do
+            echo "=== $id"; curl -sLA "$UA" -o d -w "%{http_code} %{content_type} %{url_effective}\n" "https://www.has-sante.fr/jcms/$id"
+            tr '\n' ' ' < d | grep -o 'upload/docs/application/pdf/[^"'"'"' ]*\.pdf' | sort -u | head -5
           done
