@@ -2,7 +2,7 @@ name: Détection de nouveaux PNDS
 
 on:
   schedule:
-    - cron: "43 6 * * 1" # chaque lundi
+    - cron: "43 6 * * *" # chaque jour (les flux RSS ne gardent que les dernières publications)
   workflow_dispatch:
 
 permissions:
