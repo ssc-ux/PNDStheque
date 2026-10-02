@@ -37,20 +37,31 @@ export function extract(html) {
   return out;
 }
 
+const LANDING = "https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds";
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function get(url) {
+  try {
+    const r = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "fr-FR,fr;q=0.9" } });
+    console.log(r.status, url);
+    return r.ok ? await r.text() : null;
+  } catch (e) { console.log("ERR", url, e.cause?.code || e.message); return null; }
+  finally { await sleep(2000); }
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const found = new Map();
+  const found = new Map(), add = html => { for (const c of extract(html)) found.set(c.key, c); };
   let ok = 0;
-  for (const k of KEYWORDS) {
-    try {
-      const r = await fetch(SEARCH + encodeURIComponent("PNDS " + k), { headers: { "User-Agent": UA } });
-      console.log(r.status, k);
-      if (!r.ok) continue;
-      ok++;
-      for (const c of extract(await r.text())) found.set(c.key, c);
-    } catch (e) { console.log("ERR", k, e.cause?.code || e.message); }
-    await new Promise(r => setTimeout(r, 1000));
+  // 1. Page « PNDS » de la HAS, puis ses sous-pages de liste (liens contenant « pnds » ou « protocole »).
+  const landing = await get(LANDING);
+  if (landing) {
+    ok++; add(landing);
+    const subs = new Set([...landing.matchAll(/href="([^"]*\/jcms\/[^"]*(?:pnds|protocole)[^"]*)"/gi)]
+      .map(m => new URL(m[1].replace(/&amp;/g, "&"), LANDING).href).filter(u => !u.startsWith(LANDING)));
+    for (const u of [...subs].slice(0, 30)) { const h = await get(u); if (h) { ok++; add(h); } }
   }
-  if (!ok) { console.error("Aucune recherche HAS n'a abouti (site bloqué ou modifié)."); process.exit(2); }
+  // 2. Moteur de recherche HAS (souvent bloqué pour les serveurs : on s'arrête au premier refus).
+  for (const k of KEYWORDS) { const h = await get(SEARCH + encodeURIComponent("PNDS " + k)); if (!h) break; ok++; add(h); }
+  if (!ok) { console.error("Aucune page HAS n'a pu être lue (site bloqué ou modifié)."); process.exit(2); }
   const list = [...found.values()].map(({ title, url }) => ({ title, url }));
   writeFileSync("new-pnds.json", JSON.stringify(list, null, 2));
   console.log(`\n${list.length} candidat(s).`);
