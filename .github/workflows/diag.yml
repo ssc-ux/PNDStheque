@@ -6,9 +6,10 @@ jobs:
     steps:
       - run: |
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          echo "== robots"; curl -sA "$UA" https://www.has-sante.fr/robots.txt | head -40
-          curl -sA "$UA" -o l.html "https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds"
-          echo "== landing size"; wc -c l.html
-          echo "== hrefs"; grep -o 'href="[^"]*"' l.html | sort -u | grep -v '\.css\|\.js\|\.png\|\.svg' | head -150
-          echo "== forms/ajax"; grep -io '<form[^>]*>\|data-[a-z-]*url="[^"]*"\|rss[^"]*"' l.html | sort -u | head -40
-          for u in /sitemap.xml /jcms/sitemap.xml /plan-du-site; do echo "== $u"; curl -sA "$UA" -o s -w "%{http_code} %{content_type}\n" "https://www.has-sante.fr$u"; head -c 600 s; echo; done
+          curl -sA "$UA" -o r.html "https://www.has-sante.fr/jcms/c_1771214/fr/nos-flux-d-information-rss"
+          echo "== feeds"; grep -io '<a[^>]*href="[^"]*"[^>]*>[^<]*' r.html | grep -i 'rss\|xml\|feed\|flux' | sort -u | head -60
+          for f in $(grep -o 'href="[^"]*\(rss\|RSS\|feed\|\.xml\)[^"]*"' r.html | sed 's/href="//;s/"$//;s/&amp;/\&/g' | sort -u | head -25); do
+            case "$f" in http*) u="$f";; /*) u="https://www.has-sante.fr$f";; *) u="https://www.has-sante.fr/$f";; esac
+            echo "=== $u"; curl -sA "$UA" -o f.xml -w "%{http_code} %{content_type}\n" "$u"
+            grep -o '<title>[^<]*' f.xml | head -4; echo "PNDS items: $(grep -ic 'pnds\|protocole national' f.xml)"
+          done
