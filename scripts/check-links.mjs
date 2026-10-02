@@ -12,7 +12,8 @@ const links = D.flatMap(([t, , , pdf, page]) => [
 // HTML avec un code 200 à la place d'un PDF disparu.
 async function check({ kind, url }) {
   try {
-    const r = await fetch(url, { redirect: "follow", headers: { "User-Agent": UA } });
+    // Referer = notre site : on teste le lien comme un vrai clic depuis la PNDSthèque.
+    const r = await fetch(url, { redirect: "follow", headers: { "User-Agent": UA, Referer: "https://ssc-ux.github.io/PNDStheque/" } });
     const type = r.headers.get("content-type") || "";
     const body = kind === "PDF" ? "" : await r.text();
     await r.body?.cancel?.().catch(() => {});
