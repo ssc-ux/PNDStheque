@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PNDSthèque</title>
+<meta name="description" content="Répertoire des PNDS (HAS) en médecine interne — accès direct aux PDF.">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1a1d23;--muted:#5f6672;--line:#e3e6eb;--accent:#1f5fbf;--chip:#eef2f8}
+@media (prefers-color-scheme:dark){:root{--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
+h1{margin:0 0 4px;font-size:1.7rem}
+.sub{color:var(--muted);margin:0 0 20px}
+#q{width:100%;padding:12px 14px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px}
+.cats button{border:1px solid var(--line);background:var(--chip);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.9rem}
+.cats button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+a.card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
+a.card:hover,a.card:focus-visible{border-color:var(--accent);transform:translateY(-1px)}
+.t{font-weight:600}
+.m{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem}
+.tag{color:var(--accent);font-weight:600}
+#empty{color:var(--muted);display:none}
+footer{margin-top:32px;color:var(--muted);font-size:.8rem}
+footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>PNDSthèque</h1>
+  <p class="sub">Protocoles Nationaux de Diagnostic et de Soins (HAS) en médecine interne — 1 clic = PDF dans un nouvel onglet.</p>
+  <input id="q" type="search" placeholder="Rechercher une maladie (ex. lupus, Horton, ANCA…)" autocomplete="off" autofocus>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="list"></div>
+  <p id="empty">Aucun résultat.</p>
+  <footer>Source : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a>. Vérifiez toujours la version la plus récente sur le site de la HAS.</footer>
+</div>
+<script>
+// [titre, catégorie, année, url]  — "page" dans l'url = page HAS (PDF non direct)
+const H = "https://www.has-sante.fr/upload/docs/application/pdf/";
+const D = [
+  ["Lupus systémique de l'adulte et de l'enfant","Connectivites",2024,H+"2024-02/pnds_ls.pdf"],
+  ["Syndrome des anti-phospholipides","Connectivites",2022,H+"2022-10/pnds_sapl_vf_3.pdf"],
+  ["Sclérodermie systémique","Connectivites",2022,H+"2008-11/pnds__sclerodermie_web.pdf"],
+  ["Maladie (syndrome) de Sjögren","Connectivites",2022,H+"2022-03/pnds_sjogren_mars_2022.pdf"],
+  ["Myosite à inclusions","Connectivites",2021,H+"2021-10/pnds_ibm_version_finale_octobre_2021.pdf"],
+  ["Vascularites associées aux ANCA (GPA, GEPA, PAM)","Vascularites",2026,H+"2026-02/pnds_vaa_janvier_2026_vf.pdf"],
+  ["Vascularites nécrosantes systémiques (PAN)","Vascularites",2019,H+"2019-06/pnds_vns.pdf"],
+  ["Artérite à cellules géantes (Horton)","Vascularites",2024,H+"2024-03/pnds_acg_vf_1.pdf"],
+  ["Artérite de Takayasu","Vascularites",2019,H+"2020-01/pnds_takayasu_fair_-_favamulti.pdf"],
+  ["Maladie de Behçet","Vascularites",2019,H+"2020-01/pnds_behcet_vf_171219.pdf"],
+  ["Syndrome de Cogan","Vascularites",2024,H+"2024-03/pnds_cogan_vf_3.pdf"],
+  ["Cryoglobulinémies","Vascularites",2021,H+"2021-07/pnds_cryoglobulinemies_1.pdf"],
+  ["Maladie de Still de l'adulte (page HAS)","Auto-inflammatoires",null,"https://www.has-sante.fr/jcms/c_2867360/fr/maladie-de-still-de-l-adulte"],
+  ["Fièvre méditerranéenne familiale","Auto-inflammatoires",2013,H+"2013-02/pnds_-_fievre_mediterraneenne_familiale.pdf"],
+  ["Syndromes périodiques associés à la cryopyrine (CAPS)","Auto-inflammatoires",2013,H+"2013-05/pnds_-_syndromes_periodiques_associes_a_la_cryopyrine_caps_2013-05-15_15-23-40_118.pdf"],
+  ["PFAPA (fièvre périodique)","Auto-inflammatoires",2019,H+"2019-08/pnds_pfapa_vf_050819_2.pdf"],
+  ["Amylose AA","Auto-inflammatoires",2020,H+"2020-05/pnds_amylose_aa_1.pdf"],
+  ["Polychondrite chronique atrophiante","Auto-inflammatoires",2021,H+"2021-07/pnds_pca_vf_juin_2021_argumentaire.pdf"],
+  ["Uvéites chroniques non infectieuses","Auto-inflammatoires",2020,H+"2020-05/pnds_ucni.pdf"],
+  ["Purpura thrombopénique immunologique de l'adulte","Hémato-immunologie",2024,H+"2025-01/pnds_pti_de_ladulte_cerecai_2024.pdf"],
+  ["Anémie hémolytique auto-immune de l'adulte","Hémato-immunologie",2024,H+"2024-07/pnds_ahai_de_ladulte_version_2024.pdf"],
+  ["Purpura thrombotique thrombocytopénique","Hémato-immunologie",2022,H+"2022-10/pnds_ptt_26092022_final.pdf"],
+  ["Syndromes hyperéosinophiliques","Hémato-immunologie",2022,H+"2022-06/pnds_she_argumentaire.pdf"],
+  ["Angioedème héréditaire","Hémato-immunologie",2024,H+"2024-06/pnds_angioedeme_2024-070524pretenvoijuincorr.pdf"],
+  ["Maladie associée aux IgG4","Systémiques rares",2025,H+"2025-12/pnds_mag4_vf.pdf"],
+  ["Maladie de Castleman","Systémiques rares",2019,H+"2019-11/pnds_castleman_2019.pdf"],
+  ["Amylose AL","Systémiques rares",2023,H+"2022-11/protocole_national_de_diagnostic_et_de_soins_v9.pdf"],
+  ["Amyloses cardiaques","Systémiques rares",2021,H+"2021-12/pnds_amyloses_cardiaques_v20_version_finale_31082021.pdf"]
+];
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const cats = ["Toutes", ...new Set(D.map(d => d[1]))];
+let cat = "Toutes";
+const $ = id => document.getElementById(id), q = $("q"), list = $("list");
+$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</button>`).join("");
+$("cats").onclick = e => { if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
+  [...$("cats").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
+function render(){
+  const s = norm(q.value.trim());
+  const r = D.filter(d => (cat==="Toutes"||d[1]===cat) && norm(d[0]+" "+d[1]).includes(s))
+             .sort((a,b) => a[0].localeCompare(b[0],"fr"));
+  list.innerHTML = r.map(d => `<a class="card" href="${d[3]}" target="_blank" rel="noopener">
+    <span class="t">${d[0]}</span><span class="m"><span>${d[1]}</span><span class="tag">${d[2]??"HAS"} ↗</span></span></a>`).join("");
+  $("empty").style.display = r.length ? "none" : "block";
+}
+q.oninput = render; render();
+</script>
+</body>
+</html>
