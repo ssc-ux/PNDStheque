@@ -7,7 +7,8 @@
 <meta name="description" content="Répertoire des PNDS (HAS) en médecine interne — accès direct aux PDF.">
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--fg:#1a1d23;--muted:#5f6672;--line:#e3e6eb;--accent:#1f5fbf;--chip:#eef2f8}
-@media (prefers-color-scheme:dark){:root{--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934}}
+:root[data-theme="dark"]{--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .wrap{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
