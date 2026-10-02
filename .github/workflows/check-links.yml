@@ -1,0 +1,33 @@
+name: Vérification des liens PNDS
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # chaque lundi
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - id: run
+        run: node scripts/check-links.mjs
+        continue-on-error: true
+      - name: Ouvrir ou mettre à jour un ticket
+        if: steps.run.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create liens-casses --color d93f0b --force
+          body="$(printf 'Liens en erreur détectés le %s :\n\n' "$(date +%F)"; cat broken.md)"
+          n=$(gh issue list --label liens-casses --state open --json number -q '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body "$body"
+          else gh issue create --title "Liens PNDS cassés" --label liens-casses --body "$body"; fi
+          exit 1
