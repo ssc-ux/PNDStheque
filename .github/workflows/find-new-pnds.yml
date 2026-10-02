@@ -1,0 +1,36 @@
+name: Détection de nouveaux PNDS
+
+on:
+  schedule:
+    - cron: "43 6 * * 1" # chaque lundi
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/find-new-pnds.mjs
+      - name: Signaler les candidats pas encore proposés
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create nouveaux-pnds --color 0e8a16 --force
+          # Toutes les URL déjà proposées dans un ticket (ouvert ou fermé) sont ignorées :
+          # fermer le ticket suffit à écarter un candidat.
+          gh issue list --label nouveaux-pnds --state all --limit 200 --json body -q '.[].body' > seen.txt
+          body=$(node -e '
+            const seen = require("fs").readFileSync("seen.txt", "utf8");
+            const c = require("./new-pnds.json").filter(x => !seen.includes(x.url));
+            if (c.length) console.log(c.map(x => `- [ ] [${x.title}](${x.url})`).join("\n"));
+          ')
+          if [ -z "$body" ]; then echo "Rien de nouveau."; exit 0; fi
+          gh issue create --label nouveaux-pnds --title "Nouveaux PNDS détectés ($(date +%F))" \
+            --body "$(printf 'Candidats trouvés sur le site de la HAS, absents du site. Pour en ajouter un, ajoutez une ligne dans index.html (tableau D). Fermez le ticket pour écarter les autres.\n\n%s' "$body")"

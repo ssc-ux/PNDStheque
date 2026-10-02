@@ -1,17 +1,13 @@
 // Vérifie tous les liens (PDF + pages HAS) déclarés entre DATA-START et DATA-END dans index.html.
 // Écrit la liste des liens cassés dans broken.md et sort en code 1 s'il y en a.
-import { readFileSync, writeFileSync } from "node:fs";
-
-const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const data = html.split("// DATA-START")[1].split("// DATA-END")[0];
-const { H, J, D } = new Function(data + "; return { H, J, D };")();
+import { writeFileSync } from "node:fs";
+import { H, J, D, UA } from "./data.mjs";
 
 const links = D.flatMap(([t, , , pdf, page]) => [
   pdf && { t, kind: "PDF", url: H + pdf },
   page && { t, kind: "page HAS", url: J + page },
 ]).filter(Boolean);
 
-const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36";
 async function status(url) {
   for (const method of ["HEAD", "GET"]) {
     try {
