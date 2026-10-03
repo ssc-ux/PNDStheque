@@ -51,14 +51,15 @@ footer a{color:var(--accent)}
   <p class="sub">Protocoles Nationaux de Diagnostic et de Soins (HAS) en médecine interne — 1 clic = PDF dans un nouvel onglet.</p>
   <div class="tabs" role="tablist" id="tabs">
     <button role="tab" data-tab="pnds" aria-selected="true">PNDS (médecins)</button>
-    <button role="tab" data-tab="patients" aria-selected="false">Livrets patients</button>
+    <button role="tab" data-tab="patients" aria-selected="false">Documents patients</button>
   </div>
   <p class="hint" id="hint"></p>
   <input id="q" type="search" placeholder="Rechercher une maladie (ex. lupus, Horton, ANCA…)" autocomplete="off" autofocus>
   <div class="cats" id="cats"></div>
+  <div class="cats" id="pcats"></div>
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
-  <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a> · <a href="https://www.fai2r.org/vie-quotidienne/ouvrages-100-questions/" target="_blank" rel="noopener">FAI²R — 100 questions</a>. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
+  <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a> · <a href="https://www.fai2r.org/vie-quotidienne/ouvrages-100-questions/" target="_blank" rel="noopener">FAI²R</a>, MaRIH, rhumatismes.net (Hôpital Cochin) et associations de patients pour les documents patients. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
   <span class="b new">récent</span> &lt; 1 an · <span class="b upd">mis à jour</span> nouvelle version HAS &lt; 1 an · <span class="b old">ancien</span> &gt; 3 ans · ☆ favoris enregistrés dans ce navigateur.<br>
   Réalisé par Quentin Astouati.</footer>
 </div>
@@ -101,11 +102,45 @@ const D = [
   ["Maladie de Fabry","Systémiques rares",2021,"2021-11/pnds_de_la_maladie_de_fabry_-_version_finale_-_20211115.pdf","p_3301584"],
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
 ];
-// Livrets patients « … 100 questions pour mieux gérer la maladie » (FAI²R), en PDF gratuit : [titre, maladie, année, URL]
+// Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web"]
 const P = [
-  ["Le lupus – 100 questions pour mieux gérer la maladie","lupus systémique",2024,"https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf"],
-  ["Le Gougerot-Sjögren – 100 questions pour mieux gérer la maladie","maladie de Sjögren",2021,"https://www.fai2r.org/wp-content/uploads/2021/09/SGS_100Q_version-en-ligne.pdf"],
-  ["La sclérodermie systémique – 100 questions pour mieux gérer la maladie","sclérodermie systémique",2021,"https://www.fai2r.org/wp-content/uploads/2021/07/Sclerodermie_100Q_version-en-ligne.pdf"]
+  ["Le lupus – 100 questions pour mieux gérer la maladie", "lupus systémique", "FAI²R", 2024, "https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf", "PDF"],
+  ["Le Gougerot-Sjögren – 100 questions pour mieux gérer la maladie", "maladie de Sjögren", "FAI²R", 2021, "https://www.fai2r.org/wp-content/uploads/2021/09/SGS_100Q_version-en-ligne.pdf", "PDF"],
+  ["La sclérodermie systémique – 100 questions pour mieux gérer la maladie", "sclérodermie systémique", "FAI²R", 2021, "https://www.fai2r.org/wp-content/uploads/2021/07/Sclerodermie_100Q_version-en-ligne.pdf", "PDF"],
+  ["Les myosites – 100 questions pour mieux gérer la maladie", "myosites dermatomyosite myopathies inflammatoires", "rhumatismes.net, Hôpital Cochin", null, "https://www.rhumatismes.net/index.php?id_bro=21", "web"],
+  ["Les uvéites – 100 questions pour mieux gérer la maladie", "uvéites", "rhumatismes.net, Hôpital Cochin", null, "https://www.rhumatismes.net/index.php?id_bro=30", "web"],
+  ["La fièvre méditerranéenne familiale – 100 questions pour mieux gérer la maladie", "FMF auto-inflammatoire", "rhumatismes.net, Hôpital Cochin", 2024, "https://www.rhumatismes.net/index.php?id_bro=33", "web"],
+  ["Le PTI en 100 questions", "purpura thrombopénique immunologique", "CeReCAI / CEREVANCE", 2021, "https://esmaramaladiesrares.fr/wp-content/uploads/2021/11/Le-PTI-en-100-questions.pdf", "PDF"],
+  ["Le PTT en 100 questions – versant auto-immun", "purpura thrombotique thrombocytopénique microangiopathie", "CNR-MAT / MaRIH", 2025, "https://marih.fr/app/uploads/2025/10/Le-PTT-autoimmun-en-100Q.pdf", "PDF"],
+  ["La maladie de Still de l'enfant et de l'adulte – livret Pédagostill", "maladie de Still", "FAI²R", 2019, "https://www.fai2r.org/wp-content/uploads/2019/05/20190307-livret-pedagostill-V9-final.pdf", "PDF"],
+  ["Mieux connaître les amyloses", "amylose AL AA amyloses", "Association française contre l'amylose", 2020, "https://amylose.asso.fr/wp-content/uploads/2020/11/LivretMieuxConnaitreLamylose_Ed2020_WEB_V2.pdf", "PDF"],
+  ["Amylose AA – fiches mémo patients et aidants", "amylose AA", "Association française contre l'amylose", 2023, "https://amylose.asso.fr/wp-content/uploads/2023/01/AA_Patients.pdf", "PDF"],
+  ["Artérite à cellules géantes (Horton) – fiche patient", "Horton artérite à cellules géantes vascularite", "France Vascularites", 2020, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/fiche_ACG_v05_10_2020.pdf", "PDF"],
+  ["Abécédaire des vascularites systémiques", "vascularites ANCA GPA PAN Behçet Takayasu", "France Vascularites", 2017, "https://www.association-vascularites.org/images/definition_vascularites/abecedaire2/ABECEDAIRE_2017.pdf", "PDF"],
+  ["La maladie de Gaucher – livret d'information de base", "Gaucher maladie lysosomale", "International Gaucher Alliance", 2022, "https://gaucheralliance.org/wp-content/uploads/2022/12/GD-info-book_French.pdf", "PDF"],
+  ["Syndrome des antiphospholipides – les réponses à vos questions", "SAPL", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-des-antiphospholipides/questions-patients/", "web"],
+  ["Maladie de Horton et pseudo-polyarthrite rhizomélique – les réponses à vos questions", "artérite à cellules géantes PPR", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-de-horton-pseudo-polyarthrite-rhizomelique/questions-patients/", "web"],
+  ["Maladie de Takayasu – les réponses à vos questions", "artérite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-de-takayasu/questions-patients/", "web"],
+  ["Périartérite noueuse – les réponses à vos questions", "PAN vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/panarterite-noueuse/questions-patients/", "web"],
+  ["Granulomatose avec polyangéite – les réponses à vos questions", "GPA Wegener ANCA vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/vascularites-a-anca/granulomatose-avec-polyangeite/questions-patients/", "web"],
+  ["Granulomatose éosinophilique avec polyangéite – les réponses à vos questions", "GEPA Churg-Strauss ANCA vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/vascularites-a-anca/granulomatose-eosinophilique-polyangeite-churg-strauss/questions-patients/", "web"],
+  ["Polyangéite microscopique – les réponses à vos questions", "PAM ANCA vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/vascularites-a-anca/micropolyangeite/questions-patients/", "web"],
+  ["Purpura rhumatoïde (vascularite à IgA) – les réponses à vos questions", "vascularite IgA Henoch", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/purpura-rhumatoide/questions-patients/", "web"],
+  ["Vascularite cryoglobulinémique – les réponses à vos questions", "cryoglobulinémie", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/vascularite-cryoglobulinemique/questions-patients/", "web"],
+  ["Syndrome de Cogan – les réponses à vos questions", "vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/syndrome-de-cogan/questions-patients/", "web"],
+  ["Polychondrite atrophiante – les réponses à vos questions", "polychondrite chronique", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/polychondrite-atrophiante/questions-patients/", "web"],
+  ["Maladie de Still de l'adulte – les réponses à vos questions", "Still", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-de-still-de-ladulte/questions-patients/", "web"],
+  ["Gougerot-Sjögren – les réponses à vos questions", "Sjögren", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/gougerot-sjogren/questions-patients/", "web"],
+  ["Connectivite mixte – les réponses à vos questions", "Sharp", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/connectivite-mixte/questions-patients/", "web"],
+  ["Syndrome des antisynthétases – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/antisynthetase/questions-patients/", "web"],
+  ["Myosites nécrosantes auto-immunes – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/myosites-necrosantes/questions-patients/", "web"],
+  ["Amylose AA – les réponses à vos questions", "amylose", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/amylose-aa/questions-patients/", "web"],
+  ["Maladie associée aux IgG4 – les réponses à vos questions", "IgG4", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-systemiques/maladie-associee-aux-igg4/questions-patients/", "web"],
+  ["TRAPS – les réponses à vos questions", "auto-inflammatoire fièvre récurrente", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/traps/questions-patients/", "web"],
+  ["Syndrome de Muckle-Wells (CAPS) – les réponses à vos questions", "cryopyrine auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/syndrome-de-muckle-wells/questions-patients/", "web"],
+  ["Syndrome de Schnitzler – les réponses à vos questions", "auto-inflammatoire urticaire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/syndrome-de-schnitzler/questions-patients/", "web"],
+  ["Déficit en mévalonate kinase – les réponses à vos questions", "auto-inflammatoire HIDS", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/deficit-en-mevalonate-kinase/questions-patients/", "web"],
+  ["PFAPA – les réponses à vos questions", "fièvre périodique auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/pfapa/questions-patients/", "web"]
 ];
 // DATA-END
 const Y = new Date().getFullYear();
@@ -122,8 +157,9 @@ const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 let tab = location.hash === "#patients" ? "patients" : "pnds";
 const HINT = {
   pnds: `${ICON} sur une fiche : copie une phrase prête à coller dans un courrier, à l'attention du médecin traitant, avec le lien du PNDS. · ☆ : ajoute aux favoris.`,
-  patients: `Livrets rédigés pour les patients et leurs proches par des spécialistes et des associations de patients (FAI²R). ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien du livret.`
+  patients: `Documents pour les patients et leurs proches, en accès libre : livrets « 100 questions », livrets de centres de référence et d'associations, pages « Les réponses à vos questions » de FAI²R. ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien.`
 };
+$("pcats").onclick = e => { if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
 $("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab;
   history.replaceState(null, "", tab === "patients" ? "#patients" : location.pathname + location.search); render(); };
 async function copy(text){
@@ -151,18 +187,23 @@ function card([t, c, y, pdf, page, maj]){
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
-const phraseP = (t, y, url) => `Pour mieux comprendre votre maladie, vous pouvez lire le livret « ${t} » (FAI²R, ${y}), rédigé par des médecins spécialistes avec des associations de patients et téléchargeable gratuitement : ${url}`.replace(/"/g, "&quot;");
-const cardP = ([t, m, y, url]) => `<div class="card">
+const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
+const cardP = ([t, kw, src, y, url, kind]) => `<div class="card">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
-    <button class="cp" style="right:8px" data-s="${phraseP(t, y, url)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button>
-    <div class="m"><span>${m}</span><span class="sp"></span><span>FAI²R ${y} · PDF ↗</span></div></div>`;
+    <button class="cp" style="right:8px" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button>
+    <div class="m"><span>${src}</span><span class="sp"></span><span>${y ? y + " · " : ""}${kind === "PDF" ? "PDF" : "en ligne"} ↗</span></div></div>`;
+const PCATS = ["Tous", "Livrets PDF", "En ligne"];
+let pcat = "Tous";
 function render(){
   const s = norm(q.value.trim());
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
   $("hint").innerHTML = HINT[tab];
   $("cats").style.display = tab === "pnds" ? "" : "none";
+  $("pcats").style.display = tab === "patients" ? "" : "none";
   if (tab === "patients") {
-    const r = P.filter(p => norm(p[0] + " " + p[1]).includes(s));
+    $("pcats").innerHTML = PCATS.map(c => `<button aria-pressed="${c===pcat}">${c}</button>`).join("");
+    const r = P.filter(p => (pcat === "Tous" || (pcat === "Livrets PDF") === (p[5] === "PDF")) && norm(p[0] + " " + p[1] + " " + p[2]).includes(s))
+               .sort((a, b) => (b[5] === "PDF") - (a[5] === "PDF") || a[0].localeCompare(b[0], "fr"));
     list.innerHTML = r.map(cardP).join("");
     $("empty").textContent = "Aucun livret pour cette recherche.";
     $("empty").style.display = r.length ? "none" : "block";
