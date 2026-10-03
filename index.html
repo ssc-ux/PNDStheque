@@ -120,7 +120,7 @@ list.onclick = e => { const c = e.target.closest(".cp");
 const NOW = new Date(), months = pdf => { const [a, m] = pdf.split("/")[0].split("-").map(Number); return (NOW.getFullYear() - a) * 12 + NOW.getMonth() + 1 - m; };
 const badge = (y, pdf, maj) => maj && months(maj) < 12 ? `<span class="b upd">mis à jour</span>` : pdf && months(pdf) < 12 ? `<span class="b new">récent</span>` : y != null && Y - y > 3 ? `<span class="b old">ancien</span>` : "";
 // Phrase prête à coller dans un courrier au médecin traitant.
-const phrase = (t, y, url) => `Pour plus d'informations, vous pouvez consulter le Protocole National de Diagnostic et de Soins (PNDS) de la HAS « ${t} »${y ? ` (${y})` : ""} : ${url}. Il comporte une synthèse d'une à deux pages destinée au médecin traitant, qui reprend l'essentiel de la prise en charge.`.replace(/"/g, "&quot;");
+const phrase = (t, y, url) => `Information pour le médecin traitant : le Protocole National de Diagnostic et de Soins (PNDS) de la HAS « ${t} »${y ? ` (${y})` : ""} est disponible ici : ${url}. Il comporte une synthèse d'une à deux pages qui vous est destinée et reprend l'essentiel de la prise en charge.`.replace(/"/g, "&quot;");
 function card([t, c, y, pdf, page, maj]){
   const main = pdf ? H + pdf : J + page, on = favs.has(t);
   return `<div class="card">
