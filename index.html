@@ -82,11 +82,12 @@ h1 a{color:inherit;text-decoration:none}
 /* Conseils */
 #conseils{display:none;padding-top:14px}
 .hint{color:var(--muted);font-size:.9rem;margin:0 0 6px}
-.ctiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
-.ctile{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--c3s);color:var(--fg);border:0;border-left:4px solid var(--c3);border-radius:8px;padding:14px 16px;cursor:pointer;transition:transform .15s}
-.ctile:hover{transform:translateY(-2px)}
-.ctt{font-weight:600;color:var(--c3);font-size:1.05rem}
-.ctd{color:var(--muted);font-size:.88rem}
+.ctiles{display:flex;flex-direction:column;margin-top:8px}
+.ctile{display:flex;align-items:center;gap:12px;text-align:left;background:none;color:var(--fg);border:0;border-bottom:1px solid var(--line);padding:14px 0;cursor:pointer}
+.ctile::after{content:"›";margin-left:auto;color:var(--muted);font-size:1.3rem;line-height:1}
+.ctile:hover .ctt{color:var(--accent)}
+.ctt{font-weight:600}
+.ctd{display:none}
 .back{background:none;border:0;padding:0;margin:0 0 14px;color:var(--accent);cursor:pointer}
 .tpl{padding:6px 0 22px}
 .tpl h3{margin:0 0 2px;font:600 1.15rem/1.3 "Source Serif 4",Georgia,serif}
@@ -183,7 +184,7 @@ footer a{color:var(--muted)}
       <li>Des paragraphes types à coller dans le courrier, rédigés d'après les sources officielles citées sous chaque bloc (PNDS de la HAS, livrets de la filière FAI²R).</li>
       <li>Le texte se modifie directement sur la page : les éléments entre [crochets] sont à adapter au patient (dose, dates, options). « Copier » prend en compte vos modifications ; « Réinitialiser » restaure le texte d'origine.</li>
     </ul>
-    <div class="ex"><b>Exemple :</b> un patient débute 40 mg/j de prednisone. Cliquez sur la tuile « Corticothérapie », remplacez « [dose] » par « 40 », supprimez les mentions entre crochets inutiles (AVK, diurétique…), puis « Copier » : le paragraphe est prêt pour le courrier.</div>
+    <div class="ex"><b>Exemple :</b> un patient débute 40 mg/j de prednisone. Cliquez sur « Mesures associées à la corticothérapie », remplacez « [dose] » par « 40 », supprimez les mentions entre crochets inutiles (AVK, diurétique…), puis « Copier » : le paragraphe est prêt pour le courrier.</div>
 
     <h3>5. Un site tenu à jour automatiquement</h3>
     <ul>
@@ -443,8 +444,8 @@ $("home").onclick = e => { e.preventDefault(); q.value = ""; go("accueil"); };
 $("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
 const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-$("conseils").innerHTML = `<p class="hint" id="chint">Paragraphes prêts à coller dans le courrier. Modifiez le texte ici (les éléments entre [crochets] sont à adapter au patient), puis « Copier ».</p>
-  <div class="ctiles" id="ctiles">${T.map((x, i) => `<button class="ctile" id="ct${i}" data-open="${i}"><span class="ctt">${x.court || x.titre}</span><span class="ctd">${x.titre}</span></button>`).join("")}</div>` +
+$("conseils").innerHTML = `<p class="hint" id="chint">Paragraphes prêts à coller dans le courrier. Cliquez sur un conseil pour l'ouvrir, adaptez les éléments entre [crochets], puis « Copier ».</p>
+  <div class="ctiles" id="ctiles">${T.map((x, i) => `<button class="ctile" id="ct${i}" data-open="${i}"><span class="ctt">${x.titre}</span></button>`).join("")}</div>` +
   T.map((x, i) => `<div class="tpl" id="tplBox${i}" hidden><button class="back" data-back>← Tous les conseils</button><h3>${x.titre}</h3>
     <p class="src">Source : ${x.sources.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join(" · ")}</p>
     <textarea id="tpl${i}" spellcheck="false">${esc(x.texte)}</textarea>
