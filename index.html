@@ -17,6 +17,18 @@ h1{margin:0 0 4px;font-size:1.7rem}
 .tabs{display:flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--chip);border:1px solid var(--line);border-radius:12px}
 .tabs button{flex:1;border:0;background:none;color:var(--muted);padding:9px 10px;border-radius:9px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer}
 .tabs button[aria-selected=true]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.guide{display:none;line-height:1.55}
+.guide h2{font-size:1.25rem;margin:4px 0 12px}
+.guide h3{font-size:1rem;margin:22px 0 6px}
+.guide p,.guide li{color:var(--fg)}
+.guide ul{padding-left:20px;margin:6px 0}
+.guide li{margin:4px 0}
+.guide .ic{display:inline-flex;vertical-align:-3px;color:var(--accent)}
+.guide .ic svg{width:16px;height:16px}
+.guide .ex{border-left:3px solid var(--accent);background:var(--card);border-radius:0 10px 10px 0;padding:10px 12px;margin:10px 0;font-size:.93rem}
+.guide .ex b{color:var(--accent)}
+.guide blockquote{overflow-wrap:anywhere;margin:6px 0;padding:8px 10px;background:var(--chip);border-radius:8px;font-size:.88rem;color:var(--muted)}
+.guide .note{background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:18px;font-size:.92rem}
 .hint{color:var(--muted);font-size:.85rem;margin:0 0 18px}
 .hint svg{width:14px;height:14px;vertical-align:-2px}
 #q{width:100%;padding:12px 14px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
@@ -57,6 +69,7 @@ footer a{color:var(--accent)}
   <div class="tabs" role="tablist" id="tabs">
     <button role="tab" data-tab="pnds" aria-selected="true">PNDS (médecins)</button>
     <button role="tab" data-tab="patients" aria-selected="false">Documents patients</button>
+    <button role="tab" data-tab="aide" aria-selected="false">Mode d'emploi</button>
   </div>
   <p class="hint" id="hint"></p>
   <input id="q" type="search" placeholder="Rechercher une maladie (ex. lupus, Horton, ANCA…)" autocomplete="off" autofocus>
@@ -64,6 +77,50 @@ footer a{color:var(--accent)}
   <div class="cats" id="pcats"></div>
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
+  <section class="guide" id="guide">
+    <h2>Comment utiliser ce site ?</h2>
+    <p>La PNDSthèque rassemble en un seul endroit les <strong>Protocoles Nationaux de Diagnostic et de Soins (PNDS)</strong> de la HAS utiles en médecine interne, ainsi que des <strong>documents d'information gratuits pour les patients</strong>. Elle sert à retrouver un protocole en quelques secondes et à transmettre facilement les bons liens dans vos courriers.</p>
+
+    <h3>1. Trouver un PNDS (onglet « PNDS (médecins) »)</h3>
+    <ul>
+      <li>Tapez le nom de la maladie dans la barre de recherche (les accents ne comptent pas), ou filtrez par catégorie.</li>
+      <li><strong>Un clic sur le titre</strong> ouvre le PDF officiel de la HAS dans un nouvel onglet. Le lien « page HAS » mène à la page de la HAS (synthèse médecin traitant, argumentaire).</li>
+      <li>Le bouton <strong>↕</strong> trie par ordre alphabétique ou du plus récent au plus ancien.</li>
+      <li>Badges : <span class="b new">récent</span> mis en ligne il y a moins d'un an · <span class="b upd">mis à jour</span> nouvelle version publiée par la HAS il y a moins d'un an · <span class="b old">ancien</span> version de plus de 3 ans (à lire avec prudence).</li>
+      <li><strong>☆</strong> ajoute un PNDS à vos favoris : ils remontent en tête de liste et sont regroupés dans « ★ Favoris » (enregistrés uniquement dans votre navigateur).</li>
+    </ul>
+    <div class="ex"><b>Exemple :</b> tapez « horton » → la fiche « Artérite à cellules géantes (Horton) » s'affiche → un clic sur le titre ouvre le PNDS 2024 en PDF. Tapez « anca » pour retrouver les vascularites associées aux ANCA, ou « sjogren » sans tréma : la recherche le trouve quand même.</div>
+    <div class="ex"><b>Exemple :</b> vous suivez surtout des lupus et des sclérodermies ? Cliquez sur ☆ sur ces deux fiches : elles s'afficheront toujours en premier.</div>
+
+    <h3>2. Préparer un courrier</h3>
+    <ul>
+      <li><span class="ic" id="gi1"></span> copie une phrase prête à coller, <strong>à l'attention du médecin traitant</strong>, avec le lien du PNDS et la mention de sa synthèse d'une à deux pages.</li>
+      <li><span class="ic" id="gi2"></span> copie <strong>en plus</strong> une phrase destinée au <strong>patient</strong>, avec le lien du document patient le plus adapté : un courrier complet en un clic.</li>
+      <li>Collez ensuite (Ctrl+V / Cmd+V) dans votre logiciel de courrier.</li>
+    </ul>
+    <div class="ex"><b>Exemple :</b> vous rédigez le courrier de consultation d'une patiente lupique. Tapez « lupus », puis cliquez sur <span class="ic" id="gi4"></span> : il ne reste plus qu'à coller. Vous obtenez :
+      <blockquote>Information pour le médecin traitant : le Protocole National de Diagnostic et de Soins (PNDS) de la HAS « Lupus systémique de l'adulte et de l'enfant » (2024) est disponible ici : https://www.has-sante.fr/…/pnds_ls.pdf. Il comporte une synthèse d'une à deux pages qui vous est destinée et reprend l'essentiel de la prise en charge.<br><br>
+      Pour mieux comprendre votre maladie, vous pouvez consulter le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024), conçu pour les patients et leurs proches et accessible gratuitement : https://www.fai2r.org/…/LUPUS_100Q_FAI2R-2024.pdf</blockquote>
+      Avec <span class="ic" id="gi5"></span> seul, vous n'obtenez que le premier paragraphe (pour le médecin traitant).</div>
+
+    <h3>3. Donner de l'information au patient (onglet « Documents patients »)</h3>
+    <ul>
+      <li>Documents <strong>gratuits</strong> et vérifiés : livrets « 100 questions », livrets et fiches des centres de référence, des filières de santé et des associations de patients, pages « Les réponses à vos questions » de FAI²R.</li>
+      <li>Depuis une fiche PNDS, le lien <strong>📄 documents patients</strong> affiche directement les documents de la même maladie.</li>
+      <li><span class="ic" id="gi3"></span> copie une phrase prête à coller dans le courrier du patient, avec le lien.</li>
+    </ul>
+    <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Vascularites associées aux ANCA », cliquez sur « 📄 documents patients » : s'affichent les fiches patients GPA, GEPA et PAM de France Vascularites et les pages FAI²R correspondantes. Choisissez celle qui correspond à la maladie de votre patient et cliquez sur <span class="ic" id="gi6"></span>.</div>
+    <div class="ex"><b>Exemple :</b> un patient débute un traitement par colchicine ou tocilizumab ? Tapez le nom du médicament dans l'onglet « Documents patients » : une fiche dédiée (précautions, vaccins…) est disponible.</div>
+
+    <h3>4. Un site tenu à jour automatiquement</h3>
+    <ul>
+      <li>Chaque semaine, tous les liens sont vérifiés et les PNDS sont comparés à la dernière version publiée par la HAS : une nouvelle version remplace automatiquement l'ancienne (badge « mis à jour »).</li>
+      <li>Chaque jour, les nouveaux PNDS de médecine interne publiés par la HAS sont repérés ; chaque mois, les nouveaux documents patients de nos sources.</li>
+      <li>Les documents patients ne sont retenus que s'ils proviennent d'une source fiable (centre de référence, filière de santé, société savante, association avec validation médicale) et datent de 2018 ou après.</li>
+    </ul>
+
+    <p class="note">Outil d'aide à l'orientation : il ne remplace ni l'avis médical ni la lecture des documents sources. Aucun cookie ni donnée personnelle n'est collecté.</p>
+  </section>
   <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a> · <a href="https://www.fai2r.org/vie-quotidienne/ouvrages-100-questions/" target="_blank" rel="noopener">FAI²R</a>, MaRIH, rhumatismes.net (Hôpital Cochin) et associations de patients pour les documents patients. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
   <span class="b new">récent</span> &lt; 1 an · <span class="b upd">mis à jour</span> nouvelle version HAS &lt; 1 an · <span class="b old">ancien</span> &gt; 3 ans · ☆ favoris enregistrés dans ce navigateur.<br>
   Outil d'aide à l'orientation : il ne remplace ni l'avis médical ni la lecture des documents sources. Aucun cookie ni donnée personnelle collectés (les favoris restent dans votre navigateur).<br>
@@ -201,7 +258,8 @@ $("cats").onclick = e => { if (e.target.id === "sortBtn") { sortRecent = !sortRe
   [...$("cats").children].forEach(b => b.id || b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
 const ICON2 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>';
-let tab = location.hash === "#patients" ? "patients" : "pnds";
+for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", ICON2], ["gi5", ICON], ["gi6", ICON]]) document.getElementById(id).innerHTML = ic;
+let tab = location.hash === "#patients" ? "patients" : location.hash === "#aide" ? "aide" : "pnds";
 const HINT = {
   pnds: `${ICON} : copie une phrase pour le courrier, à l'attention du médecin traitant, avec le lien du PNDS · ${ICON2} : copie en plus la phrase pour le patient avec son document · 📄 : documents patients liés · ☆ : favoris.`,
   patients: `Documents pour les patients et leurs proches, en accès libre : livrets « 100 questions », livrets de centres de référence et d'associations, pages « Les réponses à vos questions » de FAI²R. ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien.`
@@ -209,7 +267,7 @@ const HINT = {
 $("pcats").onclick = e => { if (e.target.closest("#relClear")) { relT = null; render(); return; }
   if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
 $("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = null;
-  history.replaceState(null, "", tab === "patients" ? "#patients" : location.pathname + location.search); render(); };
+  history.replaceState(null, "", tab === "pnds" ? location.pathname + location.search : "#" + tab); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
   const t = Object.assign(document.createElement("textarea"), { value: text }); // repli si l'API presse-papiers est bloquée
@@ -270,6 +328,10 @@ let pcat = "Tous";
 function render(){
   const s = norm(q.value.trim());
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
+  const help = tab === "aide";
+  for (const id of ["hint", "q", "list"]) $(id).style.display = help ? "none" : "";
+  $("guide").style.display = help ? "block" : "none";
+  if (help) { $("cats").style.display = $("pcats").style.display = $("empty").style.display = "none"; return; }
   $("hint").innerHTML = HINT[tab];
   $("cats").style.display = tab === "pnds" ? "" : "none";
   $("pcats").style.display = tab === "patients" ? "" : "none";
