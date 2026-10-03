@@ -1,0 +1,13 @@
+name: diag (temporaire)
+on: workflow_dispatch
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+          curl -sLA "$UA" -o p.html -w "%{http_code}\n" "https://www.fai2r.org/vie-quotidienne/ouvrages-100-questions/"
+          tr '\n' ' ' < p.html | grep -o '<a [^>]*href="[^"]*\.pdf"[^>]*>[^<]*\(<[^/a][^>]*>[^<]*\)*' | sed 's/\s\+/ /g' | cut -c1-300 | sort -u
+          echo "== titres"; tr '\n' ' ' < p.html | grep -io '<h[2-4][^>]*>[^<]*' | sed 's/<[^>]*>//' | head -40
+          for u in $(tr '\n' ' ' < p.html | grep -o 'https://www.fai2r.org/wp-content/uploads/[^"]*\.pdf' | sort -u); do
+            curl -sIA "$UA" -o /dev/null -w "%{http_code} %{content_type} $u\n" "$u"; done
