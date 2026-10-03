@@ -30,7 +30,7 @@ h1{margin:0;font-size:1.35rem}
 @media (max-width:480px){.brand .sub{display:none}.brand{margin-bottom:6px}}
 .tabs .n{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;line-height:18px}
 .tabs .n:empty{display:none}
-.tpl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.tpl{scroll-margin-top:190px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
 .tpl h3{margin:0 0 4px;font-size:1.05rem}
 .tpl .src{color:var(--muted);font-size:.8rem;margin:0 0 10px}
 .tpl .src a{color:var(--accent)}
@@ -40,6 +40,8 @@ h1{margin:0;font-size:1.35rem}
 .tpl .acts button.sec{background:none;color:var(--accent)}
 .tpl .acts .done{color:var(--new);font-size:.85rem;display:none}
 #conseils{display:none}
+.tpl[hidden]{display:none}
+#toc{margin-top:0}
 .guide{display:none;line-height:1.55}
 .guide h2{font-size:1.25rem;margin:4px 0 12px}
 .guide h3{font-size:1rem;margin:22px 0 6px}
@@ -94,7 +96,7 @@ footer a{color:var(--accent)}
     <nav class="tabs" role="tablist" id="tabs">
       <button role="tab" data-tab="pnds" aria-selected="true">PNDS<span class="n"></span></button>
       <button role="tab" data-tab="patients" aria-selected="false">Patients<span class="n"></span></button>
-      <button role="tab" data-tab="conseils" aria-selected="false">Conseils</button>
+      <button role="tab" data-tab="conseils" aria-selected="false">Conseils<span class="n"></span></button>
       <button role="tab" data-tab="aide" aria-selected="false">Aide</button>
     </nav>
   </header>
@@ -282,9 +284,9 @@ const P = [
   ["Dermatomyosite – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/dermatomyosite/questions-patients/", "web"],
   ["Fièvre méditerranéenne familiale – les réponses à vos questions", "FMF auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/fievre-mediterraneenne-familiale/questions-patients/", "web"]
 ];
-// Paragraphes types pour les courriers : { titre, sources: [[libellé, URL]], texte } — [crochets] = à adapter au patient.
+// Paragraphes types pour les courriers : { titre, court (libellé du sommaire), sources: [[libellé, URL]], texte } — [crochets] = à adapter au patient.
 const T = [
-  { titre: "Mesures associées à la corticothérapie",
+  { titre: "Mesures associées à la corticothérapie", court: "Corticothérapie",
     sources: [["Livret FAI²R / CHU de Montpellier « Corticothérapie, les médecins répondent à vos questions » (2020)", "https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf"], ["PNDS Lupus systémique, HAS 2024 (mesures associées à la corticothérapie)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"]],
     texte: `Mesures associées à la corticothérapie ([dose] mg/j d'équivalent prednisone) :
 - Prise : en une prise le matin, au cours du petit-déjeuner [ou en deux prises matin et soir]. Ne jamais arrêter ni modifier la dose sans avis médical : la décroissance doit être progressive et encadrée (risque d'insuffisance surrénalienne). En cas de fièvre ou d'infection, consulter rapidement, sans arrêter le traitement.
@@ -297,7 +299,7 @@ const T = [
 - Dépistage et traitement des foyers infectieux latents ; prophylaxie de l'anguillulose si le contexte le justifie (séjour en zone d'endémie).
 [- Prophylaxie de la pneumocystose : à discuter selon la dose, la durée et le traitement associé.]
 Un livret d'information a été remis au patient : « Corticothérapie, les médecins répondent à vos questions » (FAI²R) : https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf` },
-  { titre: "Lupus systémique : conseils et mesures associées",
+  { titre: "Lupus systémique : conseils et mesures associées", court: "Lupus",
     sources: [["PNDS Lupus systémique de l'adulte et de l'enfant, HAS 2024 (éducation thérapeutique, prévention)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"]],
     texte: `Conseils et mesures associées au lupus systémique :
 - Photoprotection indispensable, toute l'année et même par temps nuageux ou sous un parasol : éviter l'exposition solaire directe ou indirecte, les lieux de forte réverbération (bord de mer, montagne) et les sorties entre 12 h et 16 h. Vêtements couvrants (manches longues, chapeau à large bord, lunettes filtrant les UVA/UVB). Écran solaire indice 50 anti-UVA/UVB appliqué 30 minutes avant l'exposition, renouvelé toutes les 2 heures et après chaque baignade ; crème de jour anti-UVA/UVB (indice 30 au minimum) au quotidien, même en dehors de l'été.
@@ -309,7 +311,72 @@ Un livret d'information a été remis au patient : « Corticothérapie, les méd
 - Dépistage régulier des cancers gynécologiques (en particulier liés à l'HPV).
 - Savoir reconnaître les signes d'une poussée et consulter rapidement ; ne pas arrêter les traitements de sa propre initiative.
 - [Anti-inflammatoires : l'ibuprofène est contre-indiqué.]
-Pour en savoir plus, le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024) a été conseillé au patient : https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf` }
+Pour en savoir plus, le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024) a été conseillé au patient : https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf` },
+  { titre: "Bilan avant un immunosuppresseur ou une biothérapie", court: "Bilan avant traitement",
+    sources: [["CeRéMAIA (centre de référence, Tenon) – « Bilan avant de débuter un traitement immunomodulateur » (2026)", "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_5b5ea6e3beb442aa8c3f484abb278056.pdf"], ["CRI – Information patient rituximab", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/rituximab2017/RTX_20%20Info_patient.pdf"]],
+    texte: `Bilan avant de débuter [nom du traitement] :
+- Examens : radiographie pulmonaire ; recherche d'une tuberculose latente (test IGRA de type Quantiféron) ; sérologies VIH, hépatite B et hépatite C ; examen dentaire récent (moins d'un an) pour éliminer un foyer infectieux.
+- Vaccinations recommandées, idéalement avant le début du traitement : pneumocoque (Prevenar 20), grippe chaque automne, COVID-19 selon les recommandations en vigueur, zona (Shingrix, 2 doses espacées de 2 mois, particulièrement recommandé avant un inhibiteur de JAK) ; mise à jour diphtérie-tétanos-polio.
+- Les vaccins vivants atténués (fièvre jaune, ROR, varicelle, BCG) sont contre-indiqués sous traitement : à réaliser avant si nécessaire [au moins 4 semaines avant le début].
+- Consignes au patient : consulter rapidement en cas de fièvre ou de signe d'infection ; signaler le traitement avant toute chirurgie, tout soin dentaire ou tout nouveau médicament.` },
+  { titre: "Traitement par hydroxychloroquine", court: "Hydroxychloroquine",
+    sources: [["PNDS Lupus systémique, HAS 2024 (hydroxychloroquine, surveillance, tableau 17)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"]],
+    texte: `Traitement par hydroxychloroquine ([dose] mg/j) :
+- Traitement de fond à poursuivre au long cours, à ne pas interrompre sans avis médical ; il est poursuivi pendant la grossesse et l'allaitement est possible. Le tabac diminue son efficacité.
+- Posologie habituelle de 400 mg/j si la fonction rénale est normale, à réduire en cas d'insuffisance rénale[, d'insuffisance hépatique ou de faible poids]. [Dosage sanguin de l'hydroxychloroquine pour évaluer l'observance.]
+- Surveillance ophtalmologique : bilan initial (examen ophtalmologique, champ visuel central automatisé 10° et OCT-SD) [à réaliser / réalisé le …], qui ne doit pas retarder le début du traitement ; puis dépistage annuel après 5 ans de traitement, ou annuel dès la première année en cas de facteur de risque de toxicité (plus de 400 mg/j, 400 mg/j chez un patient de petit poids, insuffisance rénale, sujet âgé, maculopathie préexistante, traitement par tamoxifène).
+- [ECG en cas de cardiopathie ou d'autre traitement allongeant le QT.]
+- Consulter en cas de troubles de la vision, de faiblesse musculaire ou de palpitations.` },
+  { titre: "Traitement par méthotrexate", court: "Méthotrexate",
+    sources: [["CRI (Club Rhumatismes et Inflammations) – Information patient méthotrexate (2016)", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/MTX-Dec2016/MTX_22.pdf"], ["CRI – Surveillance du méthotrexate", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/MTX-Dec2016/MTX_03.pdf"]],
+    texte: `Traitement par méthotrexate ([dose] mg par semaine, [voie orale / sous-cutanée]) :
+- Une seule prise par semaine, toujours le même jour. Acide folique ([dose]) à prendre un autre jour que le méthotrexate, pour améliorer la tolérance (troubles digestifs, aphtes).
+- Surveillance biologique : NFS, transaminases, gamma-GT, phosphatases alcalines, albumine et créatinine, au moins tous les mois au début, puis le plus souvent tous les 3 mois.
+- Consulter en cas de toux, d'essoufflement ou de fièvre (infection ou, rarement, atteinte pulmonaire liée au traitement).
+- Médicament tératogène : contraception efficace indispensable pendant le traitement ; tout projet de grossesse est à discuter avec le médecin (chez l'homme, attendre 3 mois après l'arrêt avant une conception). Allaitement déconseillé.
+- Alcool : consommation très occasionnelle, voire à éviter (toxicité hépatique).
+- Vaccins grippe et pneumocoque recommandés ; vaccins vivants atténués contre-indiqués (fièvre jaune, BCG, ROR, varicelle).
+- Pas d'arrêt nécessaire pour une chirurgie ou un soin dentaire ; signaler le traitement avant tout nouveau médicament.
+- Possible photosensibilité : protection solaire en cas d'exposition.` },
+  { titre: "Traitement par rituximab", court: "Rituximab",
+    sources: [["CRI – Information patient rituximab (2017)", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/rituximab2017/RTX_20%20Info_patient.pdf"], ["France Vascularites / FAI²R – « Mieux connaître son traitement : le rituximab »", "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Ritux_A5.pdf"]],
+    texte: `Traitement par rituximab :
+- Perfusions à l'hôpital, précédées d'une prémédication (corticoïde, paracétamol, antihistaminique) ; [schéma : 2 perfusions à 15 jours d'intervalle, renouvelées tous les 6 mois environ].
+- Risque infectieux accru : consulter rapidement en cas de fièvre supérieure à 38 °C ou de tout signe d'infection (toux, brûlures urinaires, plaie infectée…). [Dosage des immunoglobulines selon le contexte.]
+- Vaccinations : grippe et pneumocoque recommandés, idéalement au moins 4 semaines avant la première perfusion ; vaccins vivants atténués contre-indiqués (fièvre jaune, BCG).
+- Chirurgie programmée : à envisager de préférence 6 mois après la dernière perfusion ; soins dentaires lourds : 4 à 6 mois après.
+- Contraception efficace pendant le traitement et au moins 6 mois (idéalement 12 mois) après la dernière perfusion ; allaitement déconseillé.
+- Signaler le traitement avant tout nouveau médicament.
+Une fiche d'information a été conseillée au patient : https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Ritux_A5.pdf` },
+  { titre: "Traitement par colchicine", court: "Colchicine",
+    sources: [["CeRéMAIA (centre de référence, Tenon) – fiche « Colchicine » (2025)", "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_c8f723a4bff44a9dbadb3f72b798cee5.pdf"]],
+    texte: `Traitement par colchicine ([dose] mg/j) :
+- À poursuivre au long cours, même en l'absence de crise, pour prévenir les crises et l'amylose AA. Ne pas augmenter la dose de soi-même lors d'une crise (inefficace).
+- En cas d'oubli : prendre le comprimé dès que l'oubli est constaté.
+- Dose à diminuer ou à suspendre temporairement lors d'un traitement par macrolide ou pristinamycine ; adaptation en cas d'insuffisance rénale ou hépatique.
+- Pas d'arrêt nécessaire en cas d'infection, de chirurgie, d'anesthésie ou de vaccination.
+- En cas de diarrhée (effet indésirable principal) : répartir la dose en deux prises, probiotiques, racécadotril (le lopéramide n'est pas recommandé).
+- Grossesse : poursuivre aux doses habituelles (pas d'augmentation du risque de malformation ou de fausse couche) ; compatible avec la pilule. Allaitement possible, en prenant la colchicine au moment d'une tétée ; le Colchimax® est contre-indiqué pendant l'allaitement.
+- Conserver les boîtes hors de portée des enfants (médicament toxique en cas de surdosage).` },
+  { titre: "Syndrome des antiphospholipides : conseils et mesures associées", court: "SAPL",
+    sources: [["PNDS Syndrome des antiphospholipides de l'adulte et de l'enfant, HAS 2022", "https://www.has-sante.fr/upload/docs/application/pdf/2022-10/pnds_sapl_vf_3.pdf"]],
+    texte: `Conseils et mesures associées au syndrome des antiphospholipides :
+- Anticoagulation par antivitamine K [warfarine] au long cours, cible d'INR [entre 2 et 3] ; ne jamais l'interrompre sans avis médical (l'arrêt, même temporaire, est très à risque). Les anticoagulants oraux directs sont le plus souvent déconseillés dans le SAPL.
+- Éducation au traitement par AVK : risque hémorragique, interactions médicamenteuses (signaler le traitement avant tout nouveau médicament), contrôles réguliers de l'INR.
+- Anticiper les situations à risque : chirurgie ou geste invasif (fenêtre sans anticoagulation la plus courte possible, relais par héparine organisé par le médecin), infection, grossesse.
+- Contraception sans œstrogènes ; tout projet de grossesse doit être programmé lors d'une consultation préconceptionnelle avec le médecin référent.
+- Contrôle strict des facteurs de risque cardiovasculaire : arrêt du tabac, pression artérielle, cholestérol ; prévention thromboembolique dans les situations à risque.
+- Suivi spécialisé régulier [tous les 6 à 12 mois].` },
+  { titre: "Artérite à cellules géantes (Horton) : conseils", court: "Horton",
+    sources: [["PNDS Artérite à cellules géantes (Horton), HAS 2024", "https://www.has-sante.fr/upload/docs/application/pdf/2024-03/pnds_acg_vf_1.pdf"]],
+    texte: `Conseils dans l'artérite à cellules géantes (maladie de Horton) :
+- Signes d'alerte imposant une consultation en urgence : troubles visuels même transitoires (flou visuel, perte brutale de la vue d'un œil, vision double), maux de tête inhabituels, douleur de la mâchoire en mâchant, signes neurologiques.
+- Corticothérapie : décroissance progressive selon le schéma prescrit (repères : environ 15 mg/j à 3 mois, 5 à 10 mg/j à 6 mois, arrêt vers 12 mois) ; en dessous de 5 mg/j, décroissance lente, milligramme par milligramme. Ne jamais arrêter brutalement ; signaler une fatigue intense ou des douleurs diffuses (possible insuffisance surrénalienne).
+- En cas de réapparition des symptômes (maux de tête, douleurs des épaules ou des hanches), consulter : une rechute est possible pendant la décroissance, et elle se complique exceptionnellement de troubles visuels.
+- [Sous tocilizumab : les infections peuvent être peu symptomatiques ; consulter au moindre doute.]
+- Mesures associées : prévention de l'ostéoporose et des infections, prise en charge des facteurs de risque cardiovasculaire [cf. mesures associées à la corticothérapie].
+- Surveillance de l'aorte à moyen et long terme (recherche d'une dilatation ou d'un anévrisme).
+Une fiche d'information a été conseillée au patient : https://www.association-vascularites.org/images/fiches_individuelles_vascularites/fiche_ACG_v05_10_2020.pdf` }
 ];
 // DATA-END
 const Y = new Date().getFullYear();
@@ -336,12 +403,14 @@ for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", IC
 let tab = ["#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "pnds";
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
 const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-$("conseils").innerHTML = `<p class="hint" style="display:block">Paragraphes prêts à coller dans le courrier. Modifiez le texte directement ici (les éléments entre [crochets] sont à adapter au patient), puis cliquez sur « Copier ».</p>` +
-  T.map((x, i) => `<div class="tpl"><h3>${x.titre}</h3>
+$("conseils").innerHTML = `<p class="hint" style="display:block;margin:0 0 10px">Paragraphes prêts à coller dans le courrier. Modifiez le texte ici (les éléments entre [crochets] sont à adapter au patient), puis « Copier ».</p>
+  <div class="cats" id="toc">${T.map((x, i) => `<button data-go="${i}">${x.court || x.titre}</button>`).join("")}</div>` +
+  T.map((x, i) => `<div class="tpl" id="tplBox${i}" data-k="${norm(x.titre + " " + x.texte)}"><h3>${x.titre}</h3>
     <p class="src">Source : ${x.sources.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join(" · ")}</p>
     <textarea id="tpl${i}" spellcheck="false">${esc(x.texte)}</textarea>
     <div class="acts"><button data-copy="${i}">Copier</button><button class="sec" data-reset="${i}">Réinitialiser</button><span class="done" id="done${i}">Copié ✓</span></div></div>`).join("");
-$("conseils").onclick = e => { const c = e.target.dataset.copy, z = e.target.dataset.reset;
+$("conseils").onclick = e => { const c = e.target.dataset.copy, z = e.target.dataset.reset, g = e.target.dataset.go;
+  if (g != null) $("tplBox" + g).scrollIntoView({ behavior: "smooth", block: "start" });
   if (c != null) copy($("tpl" + c).value).then(() => { $("done" + c).style.display = "inline"; setTimeout(() => $("done" + c).style.display = "none", 1500); });
   if (z != null) $("tpl" + z).value = T[z].texte; };
 const HINT = {
@@ -414,7 +483,9 @@ function render(){
   const help = tab === "aide" || tab === "conseils";
   // Compteurs des onglets : nombre de résultats pour la recherche en cours.
   const [nD, nP] = [D.filter(d => norm(d[0] + " " + d[1]).includes(s)).length, P.filter(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)).length];
-  const nEl = $("tabs").querySelectorAll(".n"); nEl[0].textContent = s ? nD : ""; nEl[1].textContent = s ? nP : "";
+  const nT = T.filter(x => norm(x.titre + " " + x.texte).includes(s)).length;
+  const nEl = $("tabs").querySelectorAll(".n"); nEl[0].textContent = s ? nD : ""; nEl[1].textContent = s ? nP : ""; nEl[2].textContent = s ? nT : "";
+  T.forEach((x, i) => $("tplBox" + i).hidden = !!s && !norm(x.titre + " " + x.texte).includes(s));
   $("list").style.display = $("bar").style.display = help ? "none" : "";
   $("guide").style.display = tab === "aide" ? "block" : "none";
   $("conseils").style.display = tab === "conseils" ? "block" : "none";
