@@ -1,12 +1,12 @@
 // Vérifie tous les liens (PDF + pages HAS) déclarés entre DATA-START et DATA-END dans index.html.
 // Écrit la liste des liens cassés dans broken.md et sort en code 1 s'il y en a.
 import { writeFileSync } from "node:fs";
-import { H, J, D, UA } from "./data.mjs";
+import { H, J, D, P, UA } from "./data.mjs";
 
 const links = D.flatMap(([t, , , pdf, page]) => [
   pdf && { t, kind: "PDF", url: H + pdf },
   page && { t, kind: "page HAS", url: J + page },
-]).filter(Boolean);
+]).filter(Boolean).concat(P.map(([t, , , url]) => ({ t, kind: "PDF", url })));
 
 // Un lien est valide si la réponse est 200 ET du bon type : la HAS renvoie parfois une page d'erreur
 // HTML avec un code 200 à la place d'un PDF disparu.
