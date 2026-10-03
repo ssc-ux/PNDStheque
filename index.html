@@ -11,13 +11,25 @@
 :root[data-theme="dark"]{--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934;--new:#5fd394;--old:#f0a94a;--star:#ffc93c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-.wrap{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
-h1{margin:0 0 4px;font-size:1.7rem}
-.sub{color:var(--muted);margin:0 0 8px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px 48px}
+h1{margin:0;font-size:1.35rem}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px;margin:0 -16px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.tip{display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap;background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:10px 0 0;font-size:.85rem;color:var(--muted)}
+.tip[hidden]{display:none}.tip a{color:var(--accent)}
+.tip svg{width:14px;height:14px;vertical-align:-2px}
+.tip>span{flex:1}
+#tipClose{margin-left:auto;flex:none;background:none;border:0;color:var(--muted);cursor:pointer;font-size:1rem}
+.bar{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:.85rem;margin:0 0 10px}
+#sortBtn{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;font-weight:600}
+.sub{color:var(--muted);font-size:.85rem}
 .tabs{display:flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--chip);border:1px solid var(--line);border-radius:12px}
 .tabs button{flex:1;border:0;background:none;color:var(--muted);padding:9px 10px;border-radius:9px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer}
 .tabs button[aria-selected=true]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.tabs{flex-wrap:wrap}.tabs button{flex:1 1 40%}
+.tabs{margin:8px 0 0 !important}.tabs button{padding:7px 4px !important;white-space:nowrap}
+@media (max-width:480px){.brand .sub{display:none}.brand{margin-bottom:6px}}
+.tabs .n{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;line-height:18px}
+.tabs .n:empty{display:none}
 .tpl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
 .tpl h3{margin:0 0 4px;font-size:1.05rem}
 .tpl .src{color:var(--muted);font-size:.8rem;margin:0 0 10px}
@@ -42,23 +54,24 @@ h1{margin:0 0 4px;font-size:1.7rem}
 .guide .note{background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:18px;font-size:.92rem}
 .hint{color:var(--muted);font-size:.85rem;margin:0 0 18px}
 .hint svg{width:14px;height:14px;vertical-align:-2px}
-#q{width:100%;padding:12px 14px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
-.cats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px}
-.cats button{border:1px solid var(--line);background:var(--chip);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.9rem}
+#q{width:100%;padding:11px 14px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+.cats{display:flex;gap:8px;margin:12px -16px 10px;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cats button{flex:none;white-space:nowrap;border:1px solid var(--line);background:var(--chip);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.88rem}
 .cats button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.card{position:relative;display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,transform .15s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.card{position:relative;display:flex;flex-direction:column;gap:6px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,transform .15s}
 .card:hover,.card:focus-within{border-color:var(--accent);transform:translateY(-1px)}
 .t{font-weight:600;color:inherit;text-decoration:none;padding-right:84px}
 .t::after{content:"";position:absolute;inset:0;border-radius:12px}
-.m{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+.m{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;white-space:nowrap;color:var(--muted);font-size:.85rem}
 .m .sp{flex:1}
 .m a,.fav,.cp,.rel{position:relative;z-index:1}
 .rel{background:none;border:0;padding:0;font:inherit;color:var(--accent);cursor:pointer}
 .rel:hover{text-decoration:underline}
 .cp.cp2{right:64px}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);color:var(--accent);background:var(--chip);padding:6px 12px;border-radius:999px;font-size:.9rem;cursor:pointer}
-#sortBtn{margin-left:auto}
+
 .m a{color:var(--accent);text-decoration:none}
 .m a:hover{text-decoration:underline}
 .b{font-size:.72rem;font-weight:700;padding:1px 7px;border-radius:999px;border:1px solid currentColor}
@@ -75,18 +88,21 @@ footer a{color:var(--accent)}
 </head>
 <body>
 <div class="wrap">
-  <h1>PNDSthèque</h1>
-  <p class="sub">Protocoles Nationaux de Diagnostic et de Soins (HAS) en médecine interne — 1 clic = PDF dans un nouvel onglet.</p>
-  <div class="tabs" role="tablist" id="tabs">
-    <button role="tab" data-tab="pnds" aria-selected="true">PNDS (médecins)</button>
-    <button role="tab" data-tab="patients" aria-selected="false">Documents patients</button>
-    <button role="tab" data-tab="conseils" aria-selected="false">Conseils patients</button>
-    <button role="tab" data-tab="aide" aria-selected="false">Mode d'emploi</button>
-  </div>
-  <p class="hint" id="hint"></p>
-  <input id="q" type="search" placeholder="Rechercher une maladie (ex. lupus, Horton, ANCA…)" autocomplete="off" autofocus>
+  <header class="top">
+    <div class="brand"><h1>PNDSthèque</h1><span class="sub">PNDS de médecine interne · 1 clic = PDF</span></div>
+    <input id="q" type="search" placeholder="Rechercher : lupus, Horton, ANCA, colchicine…" autocomplete="off" aria-label="Rechercher">
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="pnds" aria-selected="true">PNDS<span class="n"></span></button>
+      <button role="tab" data-tab="patients" aria-selected="false">Patients<span class="n"></span></button>
+      <button role="tab" data-tab="conseils" aria-selected="false">Conseils</button>
+      <button role="tab" data-tab="aide" aria-selected="false">Aide</button>
+    </nav>
+  </header>
+  <p class="tip" id="tip" hidden><span>Astuce : <span id="tipIcons"></span> = phrase prête pour le courrier · 📄 = documents patients · <a href="#aide" id="tipAide">mode d'emploi</a></span><button id="tipClose" aria-label="Fermer l'astuce">✕</button></p>
+  <p class="hint" id="hint" hidden></p>
   <div class="cats" id="cats"></div>
   <div class="cats" id="pcats"></div>
+  <div class="bar" id="bar"><span id="count"></span><button id="sortBtn" title="Changer l'ordre">A → Z ▾</button></div>
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
   <section id="conseils"></section>
@@ -94,11 +110,11 @@ footer a{color:var(--accent)}
     <h2>Comment utiliser ce site ?</h2>
     <p>La PNDSthèque rassemble en un seul endroit les <strong>Protocoles Nationaux de Diagnostic et de Soins (PNDS)</strong> de la HAS utiles en médecine interne, ainsi que des <strong>documents d'information gratuits pour les patients</strong>. Elle sert à retrouver un protocole en quelques secondes et à transmettre facilement les bons liens dans vos courriers.</p>
 
-    <h3>1. Trouver un PNDS (onglet « PNDS (médecins) »)</h3>
+    <h3>1. Trouver un PNDS (onglet « PNDS »)</h3>
     <ul>
       <li>Tapez le nom de la maladie dans la barre de recherche (les accents ne comptent pas), ou filtrez par catégorie.</li>
       <li><strong>Un clic sur le titre</strong> ouvre le PDF officiel de la HAS dans un nouvel onglet. Le lien « page HAS » mène à la page de la HAS (synthèse médecin traitant, argumentaire).</li>
-      <li>Le bouton <strong>↕</strong> trie par ordre alphabétique ou du plus récent au plus ancien.</li>
+      <li>Le bouton <strong>A → Z ▾</strong> (au-dessus de la liste) trie par ordre alphabétique ou du plus récent au plus ancien. Pendant une recherche, les onglets indiquent le nombre de résultats correspondants.</li>
       <li>Badges : <span class="b new">récent</span> mis en ligne il y a moins d'un an · <span class="b upd">mis à jour</span> nouvelle version publiée par la HAS il y a moins d'un an · <span class="b old">ancien</span> version de plus de 3 ans (à lire avec prudence).</li>
       <li><strong>☆</strong> ajoute un PNDS à vos favoris : ils remontent en tête de liste et sont regroupés dans « ★ Favoris » (enregistrés uniquement dans votre navigateur).</li>
     </ul>
@@ -116,16 +132,16 @@ footer a{color:var(--accent)}
       Pour mieux comprendre votre maladie, vous pouvez consulter le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024), conçu pour les patients et leurs proches et accessible gratuitement : https://www.fai2r.org/…/LUPUS_100Q_FAI2R-2024.pdf</blockquote>
       Avec <span class="ic" id="gi5"></span> seul, vous n'obtenez que le premier paragraphe (pour le médecin traitant).</div>
 
-    <h3>3. Donner de l'information au patient (onglet « Documents patients »)</h3>
+    <h3>3. Donner de l'information au patient (onglet « Patients »)</h3>
     <ul>
       <li>Documents <strong>gratuits</strong> et vérifiés : livrets « 100 questions », livrets et fiches des centres de référence, des filières de santé et des associations de patients, pages « Les réponses à vos questions » de FAI²R.</li>
-      <li>Depuis une fiche PNDS, le lien <strong>📄 documents patients</strong> affiche directement les documents de la même maladie.</li>
+      <li>Depuis une fiche PNDS, le lien <strong>📄 doc. patients</strong> affiche directement les documents de la même maladie.</li>
       <li><span class="ic" id="gi3"></span> copie une phrase prête à coller dans le courrier du patient, avec le lien.</li>
     </ul>
     <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Vascularites associées aux ANCA », cliquez sur « 📄 documents patients » : s'affichent les fiches patients GPA, GEPA et PAM de France Vascularites et les pages FAI²R correspondantes. Choisissez celle qui correspond à la maladie de votre patient et cliquez sur <span class="ic" id="gi6"></span>.</div>
-    <div class="ex"><b>Exemple :</b> un patient débute un traitement par colchicine ou tocilizumab ? Tapez le nom du médicament dans l'onglet « Documents patients » : une fiche dédiée (précautions, vaccins…) est disponible.</div>
+    <div class="ex"><b>Exemple :</b> un patient débute un traitement par colchicine ou tocilizumab ? Tapez le nom du médicament dans l'onglet « Patients » : une fiche dédiée (précautions, vaccins…) est disponible.</div>
 
-    <h3>4. Paragraphes de conseils (onglet « Conseils patients »)</h3>
+    <h3>4. Paragraphes de conseils (onglet « Conseils »)</h3>
     <ul>
       <li>Des paragraphes types à coller dans le courrier, rédigés d'après les sources officielles citées sous chaque bloc (PNDS de la HAS, livrets de la filière FAI²R).</li>
       <li>Le texte se modifie directement sur la page : les éléments entre [crochets] sont à adapter au patient (dose, dates, options). « Copier » prend en compte vos modifications ; « Réinitialiser » restaure le texte d'origine.</li>
@@ -303,12 +319,19 @@ const store = { get(){ try { return JSON.parse(localStorage.getItem("pnds-fav"))
 let favs = new Set(store.get()), cat = "Toutes";
 const FAV = "★ Favoris", cats = ["Toutes", FAV, ...new Set(D.map(d => d[1]))];
 const $ = id => document.getElementById(id), q = $("q"), list = $("list");
-$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</button>`).join("") + `<button id="sortBtn" title="Changer l'ordre">↕ A → Z</button>`;
-$("cats").onclick = e => { if (e.target.id === "sortBtn") { sortRecent = !sortRecent; e.target.textContent = sortRecent ? "↕ Plus récents" : "↕ A → Z"; render(); return; }
+$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</button>`).join("");
+$("sortBtn").onclick = () => { sortRecent = !sortRecent; $("sortBtn").textContent = sortRecent ? "Plus récents ▾" : "A → Z ▾"; render(); };
+$("cats").onclick = e => {
   if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
-  [...$("cats").children].forEach(b => b.id || b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
+  [...$("cats").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
 const ICON2 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>';
+// Astuce affichée à la première visite seulement (mémorisée dans le navigateur).
+const seenTip = (() => { try { return localStorage.getItem("pnds-tip") === "1"; } catch { return false; } })();
+const hideTip = () => { $("tip").hidden = true; try { localStorage.setItem("pnds-tip", "1"); } catch {} };
+$("tipIcons").innerHTML = ICON + " " + ICON2; $("tip").hidden = seenTip;
+$("tipClose").onclick = hideTip;
+$("tipAide").onclick = e => { e.preventDefault(); hideTip(); tab = "aide"; history.replaceState(null, "", "#aide"); render(); };
 for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", ICON2], ["gi5", ICON], ["gi6", ICON]]) document.getElementById(id).innerHTML = ic;
 let tab = ["#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "pnds";
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
@@ -373,10 +396,9 @@ function card([t, c, y, pdf, page, maj]){
     <button class="cp" data-s="${phrase(t, y, main)}" title="Copier une phrase pour le courrier (avec le lien)" aria-label="Copier une phrase pour le courrier">${ICON}</button>
     ${rel.length ? `<button class="cp cp2" data-s="${phrase(t, y, main)}&#10;&#10;${phraseP(rel[0][0], rel[0][2], rel[0][3], rel[0][4], rel[0][5])}" title="Copier les deux phrases : médecin traitant + patient" aria-label="Copier les phrases médecin traitant et patient">${ICON2}</button>` : ""}
     <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori">${on ? "★" : "☆"}</button>
-    <div class="m"><span>${c}</span>${badge(y, pdf, maj)}<span class="sp"></span>
-      ${rel.length ? `<button class="rel" data-t="${t}">📄 ${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}
-      ${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}
-      <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
+    <div class="m"><span>${c}</span>${badge(y, pdf, maj)}<span class="sp"></span>${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}</div>
+    <div class="m"><span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span><span class="sp"></span>
+      ${rel.length ? `<button class="rel" data-t="${t}">📄 ${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
 const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
@@ -390,11 +412,14 @@ function render(){
   const s = norm(q.value.trim());
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
   const help = tab === "aide" || tab === "conseils";
-  for (const id of ["hint", "q", "list"]) $(id).style.display = help ? "none" : "";
+  // Compteurs des onglets : nombre de résultats pour la recherche en cours.
+  const [nD, nP] = [D.filter(d => norm(d[0] + " " + d[1]).includes(s)).length, P.filter(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)).length];
+  const nEl = $("tabs").querySelectorAll(".n"); nEl[0].textContent = s ? nD : ""; nEl[1].textContent = s ? nP : "";
+  $("list").style.display = $("bar").style.display = help ? "none" : "";
   $("guide").style.display = tab === "aide" ? "block" : "none";
   $("conseils").style.display = tab === "conseils" ? "block" : "none";
   if (help) { $("cats").style.display = $("pcats").style.display = $("empty").style.display = "none"; return; }
-  $("hint").innerHTML = HINT[tab];
+  $("sortBtn").style.display = tab === "pnds" ? "" : "none";
   $("cats").style.display = tab === "pnds" ? "" : "none";
   $("pcats").style.display = tab === "patients" ? "" : "none";
   if (tab === "patients") {
@@ -403,17 +428,21 @@ function render(){
     const r = relT ? relDocs(relT) : P.filter(p => (pcat === "Tous" || (pcat === "Livrets PDF") === (p[5] === "PDF")) && norm(p[0] + " " + p[1] + " " + p[2]).includes(s))
                .sort((a, b) => (b[5] === "PDF") - (a[5] === "PDF") || a[0].localeCompare(b[0], "fr"));
     list.innerHTML = r.map(cardP).join("");
-    $("empty").textContent = "Aucun livret pour cette recherche.";
+    $("count").textContent = `${r.length} document${r.length > 1 ? "s" : ""}`;
+    $("empty").textContent = nD ? `Aucun document patient. ${nD} PNDS correspond${nD > 1 ? "ent" : ""} à « ${q.value.trim()} » : onglet PNDS.` : "Aucun document pour cette recherche.";
     $("empty").style.display = r.length ? "none" : "block";
     return;
   }
   const r = D.filter(d => (cat==="Toutes" || (cat===FAV ? favs.has(d[0]) : d[1]===cat)) && norm(d[0]+" "+d[1]).includes(s))
              .sort((a,b) => (favs.has(b[0]) - favs.has(a[0])) || (sortRecent ? vdate(b).localeCompare(vdate(a)) : 0) || a[0].localeCompare(b[0],"fr"));
   list.innerHTML = r.map(card).join("");
-  $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : "Aucun résultat.";
+  $("count").textContent = `${r.length} PNDS`;
+  $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : nP ? `Aucun PNDS. ${nP} document${nP > 1 ? "s" : ""} patient${nP > 1 ? "s" : ""} correspond${nP > 1 ? "ent" : ""} : onglet Patients.` : "Aucun résultat.";
   $("empty").style.display = r.length ? "none" : "block";
 }
 q.oninput = () => { relT = null; render(); }; render();
+// Curseur directement dans la recherche sur ordinateur (pas sur mobile, pour ne pas ouvrir le clavier).
+if (matchMedia("(pointer: fine)").matches) q.focus();
 </script>
 </body>
 </html>
