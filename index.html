@@ -17,6 +17,17 @@ h1{margin:0 0 4px;font-size:1.7rem}
 .tabs{display:flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--chip);border:1px solid var(--line);border-radius:12px}
 .tabs button{flex:1;border:0;background:none;color:var(--muted);padding:9px 10px;border-radius:9px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer}
 .tabs button[aria-selected=true]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tabs{flex-wrap:wrap}.tabs button{flex:1 1 40%}
+.tpl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.tpl h3{margin:0 0 4px;font-size:1.05rem}
+.tpl .src{color:var(--muted);font-size:.8rem;margin:0 0 10px}
+.tpl .src a{color:var(--accent)}
+.tpl textarea{width:100%;min-height:260px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;resize:vertical}
+.tpl .acts{display:flex;gap:8px;margin-top:8px;align-items:center}
+.tpl .acts button{border:1px solid var(--accent);background:var(--accent);color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font:inherit;font-size:.9rem}
+.tpl .acts button.sec{background:none;color:var(--accent)}
+.tpl .acts .done{color:var(--new);font-size:.85rem;display:none}
+#conseils{display:none}
 .guide{display:none;line-height:1.55}
 .guide h2{font-size:1.25rem;margin:4px 0 12px}
 .guide h3{font-size:1rem;margin:22px 0 6px}
@@ -69,6 +80,7 @@ footer a{color:var(--accent)}
   <div class="tabs" role="tablist" id="tabs">
     <button role="tab" data-tab="pnds" aria-selected="true">PNDS (médecins)</button>
     <button role="tab" data-tab="patients" aria-selected="false">Documents patients</button>
+    <button role="tab" data-tab="conseils" aria-selected="false">Conseils patients</button>
     <button role="tab" data-tab="aide" aria-selected="false">Mode d'emploi</button>
   </div>
   <p class="hint" id="hint"></p>
@@ -77,6 +89,7 @@ footer a{color:var(--accent)}
   <div class="cats" id="pcats"></div>
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
+  <section id="conseils"></section>
   <section class="guide" id="guide">
     <h2>Comment utiliser ce site ?</h2>
     <p>La PNDSthèque rassemble en un seul endroit les <strong>Protocoles Nationaux de Diagnostic et de Soins (PNDS)</strong> de la HAS utiles en médecine interne, ainsi que des <strong>documents d'information gratuits pour les patients</strong>. Elle sert à retrouver un protocole en quelques secondes et à transmettre facilement les bons liens dans vos courriers.</p>
@@ -246,6 +259,35 @@ const P = [
   ["Dermatomyosite – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/dermatomyosite/questions-patients/", "web"],
   ["Fièvre méditerranéenne familiale – les réponses à vos questions", "FMF auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/fievre-mediterraneenne-familiale/questions-patients/", "web"]
 ];
+// Paragraphes types pour les courriers : { titre, sources: [[libellé, URL]], texte } — [crochets] = à adapter au patient.
+const T = [
+  { titre: "Mesures associées à la corticothérapie",
+    sources: [["Livret FAI²R / CHU de Montpellier « Corticothérapie, les médecins répondent à vos questions » (2020)", "https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf"], ["PNDS Lupus systémique, HAS 2024 (mesures associées à la corticothérapie)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"]],
+    texte: `Mesures associées à la corticothérapie ([dose] mg/j d'équivalent prednisone) :
+- Prise : en une prise le matin, au cours du petit-déjeuner [ou en deux prises matin et soir]. Ne jamais arrêter ni modifier la dose sans avis médical : la décroissance doit être progressive et encadrée (risque d'insuffisance surrénalienne). En cas de fièvre ou d'infection, consulter rapidement, sans arrêter le traitement.
+- Alimentation : variée et équilibrée, sans régime sans sel strict (apports habituels de 5 à 6 g/j de sel, ne pas resaler à table). Limiter les produits sucrés et le grignotage[, en particulier en raison du diabète / des facteurs de risque de diabète].
+- Activité physique régulière, adaptée aux possibilités : au moins 30 minutes d'activité modérée (type marche rapide) 5 fois par semaine.
+- Prévention de l'ostéoporose : apports alimentaires en calcium de 800 à 1 200 mg/j (supplémentation uniquement si les apports alimentaires sont insuffisants) ; dosage de la vitamine D et supplémentation [une ampoule par mois]. Ostéodensitométrie [à réaliser / réalisée le …] (corticothérapie de plus de 3 mois) ; traitement anti-ostéoporotique [à discuter / débuté] selon l'âge, le statut ménopausique, les antécédents de fracture, la densitométrie et la dose de corticoïdes.
+- Vaccinations : mise à jour du calendrier vaccinal ; vaccination antigrippale annuelle et antipneumococcique recommandées. Les vaccins vivants atténués (fièvre jaune, ROR, varicelle, BCG…) sont contre-indiqués au-delà de 10 mg/j de prednisone et dans les 3 mois suivant des bolus.
+- Surveillance : poids, pression artérielle, glycémie à jeun[, kaliémie (traitement diurétique)] ; examen ophtalmologique régulier (cataracte, glaucome).
+- Interactions : éviter les anti-inflammatoires non stéroïdiens ; [sous AVK : contrôle rapproché de l'INR] ; prudence avec les fluoroquinolones (risque de tendinopathie). Pas de gastroprotection systématique par IPP.
+- Dépistage et traitement des foyers infectieux latents ; prophylaxie de l'anguillulose si le contexte le justifie (séjour en zone d'endémie).
+[- Prophylaxie de la pneumocystose : à discuter selon la dose, la durée et le traitement associé.]
+Un livret d'information a été remis au patient : « Corticothérapie, les médecins répondent à vos questions » (FAI²R) : https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf` },
+  { titre: "Lupus systémique : conseils et mesures associées",
+    sources: [["PNDS Lupus systémique de l'adulte et de l'enfant, HAS 2024 (éducation thérapeutique, prévention)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"]],
+    texte: `Conseils et mesures associées au lupus systémique :
+- Photoprotection indispensable, toute l'année et même par temps nuageux ou sous un parasol : éviter l'exposition solaire directe ou indirecte, les lieux de forte réverbération (bord de mer, montagne) et les sorties entre 12 h et 16 h. Vêtements couvrants (manches longues, chapeau à large bord, lunettes filtrant les UVA/UVB). Écran solaire indice 50 anti-UVA/UVB appliqué 30 minutes avant l'exposition, renouvelé toutes les 2 heures et après chaque baignade ; crème de jour anti-UVA/UVB (indice 30 au minimum) au quotidien, même en dehors de l'été.
+- Arrêt du tabac : facteur de risque cardiovasculaire, il diminue l'efficacité de l'hydroxychloroquine et augmente l'activité du lupus.
+- Hydroxychloroquine : traitement de fond à poursuivre au long cours, à ne pas interrompre sans avis médical. Bilan ophtalmologique [à réaliser / réalisé le …] (examen ophtalmologique, champ visuel central automatisé 10° et OCT-SD), puis surveillance régulière.
+- Prévention cardiovasculaire : contrôle du poids, du diabète, du cholestérol et de la pression artérielle (objectif < 130/80 mmHg), activité physique régulière adaptée.
+- Vaccinations : respect du calendrier vaccinal, vaccination anti-COVID[, vaccinations spécifiques liées au traitement immunosuppresseur].
+- Grossesse : tout projet de grossesse doit être programmé et validé au préalable avec le médecin référent ; contraception efficace en attendant, indispensable en cas de traitement tératogène [mycophénolate, cyclophosphamide, méthotrexate, thalidomide].
+- Dépistage régulier des cancers gynécologiques (en particulier liés à l'HPV).
+- Savoir reconnaître les signes d'une poussée et consulter rapidement ; ne pas arrêter les traitements de sa propre initiative.
+- [Anti-inflammatoires : l'ibuprofène est contre-indiqué.]
+Pour en savoir plus, le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024) a été conseillé au patient : https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf` }
+];
 // DATA-END
 const Y = new Date().getFullYear();
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -261,7 +303,17 @@ $("cats").onclick = e => { if (e.target.id === "sortBtn") { sortRecent = !sortRe
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
 const ICON2 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>';
 for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", ICON2], ["gi5", ICON], ["gi6", ICON]]) document.getElementById(id).innerHTML = ic;
-let tab = location.hash === "#patients" ? "patients" : location.hash === "#aide" ? "aide" : "pnds";
+let tab = ["#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "pnds";
+// Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
+const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+$("conseils").innerHTML = `<p class="hint" style="display:block">Paragraphes prêts à coller dans le courrier. Modifiez le texte directement ici (les éléments entre [crochets] sont à adapter au patient), puis cliquez sur « Copier ».</p>` +
+  T.map((x, i) => `<div class="tpl"><h3>${x.titre}</h3>
+    <p class="src">Source : ${x.sources.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join(" · ")}</p>
+    <textarea id="tpl${i}" spellcheck="false">${esc(x.texte)}</textarea>
+    <div class="acts"><button data-copy="${i}">Copier</button><button class="sec" data-reset="${i}">Réinitialiser</button><span class="done" id="done${i}">Copié ✓</span></div></div>`).join("");
+$("conseils").onclick = e => { const c = e.target.dataset.copy, z = e.target.dataset.reset;
+  if (c != null) copy($("tpl" + c).value).then(() => { $("done" + c).style.display = "inline"; setTimeout(() => $("done" + c).style.display = "none", 1500); });
+  if (z != null) $("tpl" + z).value = T[z].texte; };
 const HINT = {
   pnds: `${ICON} : copie une phrase pour le courrier, à l'attention du médecin traitant, avec le lien du PNDS · ${ICON2} : copie en plus la phrase pour le patient avec son document · 📄 : documents patients liés · ☆ : favoris.`,
   patients: `Documents pour les patients et leurs proches, en accès libre : livrets « 100 questions », livrets de centres de référence et d'associations, pages « Les réponses à vos questions » de FAI²R. ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien.`
@@ -330,9 +382,10 @@ let pcat = "Tous";
 function render(){
   const s = norm(q.value.trim());
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
-  const help = tab === "aide";
+  const help = tab === "aide" || tab === "conseils";
   for (const id of ["hint", "q", "list"]) $(id).style.display = help ? "none" : "";
-  $("guide").style.display = help ? "block" : "none";
+  $("guide").style.display = tab === "aide" ? "block" : "none";
+  $("conseils").style.display = tab === "conseils" ? "block" : "none";
   if (help) { $("cats").style.display = $("pcats").style.display = $("empty").style.display = "none"; return; }
   $("hint").innerHTML = HINT[tab];
   $("cats").style.display = tab === "pnds" ? "" : "none";
