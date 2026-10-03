@@ -8,7 +8,7 @@ jobs:
         run: |
           sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          curl -sLA "$UA" -o c.pdf https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf
-          echo "===== PDF"; pdftotext -layout c.pdf - | sed 's/  \+/ /g' | grep -v '^\s*$'
-          echo "===== PAGE"; curl -sLA "$UA" https://www.fai2r.org/vie-quotidienne/corticotherapie/ | sed 's/<script.*<\/script>//g; s/<[^>]*>/\n/g' | sed 's/^\s*//' | grep -v '^$' | awk 'length>25' | head -150
-          echo "===== PDF links on page"; curl -sLA "$UA" https://www.fai2r.org/vie-quotidienne/corticotherapie/ | grep -o 'https://www.fai2r.org/wp-content/uploads/[^"]*\.pdf' | sort -u
+          curl -sLA "$UA" -o l.pdf https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf
+          pdftotext l.pdf l.txt; tr -s ' ' < l.txt | grep -v '^\s*$' > t.txt
+          for k in 'photoprot' 'tabac' 'hydroxychloroquine.*ophtalm\|ophtalmolog\|rétinopathie' 'vaccin' 'contracepti' 'grossesse' 'éducation thérapeutique' 'vitamine D' 'soleil\|UV'; do
+            echo "########## $k"; grep -n -i -m 6 -B2 -A6 "$k" t.txt | cut -c1-220; done
