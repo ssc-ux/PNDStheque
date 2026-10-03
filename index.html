@@ -102,12 +102,13 @@ const D = [
   ["Maladie de Fabry","Systémiques rares",2021,"2021-11/pnds_de_la_maladie_de_fabry_-_version_finale_-_20211115.pdf","p_3301584"],
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
 ];
-// Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web"]
+// Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web" | "livre" (payant)]
 const P = [
+  ["Maladie de Still de l'adulte – fiche patient", "Still auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_2313f8c2a1154357b150cbdf849beda6.pdf", "PDF"],
+  ["Fièvre méditerranéenne familiale – fiche patient", "FMF auto-inflammatoire colchicine", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_bec5107d295e4a6781351bd84adca216.pdf", "PDF"],
   ["Le lupus – 100 questions pour mieux gérer la maladie", "lupus systémique", "FAI²R", 2024, "https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf", "PDF"],
   ["Le Gougerot-Sjögren – 100 questions pour mieux gérer la maladie", "maladie de Sjögren", "FAI²R", 2021, "https://www.fai2r.org/wp-content/uploads/2021/09/SGS_100Q_version-en-ligne.pdf", "PDF"],
   ["La sclérodermie systémique – 100 questions pour mieux gérer la maladie", "sclérodermie systémique", "FAI²R", 2021, "https://www.fai2r.org/wp-content/uploads/2021/07/Sclerodermie_100Q_version-en-ligne.pdf", "PDF"],
-  ["Les myosites – 100 questions pour mieux gérer la maladie", "myosites dermatomyosite myopathies inflammatoires", "rhumatismes.net, Hôpital Cochin", null, "https://www.rhumatismes.net/index.php?id_bro=21", "web"],
   ["Les uvéites – 100 questions pour mieux gérer la maladie", "uvéites", "rhumatismes.net, Hôpital Cochin", null, "https://www.rhumatismes.net/index.php?id_bro=30", "web"],
   ["La fièvre méditerranéenne familiale – 100 questions pour mieux gérer la maladie", "FMF auto-inflammatoire", "rhumatismes.net, Hôpital Cochin", 2024, "https://www.rhumatismes.net/index.php?id_bro=33", "web"],
   ["Le PTI en 100 questions", "purpura thrombopénique immunologique", "CeReCAI / CEREVANCE", 2021, "https://esmaramaladiesrares.fr/wp-content/uploads/2021/11/Le-PTI-en-100-questions.pdf", "PDF"],
@@ -137,7 +138,41 @@ const P = [
   ["Syndrome de Muckle-Wells (CAPS) – les réponses à vos questions", "cryopyrine auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-de-muckle-wells/questions-patients/", "web"],
   ["Syndrome de Schnitzler – les réponses à vos questions", "auto-inflammatoire urticaire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-de-schnitzler/questions-patients/", "web"],
   ["Déficit en mévalonate kinase – les réponses à vos questions", "auto-inflammatoire HIDS", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/deficit-en-mevalonate-kinase/questions-patients/", "web"],
-  ["PFAPA – les réponses à vos questions", "fièvre périodique auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/pfapa/questions-patients/", "web"]
+  ["PFAPA – les réponses à vos questions", "fièvre périodique auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/pfapa/questions-patients/", "web"],
+  ["Les vascularites nécrosantes systémiques – 100 questions pour mieux gérer la maladie (livre)", "vascularites nécrosantes GPA GEPA PAM PAN ANCA", "France Vascularites / FAI²R", 2024, "https://www.association-vascularites.org/les-vascularites-c-est-quoi/les-vascularites-necrosantes-systemiques-en-100-questions", "livre"],
+  ["La fièvre méditerranéenne familiale – livret patients et familles", "FMF auto-inflammatoire", "CeRéMAIA (centre de référence)", 2023, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_4a6d3e9ef3414b93b1e939dc0e5dcbab.pdf", "PDF"],
+  ["Amylose AA – fiche patient", "amylose AA auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_e19a305a654e485190c49a6404bdc9eb.pdf", "PDF"],
+  ["Syndrome CAPS (cryopyrinopathies) – fiche patient", "CAPS Muckle-Wells cryopyrine auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_e6c4440636a4488bb33b30c9b8aaeaaa.pdf", "PDF"],
+  ["TRAPS – fiche patient", "TRAPS auto-inflammatoire fièvre récurrente", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_a21d51035b4a4c2db5cf08d9289361fc.pdf", "PDF"],
+  ["Déficit en mévalonate kinase – fiche patient", "MKD HIDS auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_a1e5460514ec47dea09c98f83f82d6ae.pdf", "PDF"],
+  ["Syndrome VEXAS – fiche patient", "VEXAS UBA1 auto-inflammatoire polychondrite", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_300cb6ddb0124a5a9af9e78cc2c4b1b6.pdf", "PDF"],
+  ["Hématopoïèse clonale et inflammation – fiche patient", "CHIP auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_66cdc6491d6e4ce1ab3af2bf89923488.pdf", "PDF"],
+  ["Traitement par colchicine – fiche patient", "colchicine traitement FMF", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_c8f723a4bff44a9dbadb3f72b798cee5.pdf", "PDF"],
+  ["Traitement par anakinra – fiche patient", "anakinra Kineret traitement biothérapie", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_250bbd54dec44df3b291dfb2011a00a3.pdf", "PDF"],
+  ["Traitement par canakinumab – fiche patient", "canakinumab Ilaris traitement biothérapie", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_53c417fe03774d598f946a0f0adbe5a2.pdf", "PDF"],
+  ["Traitement par tocilizumab – fiche patient", "tocilizumab RoActemra traitement biothérapie", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_37fdd7347dd84fc6bc5bfc92407cc8d8.pdf", "PDF"],
+  ["Traitement par anti-TNF alpha – fiche patient", "anti-TNF infliximab adalimumab traitement biothérapie", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_4e76d5ee18c742659e183c50ba9bc264.pdf", "PDF"],
+  ["Traitement par anti-JAK – fiche patient", "anti-JAK baricitinib ruxolitinib traitement", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_5636ca97f24348c186148ff09e78f430.pdf", "PDF"],
+  ["Granulomatose avec polyangéite (GPA) – fiche patient", "GPA Wegener ANCA vascularite", "France Vascularites", 2020, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/GPA_A5.pdf", "PDF"],
+  ["Granulomatose éosinophilique avec polyangéite (GEPA) – fiche patient", "GEPA Churg-Strauss ANCA vascularite", "France Vascularites", 2020, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/GEPA_A5.pdf", "PDF"],
+  ["Polyangéite microscopique (PAM) – fiche patient", "PAM ANCA vascularite", "France Vascularites", 2020, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/PAM_A5.pdf", "PDF"],
+  ["Périartérite noueuse – fiche patient", "PAN vascularite", "France Vascularites", 2021, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/fiche_PAN.pdf", "PDF"],
+  ["Maladie de Takayasu – fiche patient", "Takayasu artérite vascularite", "Takayasu France / France Vascularites", 2021, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/fiche_Taka_23_02_2021.pdf", "PDF"],
+  ["Mieux connaître son traitement : les corticoïdes", "corticoïdes cortisone prednisone traitement vascularite", "France Vascularites", 2020, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Corticoïdes_A5.pdf", "PDF"],
+  ["Mieux connaître son traitement : le rituximab", "rituximab traitement vascularite biothérapie", "France Vascularites / FAI²R", 2019, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Ritux_A5.pdf", "PDF"],
+  ["Prise en charge d'une aplasie médullaire – livret d'information", "aplasie médullaire", "Centre de référence des aplasies médullaires", 2022, "https://hpnfrance.com/wp-content/uploads/2023/01/Livretd-informationdestineauxpatientsAMmajoctobre2022.pdf", "PDF"],
+  ["Hémoglobinurie paroxystique nocturne (HPN) – information patient", "HPN aplasie", "Société française d'hématologie", 2025, "https://sfh.hematologie.net/sites/sfh.hematologie.net/files/medias/documents/hpn.pdf", "PDF"],
+  ["Les myopathies inflammatoires – Zoom Savoir & Comprendre", "myosites dermatomyosite myopathies inflammatoires polymyosite", "AFM-Téléthon", 2018, "https://www.myobase.org/doc_num.php?explnum_id=15920", "PDF"],
+  ["Déficit immunitaire primitif – mon DIP, mon suivi", "déficit immunitaire DICV", "Association IRIS / CEREDIH", 2021, "https://associationiris.org/wp-content/uploads/2022/01/DEPLIANT_IRIS_3voletsA5_BAT_DIGITAL.pdf", "PDF"],
+  ["Maladie de Castleman – mon carnet de suivi", "Castleman", "Association Castleman", 2024, "https://www.assocastleman.fr/wp-content/uploads/2024/11/Carnet-de-suivi-patient-Castleman-191124.pdf", "PDF"],
+  ["La pseudo-polyarthrite rhizomélique (PPR) – fiche patient", "PPR Horton", "Association française des polyarthritiques (AFP)", 2018, "https://documentation.afpentraide.org/wp-content/uploads/2021/03/Pseudo_Polyarthrite_rhyzome%CC%81lique.pdf", "PDF"],
+  ["La maladie de Sjögren – fiche patient", "Sjögren syndrome sec", "Association française des polyarthritiques (AFP)", 2024, "https://www.polyarthrite.org/wp-content/uploads/2023/09/Le-syndrome-de-Sjogren.pdf", "PDF"],
+  ["Mastocytose – 100 questions / réponses", "mastocytose SAMA", "CEREMAST, Hôpital Necker", null, "https://maladiesrares-necker.aphp.fr/100-questions-reponses-sur-la-mastocytose/", "web"],
+  ["Maladie de Behçet – les réponses à vos questions", "Behçet vascularite aphtose", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/behcet/questions-patients/", "web"],
+  ["Lupus systémique – les réponses à vos questions", "lupus LES", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/lupus-systemique/questions-patients/", "web"],
+  ["Sclérodermie systémique – les réponses à vos questions", "sclérodermie ScS", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/sclerodermie-systemique/questions-patients/", "web"],
+  ["Dermatomyosite – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/dermatomyosite/questions-patients/", "web"],
+  ["Fièvre méditerranéenne familiale – les réponses à vos questions", "FMF auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/fievre-mediterraneenne-familiale/questions-patients/", "web"]
 ];
 // DATA-END
 const Y = new Date().getFullYear();
@@ -184,11 +219,13 @@ function card([t, c, y, pdf, page, maj]){
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
-const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
+const phraseP = (t, src, y, url, kind) => kind === "livre"
+  ? `Pour mieux comprendre votre maladie, je vous recommande le livre « ${t.replace(/ \(livre\)$/, "")} » (${src}${y ? `, ${y}` : ""}), rédigé par des médecins spécialistes pour les patients et leurs proches, disponible auprès de l'association : ${url}`
+  : `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
 const cardP = ([t, kw, src, y, url, kind]) => `<div class="card">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <button class="cp" style="right:8px" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button>
-    <div class="m"><span>${src}</span><span class="sp"></span><span>${y ? y + " · " : ""}${kind === "PDF" ? "PDF" : "en ligne"} ↗</span></div></div>`;
+    <div class="m"><span>${src}</span><span class="sp"></span><span>${y ? y + " · " : ""}${kind === "PDF" ? "PDF" : kind === "livre" ? "livre payant (14,50 €)" : "en ligne"} ↗</span></div></div>`;
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
