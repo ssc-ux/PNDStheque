@@ -12,6 +12,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141518;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#141518;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 "Source Sans 3",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 a{color:var(--accent)}
 .wrap{max-width:780px;margin:0 auto;padding:0 16px 48px}
@@ -81,7 +82,13 @@ h1 a{color:inherit;text-decoration:none}
 /* Conseils */
 #conseils{display:none;padding-top:14px}
 .hint{color:var(--muted);font-size:.9rem;margin:0 0 6px}
-.tpl{scroll-margin-top:170px;padding:22px 0;border-bottom:1px solid var(--line)}
+.ctiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.ctile{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--c3s);color:var(--fg);border:0;border-left:4px solid var(--c3);border-radius:8px;padding:14px 16px;cursor:pointer;transition:transform .15s}
+.ctile:hover{transform:translateY(-2px)}
+.ctt{font-weight:600;color:var(--c3);font-size:1.05rem}
+.ctd{color:var(--muted);font-size:.88rem}
+.back{background:none;border:0;padding:0;margin:0 0 14px;color:var(--accent);cursor:pointer}
+.tpl{padding:6px 0 22px}
 .tpl h3{margin:0 0 2px;font:600 1.15rem/1.3 "Source Serif 4",Georgia,serif}
 .tpl .src{color:var(--muted);font-size:.82rem;margin:0 0 10px}
 .tpl .src a{color:var(--muted)}
@@ -176,7 +183,7 @@ footer a{color:var(--muted)}
       <li>Des paragraphes types à coller dans le courrier, rédigés d'après les sources officielles citées sous chaque bloc (PNDS de la HAS, livrets de la filière FAI²R).</li>
       <li>Le texte se modifie directement sur la page : les éléments entre [crochets] sont à adapter au patient (dose, dates, options). « Copier » prend en compte vos modifications ; « Réinitialiser » restaure le texte d'origine.</li>
     </ul>
-    <div class="ex"><b>Exemple :</b> un patient débute 40 mg/j de prednisone. Ouvrez « Mesures associées à la corticothérapie », remplacez « [dose] » par « 40 », supprimez les mentions entre crochets inutiles (AVK, diurétique…), puis « Copier » : le paragraphe est prêt pour le courrier.</div>
+    <div class="ex"><b>Exemple :</b> un patient débute 40 mg/j de prednisone. Cliquez sur la tuile « Corticothérapie », remplacez « [dose] » par « 40 », supprimez les mentions entre crochets inutiles (AVK, diurétique…), puis « Copier » : le paragraphe est prêt pour le courrier.</div>
 
     <h3>5. Un site tenu à jour automatiquement</h3>
     <ul>
@@ -429,20 +436,22 @@ let rotI = 0;
 setInterval(() => { if (tab !== "accueil" || matchMedia("(prefers-reduced-motion: reduce)").matches && rotI > 99) return;
   const el = $("rot"); el.classList.add("out");
   setTimeout(() => { rotI = (rotI + 1) % ROT.length; el.textContent = ROT[rotI]; el.classList.remove("out"); }, 350); }, 2600);
-const go = t => { tab = t; relT = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
+let tplOpen = null;
+const go = t => { tab = t; relT = null; tplOpen = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
 $("accueil").onclick = e => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };
 $("home").onclick = e => { e.preventDefault(); q.value = ""; go("accueil"); };
 $("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
 const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-$("conseils").innerHTML = `<p class="hint">Paragraphes prêts à coller dans le courrier. Modifiez le texte ici (les éléments entre [crochets] sont à adapter au patient), puis « Copier ».</p>
-  <div class="cats" id="toc">${T.map((x, i) => `<button data-go="${i}">${x.court || x.titre}</button>`).join("")}</div>` +
-  T.map((x, i) => `<div class="tpl" id="tplBox${i}" data-k="${norm(x.titre + " " + x.texte)}"><h3>${x.titre}</h3>
+$("conseils").innerHTML = `<p class="hint" id="chint">Paragraphes prêts à coller dans le courrier. Modifiez le texte ici (les éléments entre [crochets] sont à adapter au patient), puis « Copier ».</p>
+  <div class="ctiles" id="ctiles">${T.map((x, i) => `<button class="ctile" id="ct${i}" data-open="${i}"><span class="ctt">${x.court || x.titre}</span><span class="ctd">${x.titre}</span></button>`).join("")}</div>` +
+  T.map((x, i) => `<div class="tpl" id="tplBox${i}" hidden><button class="back" data-back>← Tous les conseils</button><h3>${x.titre}</h3>
     <p class="src">Source : ${x.sources.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join(" · ")}</p>
     <textarea id="tpl${i}" spellcheck="false">${esc(x.texte)}</textarea>
     <div class="acts"><button data-copy="${i}">Copier</button><button class="sec" data-reset="${i}">Réinitialiser</button><span class="done" id="done${i}">Copié ✓</span></div></div>`).join("");
-$("conseils").onclick = e => { const c = e.target.dataset.copy, z = e.target.dataset.reset, g = e.target.dataset.go;
-  if (g != null) $("tplBox" + g).scrollIntoView({ behavior: "smooth", block: "start" });
+$("conseils").onclick = e => { const c = e.target.dataset.copy, z = e.target.dataset.reset, o = e.target.closest("[data-open]");
+  if (o) { tplOpen = +o.dataset.open; render(); scrollTo(0, 0); }
+  if (e.target.closest("[data-back]")) { tplOpen = null; render(); scrollTo(0, 0); }
   if (c != null) copy($("tpl" + c).value).then(() => { $("done" + c).style.display = "inline"; setTimeout(() => $("done" + c).style.display = "none", 1500); });
   if (z != null) $("tpl" + z).value = T[z].texte; };
 const HINT = {
@@ -451,7 +460,7 @@ const HINT = {
 };
 $("pcats").onclick = e => { if (e.target.closest("#relClear")) { relT = null; render(); return; }
   if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
-$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = null;
+$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = null; tplOpen = null;
   history.replaceState(null, "", "#" + tab); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
@@ -519,7 +528,8 @@ function render(){
   const [nD, nP] = [D.filter(d => norm(d[0] + " " + d[1]).includes(s)).length, P.filter(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)).length];
   const nT = T.filter(x => norm(x.titre + " " + x.texte).includes(s)).length;
   const nEl = $("tabs").querySelectorAll(".n"); nEl[0].textContent = s ? nD : ""; nEl[1].textContent = s ? nP : ""; nEl[2].textContent = s ? nT : "";
-  T.forEach((x, i) => $("tplBox" + i).hidden = !!s && !norm(x.titre + " " + x.texte).includes(s));
+  T.forEach((x, i) => { $("tplBox" + i).hidden = tplOpen !== i; $("ct" + i).hidden = !!s && !norm(x.titre + " " + x.texte).includes(s); });
+  $("ctiles").hidden = $("chint").hidden = tplOpen != null;
   $("list").style.display = $("bar").style.display = help ? "none" : "";
   $("guide").style.display = tab === "aide" ? "block" : "none";
   $("conseils").style.display = tab === "conseils" ? "block" : "none";
@@ -545,7 +555,7 @@ function render(){
   $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : nP ? `Aucun PNDS. ${nP} document${nP > 1 ? "s" : ""} patient${nP > 1 ? "s" : ""} correspond${nP > 1 ? "ent" : ""} : onglet Patients.` : "Aucun résultat.";
   $("empty").style.display = r.length ? "none" : "block";
 }
-q.oninput = () => { relT = null;
+q.oninput = () => { relT = null; tplOpen = null;
   if (tab === "accueil" && q.value.trim()) { const s = norm(q.value.trim());
     tab = D.some(d => norm(d[0] + " " + d[1]).includes(s)) ? "pnds" : P.some(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)) ? "patients" : T.some(x => norm(x.titre + " " + x.texte).includes(s)) ? "conseils" : "pnds";
     history.replaceState(null, "", "#" + tab); }
