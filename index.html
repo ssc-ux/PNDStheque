@@ -6,20 +6,20 @@
 <title>PNDSthèque</title>
 <meta name="description" content="Répertoire des PNDS (HAS) en médecine interne — accès direct aux PDF.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--bg:#fbfaf7;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e6e4de;--accent:#1f5fbf;--chip:#f1efe9;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141518;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#141518;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
+:root{--k0:#2563eb;--k1:#db2777;--k2:#ea580c;--k3:#7c3aed;--k4:#0d9488;--sh:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.06);--bg:#f5f6fa;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e4e7ee;--accent:#1f5fbf;--chip:#eceef3;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
+:root[data-theme="dark"]{--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 "Source Sans 3",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 a{color:var(--accent)}
 .wrap{max-width:780px;margin:0 auto;padding:0 16px 48px}
 button{font:inherit}
 /* En-tête */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:0 -16px;padding:14px 16px 0;border-bottom:1px solid var(--line)}
-h1{margin:0 0 10px;font:600 1.3rem/1.2 "Source Serif 4",Georgia,serif;letter-spacing:-.01em}
+h1{margin:0 0 10px;font:600 1.3rem/1.2 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.01em}
 h1 a{color:inherit;text-decoration:none}
 #q{width:100%;padding:10px 14px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
 #q:focus{outline:2px solid var(--accent);outline-offset:-1px}
@@ -31,7 +31,7 @@ h1 a{color:inherit;text-decoration:none}
 /* Accueil */
 #accueil{display:none;padding:56px 0 8px}
 .hero-k{margin:0;color:var(--muted);font-size:1rem}
-.hero-rot{margin:6px 0 40px;font:600 clamp(1.6rem,5vw,2.4rem)/1.15 "Source Serif 4",Georgia,serif;letter-spacing:-.015em;text-wrap:balance}
+.hero-rot{margin:6px 0 40px;font:600 clamp(1.6rem,5vw,2.4rem)/1.15 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.015em;text-wrap:balance}
 @media (max-width:600px){.hero-rot{min-height:2.3em}}
 #rot{display:inline-block;color:var(--accent);transition:opacity .35s,transform .35s}
 #rot.out{opacity:0;transform:translateY(6px)}
@@ -90,17 +90,17 @@ h1 a{color:inherit;text-decoration:none}
 .ctd{display:none}
 .back{background:none;border:0;padding:0;margin:0 0 14px;color:var(--accent);cursor:pointer}
 .tpl{padding:6px 0 22px}
-.tpl h3{margin:0 0 2px;font:600 1.15rem/1.3 "Source Serif 4",Georgia,serif}
+.tpl h3{margin:0 0 2px;font:600 1.15rem/1.3 "Plus Jakarta Sans",system-ui,sans-serif}
 .tpl .src{color:var(--muted);font-size:.82rem;margin:0 0 10px}
 .tpl .src a{color:var(--muted)}
-.tpl textarea{width:100%;min-height:240px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:15px/1.55 "Source Sans 3",system-ui,sans-serif;resize:vertical}
+.tpl textarea{width:100%;min-height:240px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:15px/1.55 "Plus Jakarta Sans",system-ui,sans-serif;resize:vertical}
 .tpl .acts{display:flex;gap:14px;margin-top:8px;align-items:center}
 .tpl .acts button{border:0;background:var(--accent);color:#fff;padding:7px 14px;border-radius:6px;cursor:pointer;font-size:.9rem}
 .tpl .acts button.sec{background:none;color:var(--muted);padding:7px 0}
 .tpl .acts .done{color:var(--new);font-size:.85rem;display:none}
 /* Mode d'emploi */
 .guide{display:none;padding-top:20px;line-height:1.6}
-.guide h2{font:600 1.5rem/1.2 "Source Serif 4",Georgia,serif;margin:4px 0 12px}
+.guide h2{font:600 1.5rem/1.2 "Plus Jakarta Sans",system-ui,sans-serif;margin:4px 0 12px}
 .guide h3{font-size:1.02rem;margin:28px 0 6px}
 .guide ul{padding-left:20px;margin:6px 0}
 .guide li{margin:4px 0}
@@ -112,12 +112,54 @@ h1 a{color:inherit;text-decoration:none}
 .guide .note{color:var(--muted);font-size:.9rem;margin-top:24px}
 footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.8rem;line-height:1.6}
 footer a{color:var(--muted)}
+
+/* Thème moderne : cartes, pastilles de couleur */
+.wrap{max-width:1040px}
+.top{border-bottom:0;padding-bottom:10px;box-shadow:0 1px 0 var(--line)}
+h1 a{display:inline-flex;align-items:center;gap:9px;font-weight:800}
+.logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--k0),var(--k3));color:#fff;font-size:1rem;font-weight:800}
+#q{border-radius:12px;padding:12px 16px;box-shadow:var(--sh)}
+.tabs{gap:4px;margin-top:10px;padding:4px;background:var(--chip);border-radius:12px}
+.tabs button{flex:1;padding:8px 6px;border:0;border-radius:9px}
+.tabs button[aria-selected=true]{background:var(--card);color:var(--fg);box-shadow:var(--sh);border:0}
+.tabs .n{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;line-height:18px}
+.pill{--cc:var(--muted);display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:600;color:var(--cc);background:color-mix(in srgb,var(--cc) 13%,transparent);white-space:nowrap}
+#accueil{padding:44px 0 8px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.tile{flex-direction:column;align-items:flex-start;gap:6px;background:var(--card);border:1px solid var(--line);border-left:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,24,40,.1)}
+.tile .ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);margin-bottom:6px}
+.tile .ic svg{width:22px;height:22px}
+.tt{color:var(--fg);font-weight:700}
+.tn{margin-top:4px}
+.cats button{border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:500}
+.cats button[aria-pressed=true]{--cc:var(--accent);color:#fff;background:var(--cc);border-color:var(--cc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:10px}
+.card{padding:14px 12px 14px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s;row-gap:8px}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,24,40,.09)}
+.t::after{border-radius:14px}
+.m{gap:6px;align-items:center}
+.m>*+*::before{content:none}
+.m a{font-weight:600}
+.rel{font-weight:600}
+.b{display:inline-flex;padding:2px 10px;border-radius:999px;font-size:.78rem;background:color-mix(in srgb,currentColor 13%,transparent)}
+.ctiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:12px}
+.ctile{flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);transition:transform .15s}
+.ctile:hover{transform:translateY(-2px)}
+.ctile .pill{order:-1}
+.ctt{flex-basis:100%;order:0}
+.ctile::after{content:none}
+.tpl{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--sh);margin-top:14px}
+.tpl textarea{background:var(--bg)}
+.tpl .acts button{border-radius:10px}
+.tpl .acts button.sec{padding:7px 10px}
+footer{border-top:0}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <h1><a href="./" id="home" title="Accueil">PNDSthèque</a></h1>
+    <h1><a href="./" id="home" title="Accueil"><span class="logo" aria-hidden="true">P</span>PNDSthèque</a></h1>
     <input id="q" type="search" placeholder="Rechercher : lupus, Horton, ANCA, colchicine…" autocomplete="off" aria-label="Rechercher">
     <nav class="tabs" role="tablist" id="tabs">
       <button role="tab" data-tab="pnds" aria-selected="true">PNDS<span class="n"></span></button>
@@ -131,9 +173,9 @@ footer a{color:var(--muted)}
       <p class="hero-k">PNDSthèque pour…</p>
       <p class="hero-rot" aria-live="polite"><span id="rot">trouver un PNDS en 1 clic</span></p>
     <div class="tiles">
-      <button class="tile" data-go="pnds"><span class="tt">PNDS</span><span class="td">protocoles HAS en PDF</span><span class="tn" id="nTile0"></span></button>
-      <button class="tile" data-go="patients"><span class="tt">Patients</span><span class="td">livrets et fiches gratuits</span><span class="tn" id="nTile1"></span></button>
-      <button class="tile" data-go="conseils"><span class="tt">Conseils</span><span class="td">paragraphes pour le courrier</span><span class="tn" id="nTile2"></span></button>
+      <button class="tile" data-go="pnds"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><span class="tt">PNDS</span><span class="td">protocoles HAS en PDF</span><span class="tn" id="nTile0"></span></button>
+      <button class="tile" data-go="patients"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 20a6.5 6.5 0 0 0-3-5.5"/></svg></span><span class="tt">Patients</span><span class="td">livrets et fiches gratuits</span><span class="tn" id="nTile1"></span></button>
+      <button class="tile" data-go="conseils"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span class="tt">Conseils</span><span class="td">paragraphes pour le courrier</span><span class="tn" id="nTile2"></span></button>
     </div>
     <p class="home-help"><a href="#aide" id="homeAide">Mode d'emploi</a></p>
   </section>
@@ -421,8 +463,10 @@ const store = { get(){ try { return JSON.parse(localStorage.getItem("pnds-fav"))
                 set(v){ try { localStorage.setItem("pnds-fav", JSON.stringify(v)); } catch {} } };
 let favs = new Set(store.get()), cat = "Toutes";
 const FAV = "★ Favoris", cats = ["Toutes", FAV, ...new Set(D.map(d => d[1]))];
+// Une couleur par catégorie (pastilles).
+const CC = c => { const i = cats.indexOf(c) - 2; return i >= 0 ? `--cc:var(--k${i % 5})` : ""; };
 const $ = id => document.getElementById(id), q = $("q"), list = $("list");
-$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</button>`).join("");
+$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}" style="${CC(c)}">${c}</button>`).join("");
 $("sortBtn").onclick = () => { sortRecent = !sortRecent; $("sortBtn").textContent = sortRecent ? "Plus récents ▾" : "A → Z ▾"; render(); };
 $("cats").onclick = e => {
   if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
@@ -445,7 +489,7 @@ $("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
 const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 $("conseils").innerHTML = `<p class="hint" id="chint">Paragraphes prêts à coller dans le courrier. Cliquez sur un conseil pour l'ouvrir, adaptez les éléments entre [crochets], puis « Copier ».</p>
-  <div class="ctiles" id="ctiles">${T.map((x, i) => `<button class="ctile" id="ct${i}" data-open="${i}"><span class="ctt">${x.titre}</span></button>`).join("")}</div>` +
+  <div class="ctiles" id="ctiles">${T.map((x, i) => `<button class="ctile" id="ct${i}" data-open="${i}"><span class="ctt">${x.titre}</span>${(k => `<span class="pill" style="--cc:var(--k${k[1]})">${k[0]}</span>`)(/Lupus|SAPL|Horton/.test(x.court) ? ["Maladie", 3] : /Bilan/.test(x.court) ? ["Bilan", 4] : ["Médicament", 2])}</button>`).join("")}</div>` +
   T.map((x, i) => `<div class="tpl" id="tplBox${i}" hidden><button class="back" data-back>← Tous les conseils</button><h3>${x.titre}</h3>
     <p class="src">Source : ${x.sources.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join(" · ")}</p>
     <textarea id="tpl${i}" spellcheck="false">${esc(x.texte)}</textarea>
@@ -508,14 +552,14 @@ function card([t, c, y, pdf, page, maj]){
       <button class="cp" data-s="${phrase(t, y, main)}" title="Copier la phrase pour le médecin traitant (avec le lien)" aria-label="Copier une phrase pour le courrier">${ICON}</button>
       ${rel.length ? `<button class="cp" data-s="${phrase(t, y, main)}&#10;&#10;${phraseP(rel[0][0], rel[0][2], rel[0][3], rel[0][4], rel[0][5])}" title="Copier les deux phrases : médecin traitant + patient" aria-label="Copier les phrases médecin traitant et patient">${ICON2}</button>` : ""}
       <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori" title="Favori">${on ? "★" : "☆"}</button></span>
-    <div class="m"><span>${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
+    <div class="m"><span class="pill" style="${CC(c)}">${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
 const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
 const cardP = ([t, kw, src, y, url, kind]) => `<div class="card">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <span class="acts"><button class="cp" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button></span>
-    <div class="m"><span>${src}</span>${y ? `<span>${y}</span>` : ""}<span>${kind === "PDF" ? "PDF" : "en ligne"}</span></div></div>`;
+    <div class="m"><span class="pill" style="--cc:var(--k${kind === "PDF" ? 1 : 0})">${kind === "PDF" ? "Livret PDF" : "En ligne"}</span><span>${src}</span>${y ? `<span>· ${y}</span>` : ""}</div></div>`;
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
