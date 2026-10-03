@@ -4,8 +4,9 @@ import { writeFileSync } from "node:fs";
 import { P, UA } from "./data.mjs";
 
 const get = async u => { try { const r = await fetch(u, { headers: { "User-Agent": UA } }); return r.ok ? await r.text() : ""; } catch { return ""; } };
-const known = new Set(P.map(p => p[4]));
-const found = new Map(), add = (url, source) => { if (!known.has(url)) found.set(url, { url, source }); };
+const dec = u => { try { return decodeURI(u); } catch { return u; } }; // comparer sans tenir compte de l'encodage des accents
+const known = new Set(P.map(p => dec(p[4])));
+const found = new Map(), add = (url, source) => { if (!known.has(dec(url))) found.set(url, { url, source }); };
 
 // CeRéMAIA (Tenon) : livrets et triptyques patients.
 const M = "https://www.maladiesautoinflammatoires.fr";
