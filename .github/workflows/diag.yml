@@ -6,9 +6,9 @@ jobs:
     steps:
       - run: |
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          curl -sLA "$UA" -o c.html -w "%{http_code} %{url_effective}\n" "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/syndrome-de-cogan/questions-patients/"
-          grep -o '<title>[^<]*' c.html
-          for s in $(curl -sLA "$UA" https://www.fai2r.org/sitemap_index.xml | grep -o '<loc>[^<]*' | sed 's/<loc>//'); do curl -sLA "$UA" "$s" | grep -o '<loc>[^<]*' | sed 's/<loc>//'; done > all.txt
-          grep -i 'cogan\|polychondrite\|igg4\|cryoglobulin\|traps\|muckle\|schnitzler\|mevalonate\|pfapa' all.txt
-          echo "=== gaucher"; curl -sLA "$UA" -H "Accept: application/pdf,*/*" -H "Accept-Language: fr-FR" -o /dev/null -w "%{http_code} %{content_type}\n" https://gaucheralliance.org/wp-content/uploads/2022/12/GD-info-book_French.pdf
-          echo "=== abecedaire"; curl -sLA "$UA" https://www.association-vascularites.org/2-non-categorise/160-documentation-a-telecharger | tr '\n' ' ' | grep -o 'href="[^"]*\.pdf"[^>]*>[^<]*' | sed 's/\s\+/ /g' | head -40
+          B=https://www.fai2r.org/les-pathologies-rares
+          for slug in traps muckle-wells syndrome-de-muckle-wells polychondrite-atrophiante syndrome-de-cogan cogan maladie-associee-aux-igg4 igg4 vascularite-cryoglobulinemique cryoglobulinemie syndrome-de-schnitzler schnitzler deficit-en-mevalonate-kinase deficit-mevalonate-kinase pfapa; do
+            for sub in questions-patients generalites; do
+              curl -sLA "$UA" -o /dev/null -w "%{http_code} $slug/$sub\n" "$B/$slug/$sub/"
+            done
+          done | grep '^200'
