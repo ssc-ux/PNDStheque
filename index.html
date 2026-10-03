@@ -102,7 +102,7 @@ const D = [
   ["Maladie de Fabry","Systémiques rares",2021,"2021-11/pnds_de_la_maladie_de_fabry_-_version_finale_-_20211115.pdf","p_3301584"],
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
 ];
-// Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web" | "livre" (payant)]
+// Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web"] — uniquement des documents gratuits
 const P = [
   ["Maladie de Still de l'adulte – fiche patient", "Still auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_2313f8c2a1154357b150cbdf849beda6.pdf", "PDF"],
   ["Fièvre méditerranéenne familiale – fiche patient", "FMF auto-inflammatoire colchicine", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_bec5107d295e4a6781351bd84adca216.pdf", "PDF"],
@@ -139,7 +139,6 @@ const P = [
   ["Syndrome de Schnitzler – les réponses à vos questions", "auto-inflammatoire urticaire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-de-schnitzler/questions-patients/", "web"],
   ["Déficit en mévalonate kinase – les réponses à vos questions", "auto-inflammatoire HIDS", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/deficit-en-mevalonate-kinase/questions-patients/", "web"],
   ["PFAPA – les réponses à vos questions", "fièvre périodique auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/pfapa/questions-patients/", "web"],
-  ["Les vascularites nécrosantes systémiques – 100 questions pour mieux gérer la maladie (livre)", "vascularites nécrosantes GPA GEPA PAM PAN ANCA", "France Vascularites / FAI²R", 2024, "https://www.association-vascularites.org/les-vascularites-c-est-quoi/les-vascularites-necrosantes-systemiques-en-100-questions", "livre"],
   ["La fièvre méditerranéenne familiale – livret patients et familles", "FMF auto-inflammatoire", "CeRéMAIA (centre de référence)", 2023, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_4a6d3e9ef3414b93b1e939dc0e5dcbab.pdf", "PDF"],
   ["Amylose AA – fiche patient", "amylose AA auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_e19a305a654e485190c49a6404bdc9eb.pdf", "PDF"],
   ["Syndrome CAPS (cryopyrinopathies) – fiche patient", "CAPS Muckle-Wells cryopyrine auto-inflammatoire", "CeRéMAIA (centre de référence)", 2025, "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_e6c4440636a4488bb33b30c9b8aaeaaa.pdf", "PDF"],
@@ -219,13 +218,11 @@ function card([t, c, y, pdf, page, maj]){
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
-const phraseP = (t, src, y, url, kind) => kind === "livre"
-  ? `Pour mieux comprendre votre maladie, je vous recommande le livre « ${t.replace(/ \(livre\)$/, "")} » (${src}${y ? `, ${y}` : ""}), rédigé par des médecins spécialistes pour les patients et leurs proches, disponible auprès de l'association : ${url}`
-  : `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
+const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
 const cardP = ([t, kw, src, y, url, kind]) => `<div class="card">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <button class="cp" style="right:8px" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button>
-    <div class="m"><span>${src}</span><span class="sp"></span><span>${y ? y + " · " : ""}${kind === "PDF" ? "PDF" : kind === "livre" ? "livre payant (14,50 €)" : "en ligne"} ↗</span></div></div>`;
+    <div class="m"><span>${src}</span><span class="sp"></span><span>${y ? y + " · " : ""}${kind === "PDF" ? "PDF" : "en ligne"} ↗</span></div></div>`;
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
