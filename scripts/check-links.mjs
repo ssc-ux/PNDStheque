@@ -6,7 +6,7 @@ import { H, J, D, P, UA } from "./data.mjs";
 const links = D.flatMap(([t, , , pdf, page]) => [
   pdf && { t, kind: "PDF", url: H + pdf },
   page && { t, kind: "page HAS", url: J + page },
-]).filter(Boolean).concat(P.map(([t, , , url]) => ({ t, kind: "PDF", url })));
+]).filter(Boolean).concat(P.map(([t, , , , url, kind]) => ({ t, kind: kind === "PDF" ? "PDF" : "page", url })));
 
 // Un lien est valide si la réponse est 200 ET du bon type : la HAS renvoie parfois une page d'erreur
 // HTML avec un code 200 à la place d'un PDF disparu.
