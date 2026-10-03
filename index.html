@@ -6,13 +6,38 @@
 <title>PNDSthèque</title>
 <meta name="description" content="Répertoire des PNDS (HAS) en médecine interne — accès direct aux PDF.">
 <style>
-:root{--bg:#f6f7f9;--card:#fff;--fg:#1a1d23;--muted:#5f6672;--line:#e3e6eb;--accent:#1f5fbf;--chip:#eef2f8;--new:#1b7f4b;--old:#a35a00;--star:#e0a100}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934;--new:#5fd394;--old:#f0a94a;--star:#ffc93c}}
-:root[data-theme="dark"]{--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934;--new:#5fd394;--old:#f0a94a;--star:#ffc93c}
+:root{--hero1:#1f5fbf;--hero2:#5a3fd1;--bg:#f6f7f9;--card:#fff;--fg:#1a1d23;--muted:#5f6672;--line:#e3e6eb;--accent:#1f5fbf;--chip:#eef2f8;--new:#1b7f4b;--old:#a35a00;--star:#e0a100}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero1:#1b3d78;--hero2:#3a2a86;--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934;--new:#5fd394;--old:#f0a94a;--star:#ffc93c}}
+:root[data-theme="dark"]{--hero1:#1b3d78;--hero2:#3a2a86;--bg:#121417;--card:#1b1e23;--fg:#e8eaee;--muted:#9aa1ad;--line:#2a2f37;--accent:#7aa7ff;--chip:#232934;--new:#5fd394;--old:#f0a94a;--star:#ffc93c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .wrap{max-width:1000px;margin:0 auto;padding:0 16px 48px}
 h1{margin:0;font-size:1.35rem}
+h1 a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.logo{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;font-size:1rem;font-weight:800}
+#accueil{display:none;padding:18px 0 8px}
+.hero{border-radius:16px;padding:22px 20px;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;margin-bottom:16px}
+.hero-k{margin:0;font-size:.95rem;opacity:.9;font-weight:600;letter-spacing:.02em}
+.hero-rot{margin:4px 0 10px;font-size:clamp(1.3rem,4.5vw,2rem);font-weight:800;line-height:1.2;min-height:1.2em}
+@media (max-width:600px){.hero-rot{min-height:2.4em}}
+#rot{display:inline-block;transition:opacity .35s,transform .35s}
+#rot.out{opacity:0;transform:translateY(8px)}
+.hero-s{margin:0;font-size:.92rem;opacity:.92;max-width:60ch}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s}
+.tile:hover,.tile:focus-visible{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.ti{font-size:1.6rem;line-height:1}
+.tt{font-weight:700;font-size:1.1rem}
+.td{color:var(--muted);font-size:.9rem}
+.tn{margin-top:auto;color:var(--accent);font-weight:700;font-size:.88rem}
+@media (max-width:600px){
+  .tiles{gap:10px}
+  .tile{display:grid;grid-template-columns:40px 1fr;column-gap:12px;row-gap:2px;padding:14px}
+  .ti{grid-row:1/4;align-self:center;font-size:1.7rem}
+  .tt,.td,.tn{grid-column:2}
+}
+.home-help{color:var(--muted);font-size:.88rem;margin:14px 0 0}.home-help a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){#rot{transition:none}}
 .top{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px;margin:0 -16px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .tip{display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap;background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:10px 0 0;font-size:.85rem;color:var(--muted)}
@@ -91,7 +116,7 @@ footer a{color:var(--accent)}
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><h1>PNDSthèque</h1><span class="sub">PNDS de médecine interne · 1 clic = PDF</span></div>
+    <div class="brand"><h1><a href="./" id="home" title="Accueil"><span class="logo" aria-hidden="true">P</span>PNDSthèque</a></h1><span class="sub">PNDS de médecine interne · 1 clic = PDF</span></div>
     <input id="q" type="search" placeholder="Rechercher : lupus, Horton, ANCA, colchicine…" autocomplete="off" aria-label="Rechercher">
     <nav class="tabs" role="tablist" id="tabs">
       <button role="tab" data-tab="pnds" aria-selected="true">PNDS<span class="n"></span></button>
@@ -100,6 +125,19 @@ footer a{color:var(--accent)}
       <button role="tab" data-tab="aide" aria-selected="false">Aide</button>
     </nav>
   </header>
+  <section id="accueil">
+    <div class="hero">
+      <p class="hero-k">PNDSthèque pour…</p>
+      <p class="hero-rot" aria-live="polite"><span id="rot">trouver un PNDS en 1 clic</span></p>
+      <p class="hero-s">Les protocoles de la HAS en médecine interne, des documents pour vos patients et des paragraphes prêts pour vos courriers, au même endroit.</p>
+    </div>
+    <div class="tiles">
+      <button class="tile" data-go="pnds"><span class="ti">📋</span><span class="tt">PNDS</span><span class="td">Ouvrir le PDF officiel de la HAS en 1 clic et copier une phrase pour le médecin traitant.</span><span class="tn" id="nTile0"></span></button>
+      <button class="tile" data-go="patients"><span class="ti">👥</span><span class="tt">Documents patients</span><span class="td">Livrets et fiches d'information gratuits et vérifiés, à transmettre au patient.</span><span class="tn" id="nTile1"></span></button>
+      <button class="tile" data-go="conseils"><span class="ti">✍️</span><span class="tt">Conseils</span><span class="td">Paragraphes prêts à coller : mesures associées aux médicaments et aux maladies.</span><span class="tn" id="nTile2"></span></button>
+    </div>
+    <p class="home-help">Première visite ? <a href="#aide" id="homeAide">Voir le mode d'emploi</a></p>
+  </section>
   <p class="tip" id="tip" hidden><span>Astuce : <span id="tipIcons"></span> = phrase prête pour le courrier · 📄 = documents patients · <a href="#aide" id="tipAide">mode d'emploi</a></span><button id="tipClose" aria-label="Fermer l'astuce">✕</button></p>
   <p class="hint" id="hint" hidden></p>
   <div class="cats" id="cats"></div>
@@ -112,6 +150,7 @@ footer a{color:var(--accent)}
     <h2>Comment utiliser ce site ?</h2>
     <p>La PNDSthèque rassemble en un seul endroit les <strong>Protocoles Nationaux de Diagnostic et de Soins (PNDS)</strong> de la HAS utiles en médecine interne, ainsi que des <strong>documents d'information gratuits pour les patients</strong>. Elle sert à retrouver un protocole en quelques secondes et à transmettre facilement les bons liens dans vos courriers.</p>
 
+    <p>Depuis l'<strong>accueil</strong> (clic sur le logo « P »), trois tuiles mènent aux trois outils. Une recherche tapée directement sur l'accueil ouvre l'onglet qui contient des résultats.</p>
     <h3>1. Trouver un PNDS (onglet « PNDS »)</h3>
     <ul>
       <li>Tapez le nom de la maladie dans la barre de recherche (les accents ne comptent pas), ou filtrez par catégorie.</li>
@@ -287,13 +326,13 @@ const P = [
 // Paragraphes types pour les courriers : { titre, court (libellé du sommaire), sources: [[libellé, URL]], texte } — [crochets] = à adapter au patient.
 const T = [
   { titre: "Mesures associées à la corticothérapie", court: "Corticothérapie",
-    sources: [["Livret FAI²R / CHU de Montpellier « Corticothérapie, les médecins répondent à vos questions » (2020)", "https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf"], ["PNDS Lupus systémique, HAS 2024 (mesures associées à la corticothérapie)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"]],
+    sources: [["Livret FAI²R / CHU de Montpellier « Corticothérapie, les médecins répondent à vos questions » (2020)", "https://www.fai2r.org/wp-content/uploads/2020/01/FAI2R-Corticotherapie_YMP-2020.pdf"], ["PNDS Lupus systémique, HAS 2024 (mesures associées à la corticothérapie)", "https://www.has-sante.fr/upload/docs/application/pdf/2024-02/pnds_ls.pdf"], ["HCSP – Vaccination des personnes immunodéprimées (2014)", "https://www.hcsp.fr/Explore.cgi/Telecharger?NomFichier=hcspr20141107_vaccinationimmunodeprime.pdf"], ["HAS 2026 – Révision de la stratégie de vaccination contre les pneumocoques", "https://www.has-sante.fr/jcms/p_3601959/fr/revision-de-la-strategie-de-vaccination-contre-les-infections-invasives-a-pneumocoques-place-des-vaccins-a-haute-valence-prevenar-20-chez-les-nourrissons-les-enfants-et-les-adultes-et-capvaxive-chez-les-adultes"]],
     texte: `Mesures associées à la corticothérapie ([dose] mg/j d'équivalent prednisone) :
 - Prise : en une prise le matin, au cours du petit-déjeuner [ou en deux prises matin et soir]. Ne jamais arrêter ni modifier la dose sans avis médical : la décroissance doit être progressive et encadrée (risque d'insuffisance surrénalienne). En cas de fièvre ou d'infection, consulter rapidement, sans arrêter le traitement.
 - Alimentation : variée et équilibrée, sans régime sans sel strict (apports habituels de 5 à 6 g/j de sel, ne pas resaler à table). Limiter les produits sucrés et le grignotage[, en particulier en raison du diabète / des facteurs de risque de diabète].
 - Activité physique régulière, adaptée aux possibilités : au moins 30 minutes d'activité modérée (type marche rapide) 5 fois par semaine.
 - Prévention de l'ostéoporose : apports alimentaires en calcium de 800 à 1 200 mg/j (supplémentation uniquement si les apports alimentaires sont insuffisants) ; dosage de la vitamine D et supplémentation [une ampoule par mois]. Ostéodensitométrie [à réaliser / réalisée le …] (corticothérapie de plus de 3 mois) ; traitement anti-ostéoporotique [à discuter / débuté] selon l'âge, le statut ménopausique, les antécédents de fracture, la densitométrie et la dose de corticoïdes.
-- Vaccinations : mise à jour du calendrier vaccinal ; vaccination antigrippale annuelle et antipneumococcique recommandées. Les vaccins vivants atténués (fièvre jaune, ROR, varicelle, BCG…) sont contre-indiqués au-delà de 10 mg/j de prednisone et dans les 3 mois suivant des bolus.
+- Vaccinations : mise à jour du calendrier vaccinal ; grippe chaque année et pneumocoque (vaccin conjugué selon la recommandation HAS en vigueur [Capvaxive (VPC21), préférentiel chez l'adulte à risque depuis 2026]) recommandés. Les vaccins vivants atténués (fièvre jaune, ROR, varicelle, BCG…) sont contre-indiqués au-delà de 10 mg/j d'équivalent prednisone pris depuis plus de 2 semaines, et dans les 3 mois suivant des bolus.
 - Surveillance : poids, pression artérielle, glycémie à jeun[, kaliémie (traitement diurétique)] ; examen ophtalmologique régulier (cataracte, glaucome).
 - Interactions : éviter les anti-inflammatoires non stéroïdiens ; [sous AVK : contrôle rapproché de l'INR] ; prudence avec les fluoroquinolones (risque de tendinopathie). Pas de gastroprotection systématique par IPP.
 - Dépistage et traitement des foyers infectieux latents ; prophylaxie de l'anguillulose si le contexte le justifie (séjour en zone d'endémie).
@@ -313,10 +352,10 @@ Un livret d'information a été remis au patient : « Corticothérapie, les méd
 - [Anti-inflammatoires : l'ibuprofène est contre-indiqué.]
 Pour en savoir plus, le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024) a été conseillé au patient : https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf` },
   { titre: "Bilan avant un immunosuppresseur ou une biothérapie", court: "Bilan avant traitement",
-    sources: [["CeRéMAIA (centre de référence, Tenon) – « Bilan avant de débuter un traitement immunomodulateur » (2026)", "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_5b5ea6e3beb442aa8c3f484abb278056.pdf"], ["CRI – Information patient rituximab", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/rituximab2017/RTX_20%20Info_patient.pdf"]],
+    sources: [["CeRéMAIA (centre de référence, Tenon) – « Bilan avant de débuter un traitement immunomodulateur » (2026)", "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_5b5ea6e3beb442aa8c3f484abb278056.pdf"], ["CRI – Information patient rituximab", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/rituximab2017/RTX_20%20Info_patient.pdf"], ["HCSP – Vaccination des personnes immunodéprimées (2014)", "https://www.hcsp.fr/Explore.cgi/Telecharger?NomFichier=hcspr20141107_vaccinationimmunodeprime.pdf"], ["HAS 2026 – Révision de la stratégie de vaccination contre les pneumocoques", "https://www.has-sante.fr/jcms/p_3601959/fr/revision-de-la-strategie-de-vaccination-contre-les-infections-invasives-a-pneumocoques-place-des-vaccins-a-haute-valence-prevenar-20-chez-les-nourrissons-les-enfants-et-les-adultes-et-capvaxive-chez-les-adultes"]],
     texte: `Bilan avant de débuter [nom du traitement] :
 - Examens : radiographie pulmonaire ; recherche d'une tuberculose latente (test IGRA de type Quantiféron) ; sérologies VIH, hépatite B et hépatite C ; examen dentaire récent (moins d'un an) pour éliminer un foyer infectieux.
-- Vaccinations recommandées, idéalement avant le début du traitement : pneumocoque (Prevenar 20), grippe chaque automne, COVID-19 selon les recommandations en vigueur, zona (Shingrix, 2 doses espacées de 2 mois, particulièrement recommandé avant un inhibiteur de JAK) ; mise à jour diphtérie-tétanos-polio.
+- Vaccinations recommandées, idéalement avant le début du traitement : pneumocoque (vaccin conjugué selon la recommandation HAS en vigueur [Capvaxive (VPC21), préférentiel chez l'adulte à risque depuis 2026, ou Prevenar 20]), grippe chaque automne, COVID-19 selon les recommandations en vigueur, zona (Shingrix, 2 doses espacées de 2 mois, particulièrement recommandé avant un inhibiteur de JAK) ; mise à jour diphtérie-tétanos-polio.
 - Les vaccins vivants atténués (fièvre jaune, ROR, varicelle, BCG) sont contre-indiqués sous traitement : à réaliser avant si nécessaire [au moins 4 semaines avant le début].
 - Consignes au patient : consulter rapidement en cas de fièvre ou de signe d'infection ; signaler le traitement avant toute chirurgie, tout soin dentaire ou tout nouveau médicament.` },
   { titre: "Traitement par hydroxychloroquine", court: "Hydroxychloroquine",
@@ -328,32 +367,34 @@ Pour en savoir plus, le livret « Le lupus – 100 questions pour mieux gérer l
 - [ECG en cas de cardiopathie ou d'autre traitement allongeant le QT.]
 - Consulter en cas de troubles de la vision, de faiblesse musculaire ou de palpitations.` },
   { titre: "Traitement par méthotrexate", court: "Méthotrexate",
-    sources: [["CRI (Club Rhumatismes et Inflammations) – Information patient méthotrexate (2016)", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/MTX-Dec2016/MTX_22.pdf"], ["CRI – Surveillance du méthotrexate", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/MTX-Dec2016/MTX_03.pdf"]],
+    sources: [["CRI (Club Rhumatismes et Inflammations) – Information patient méthotrexate (2016)", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/MTX-Dec2016/MTX_22.pdf"], ["CRI – Surveillance du méthotrexate", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/MTX-Dec2016/MTX_03.pdf"], ["ACR 2020 – Reproductive Health Guideline (méthotrexate et projet de grossesse)", "https://acrjournals.onlinelibrary.wiley.com/doi/10.1002/acr.24130"], ["ANSM – RCP méthotrexate (interaction avec le triméthoprime-sulfaméthoxazole)", "https://agence-prd.ansm.sante.fr/php/ecodex/rcp/R0243984.htm"]],
     texte: `Traitement par méthotrexate ([dose] mg par semaine, [voie orale / sous-cutanée]) :
 - Une seule prise par semaine, toujours le même jour. Acide folique ([dose]) à prendre un autre jour que le méthotrexate, pour améliorer la tolérance (troubles digestifs, aphtes).
 - Surveillance biologique : NFS, transaminases, gamma-GT, phosphatases alcalines, albumine et créatinine, au moins tous les mois au début, puis le plus souvent tous les 3 mois.
 - Consulter en cas de toux, d'essoufflement ou de fièvre (infection ou, rarement, atteinte pulmonaire liée au traitement).
-- Médicament tératogène : contraception efficace indispensable pendant le traitement ; tout projet de grossesse est à discuter avec le médecin (chez l'homme, attendre 3 mois après l'arrêt avant une conception). Allaitement déconseillé.
+- Médicament tératogène : contraception efficace indispensable chez la femme pendant le traitement ; en cas de projet de grossesse, arrêt du méthotrexate environ 3 mois avant la conception (au minimum un cycle), à organiser avec le médecin. Chez l'homme, le traitement peut être poursuivi en cas de projet de paternité. Allaitement déconseillé.
 - Alcool : consommation très occasionnelle, voire à éviter (toxicité hépatique).
 - Vaccins grippe et pneumocoque recommandés ; vaccins vivants atténués contre-indiqués (fièvre jaune, BCG, ROR, varicelle).
-- Pas d'arrêt nécessaire pour une chirurgie ou un soin dentaire ; signaler le traitement avant tout nouveau médicament.
+- Association contre-indiquée avec le triméthoprime-sulfaméthoxazole (Bactrim®) : risque de toxicité hématologique grave. Signaler le traitement avant tout nouveau médicament (anti-inflammatoires notamment).
+- Pas d'arrêt nécessaire pour une chirurgie ou un soin dentaire.
 - Possible photosensibilité : protection solaire en cas d'exposition.` },
   { titre: "Traitement par rituximab", court: "Rituximab",
-    sources: [["CRI – Information patient rituximab (2017)", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/rituximab2017/RTX_20%20Info_patient.pdf"], ["France Vascularites / FAI²R – « Mieux connaître son traitement : le rituximab »", "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Ritux_A5.pdf"]],
+    sources: [["CRI – Information patient rituximab (2017)", "https://cri-net.com/ckfinder/userfiles/files/fiches-pratiques/rituximab2017/RTX_20%20Info_patient.pdf"], ["France Vascularites / FAI²R – « Mieux connaître son traitement : le rituximab »", "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Ritux_A5.pdf"], ["RCP rituximab (EMA) – contraception 12 mois", "https://acthera.univ-lille.fr/res/rituximab_ritemvia_EMA_RCP.pdf"]],
     texte: `Traitement par rituximab :
 - Perfusions à l'hôpital, précédées d'une prémédication (corticoïde, paracétamol, antihistaminique) ; [schéma : 2 perfusions à 15 jours d'intervalle, renouvelées tous les 6 mois environ].
+- Avant le traitement : sérologie de l'hépatite B (Ag HBs, anticorps anti-HBc) indispensable, en raison du risque de réactivation.
 - Risque infectieux accru : consulter rapidement en cas de fièvre supérieure à 38 °C ou de tout signe d'infection (toux, brûlures urinaires, plaie infectée…). [Dosage des immunoglobulines selon le contexte.]
 - Vaccinations : grippe et pneumocoque recommandés, idéalement au moins 4 semaines avant la première perfusion ; vaccins vivants atténués contre-indiqués (fièvre jaune, BCG).
 - Chirurgie programmée : à envisager de préférence 6 mois après la dernière perfusion ; soins dentaires lourds : 4 à 6 mois après.
-- Contraception efficace pendant le traitement et au moins 6 mois (idéalement 12 mois) après la dernière perfusion ; allaitement déconseillé.
+- Contraception efficace pendant le traitement et jusqu'à 12 mois après la dernière perfusion (résumé des caractéristiques du produit) ; tout projet de grossesse est à discuter avec le médecin.
 - Signaler le traitement avant tout nouveau médicament.
 Une fiche d'information a été conseillée au patient : https://www.association-vascularites.org/images/fiches_individuelles_vascularites/Ritux_A5.pdf` },
   { titre: "Traitement par colchicine", court: "Colchicine",
-    sources: [["CeRéMAIA (centre de référence, Tenon) – fiche « Colchicine » (2025)", "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_c8f723a4bff44a9dbadb3f72b798cee5.pdf"]],
+    sources: [["CeRéMAIA (centre de référence, Tenon) – fiche « Colchicine » (2025)", "https://www.maladiesautoinflammatoires.fr/_files/ugd/4723d8_c8f723a4bff44a9dbadb3f72b798cee5.pdf"], ["ANSM – Colchicine : rappel des règles de bon usage", "https://ansm.sante.fr/informations-de-securite/intoxications-graves-a-la-colchicine-colchicine-opocalcium-1-mg-et-colchimax-rappel-des-regles-de-bon-usage"]],
     texte: `Traitement par colchicine ([dose] mg/j) :
 - À poursuivre au long cours, même en l'absence de crise, pour prévenir les crises et l'amylose AA. Ne pas augmenter la dose de soi-même lors d'une crise (inefficace).
 - En cas d'oubli : prendre le comprimé dès que l'oubli est constaté.
-- Dose à diminuer ou à suspendre temporairement lors d'un traitement par macrolide ou pristinamycine ; adaptation en cas d'insuffisance rénale ou hépatique.
+- Associations contre-indiquées avec les macrolides (sauf la spiramycine) et la pristinamycine (risque de surdosage grave) : suspendre la colchicine pendant ces antibiotiques. Signaler le traitement avant tout nouveau médicament. Adaptation de la dose en cas d'insuffisance rénale ou hépatique.
 - Pas d'arrêt nécessaire en cas d'infection, de chirurgie, d'anesthésie ou de vaccination.
 - En cas de diarrhée (effet indésirable principal) : répartir la dose en deux prises, probiotiques, racécadotril (le lopéramide n'est pas recommandé).
 - Grossesse : poursuivre aux doses habituelles (pas d'augmentation du risque de malformation ou de fausse couche) ; compatible avec la pilule. Allaitement possible, en prenant la colchicine au moment d'une tétée ; le Colchimax® est contre-indiqué pendant l'allaitement.
@@ -364,7 +405,7 @@ Une fiche d'information a été conseillée au patient : https://www.association
 - Anticoagulation par antivitamine K [warfarine] au long cours, cible d'INR [entre 2 et 3] ; ne jamais l'interrompre sans avis médical (l'arrêt, même temporaire, est très à risque). Les anticoagulants oraux directs sont le plus souvent déconseillés dans le SAPL.
 - Éducation au traitement par AVK : risque hémorragique, interactions médicamenteuses (signaler le traitement avant tout nouveau médicament), contrôles réguliers de l'INR.
 - Anticiper les situations à risque : chirurgie ou geste invasif (fenêtre sans anticoagulation la plus courte possible, relais par héparine organisé par le médecin), infection, grossesse.
-- Contraception sans œstrogènes ; tout projet de grossesse doit être programmé lors d'une consultation préconceptionnelle avec le médecin référent.
+- Contraception sans œstrogènes ; tout projet de grossesse doit être programmé lors d'une consultation préconceptionnelle avec le médecin référent. Les AVK sont tératogènes : en cas de grossesse, prévenir immédiatement le médecin pour le relais par héparine de bas poids moléculaire.
 - Contrôle strict des facteurs de risque cardiovasculaire : arrêt du tabac, pression artérielle, cholestérol ; prévention thromboembolique dans les situations à risque.
 - Suivi spécialisé régulier [tous les 6 à 12 mois].` },
   { titre: "Artérite à cellules géantes (Horton) : conseils", court: "Horton",
@@ -400,7 +441,17 @@ $("tipIcons").innerHTML = ICON + " " + ICON2; $("tip").hidden = seenTip;
 $("tipClose").onclick = hideTip;
 $("tipAide").onclick = e => { e.preventDefault(); hideTip(); tab = "aide"; history.replaceState(null, "", "#aide"); render(); };
 for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", ICON2], ["gi5", ICON], ["gi6", ICON]]) document.getElementById(id).innerHTML = ic;
-let tab = ["#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "pnds";
+let tab = ["#pnds", "#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "accueil";
+// Accueil : bandeau défilant et tuiles vers les onglets.
+const ROT = ["trouver un PNDS en 1 clic", "trouver une fiche d'information patient", "générer un texte pour le courrier", "générer des fiches conseils médicaments et maladies"];
+let rotI = 0;
+setInterval(() => { if (tab !== "accueil" || matchMedia("(prefers-reduced-motion: reduce)").matches && rotI > 99) return;
+  const el = $("rot"); el.classList.add("out");
+  setTimeout(() => { rotI = (rotI + 1) % ROT.length; el.textContent = ROT[rotI]; el.classList.remove("out"); }, 350); }, 2600);
+const go = t => { tab = t; relT = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
+$("accueil").onclick = e => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };
+$("home").onclick = e => { e.preventDefault(); q.value = ""; go("accueil"); };
+$("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
 const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 $("conseils").innerHTML = `<p class="hint" style="display:block;margin:0 0 10px">Paragraphes prêts à coller dans le courrier. Modifiez le texte ici (les éléments entre [crochets] sont à adapter au patient), puis « Copier ».</p>
@@ -420,7 +471,7 @@ const HINT = {
 $("pcats").onclick = e => { if (e.target.closest("#relClear")) { relT = null; render(); return; }
   if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
 $("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = null;
-  history.replaceState(null, "", tab === "pnds" ? location.pathname + location.search : "#" + tab); render(); };
+  history.replaceState(null, "", "#" + tab); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
   const t = Object.assign(document.createElement("textarea"), { value: text }); // repli si l'API presse-papiers est bloquée
@@ -480,7 +531,11 @@ let pcat = "Tous";
 function render(){
   const s = norm(q.value.trim());
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
-  const help = tab === "aide" || tab === "conseils";
+  const home = tab === "accueil";
+  $("accueil").style.display = home ? "block" : "none";
+  $("tip").style.display = home ? "none" : "";
+  [$("nTile0").textContent, $("nTile1").textContent, $("nTile2").textContent] = [`${D.length} PNDS →`, `${P.length} documents →`, `${T.length} paragraphes →`];
+  const help = home || tab === "aide" || tab === "conseils";
   // Compteurs des onglets : nombre de résultats pour la recherche en cours.
   const [nD, nP] = [D.filter(d => norm(d[0] + " " + d[1]).includes(s)).length, P.filter(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)).length];
   const nT = T.filter(x => norm(x.titre + " " + x.texte).includes(s)).length;
@@ -511,7 +566,11 @@ function render(){
   $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : nP ? `Aucun PNDS. ${nP} document${nP > 1 ? "s" : ""} patient${nP > 1 ? "s" : ""} correspond${nP > 1 ? "ent" : ""} : onglet Patients.` : "Aucun résultat.";
   $("empty").style.display = r.length ? "none" : "block";
 }
-q.oninput = () => { relT = null; render(); }; render();
+q.oninput = () => { relT = null;
+  if (tab === "accueil" && q.value.trim()) { const s = norm(q.value.trim());
+    tab = D.some(d => norm(d[0] + " " + d[1]).includes(s)) ? "pnds" : P.some(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)) ? "patients" : T.some(x => norm(x.titre + " " + x.texte).includes(s)) ? "conseils" : "pnds";
+    history.replaceState(null, "", "#" + tab); }
+  render(); }; render();
 // Curseur directement dans la recherche sur ordinateur (pas sur mobile, pour ne pas ouvrir le clavier).
 if (matchMedia("(pointer: fine)").matches) q.focus();
 </script>
