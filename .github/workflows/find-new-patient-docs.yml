@@ -1,0 +1,35 @@
+name: Nouveaux documents patients
+
+on:
+  schedule:
+    - cron: "23 7 1 * *" # le 1er de chaque mois
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/find-new-patient-docs.mjs
+      - name: Signaler les documents pas encore proposés
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create nouveaux-docs-patients --color 5319e7 --force
+          # Fermer le ticket suffit à écarter ses documents : ils ne seront plus reproposés.
+          gh issue list --label nouveaux-docs-patients --state all --limit 200 --json body -q '.[].body' > seen.txt
+          body=$(node -e '
+            const seen = require("fs").readFileSync("seen.txt", "utf8");
+            const c = require("./new-patient-docs.json").filter(x => !seen.includes(x.url));
+            if (c.length) console.log(c.map(x => `- [ ] ${x.source} : ${x.url}`).join("\n"));
+          ')
+          if [ -z "$body" ]; then echo "Rien de nouveau."; exit 0; fi
+          gh issue create --label nouveaux-docs-patients --title "Nouveaux documents patients détectés ($(date +%F))" \
+            --body "$(printf 'Documents publiés par nos sources et absents de l onglet « Documents patients ». À vérifier (fiabilité, date) avant ajout dans index.html (tableau P). Fermez le ticket pour écarter les autres.\n\n%s' "$body")"

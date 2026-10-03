@@ -16,6 +16,7 @@ const KEYWORDS = [
   "sarcoidose", "purpura", "anemie hemolytique", "microangiopathie", "hypereosinophil",
   "angioedeme", "igg4", "castleman", "histiocytose", "erdheim", "kawasaki", "fabry", "gaucher",
   "aplasie", "deficit immunitaire", "lymphohistiocytose", "connectivite", "mastocytose",
+  "neutropenie", "hemophilie", "willebrand", "uremique",
 ];
 const PNDS = /\bpnds\b|protocole national de diagnostic/;
 // Publications qui ne sont jamais des PNDS (évaluations, notes de cadrage, avis, alertes…).

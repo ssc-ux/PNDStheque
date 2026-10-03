@@ -26,11 +26,16 @@ h1{margin:0 0 4px;font-size:1.7rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 .card{position:relative;display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,transform .15s}
 .card:hover,.card:focus-within{border-color:var(--accent);transform:translateY(-1px)}
-.t{font-weight:600;color:inherit;text-decoration:none;padding-right:56px}
+.t{font-weight:600;color:inherit;text-decoration:none;padding-right:84px}
 .t::after{content:"";position:absolute;inset:0;border-radius:12px}
 .m{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
 .m .sp{flex:1}
-.m a,.fav,.cp{position:relative;z-index:1}
+.m a,.fav,.cp,.rel{position:relative;z-index:1}
+.rel{background:none;border:0;padding:0;font:inherit;color:var(--accent);cursor:pointer}
+.rel:hover{text-decoration:underline}
+.cp.cp2{right:64px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);color:var(--accent);background:var(--chip);padding:6px 12px;border-radius:999px;font-size:.9rem;cursor:pointer}
+#sortBtn{margin-left:auto}
 .m a{color:var(--accent);text-decoration:none}
 .m a:hover{text-decoration:underline}
 .b{font-size:.72rem;font-weight:700;padding:1px 7px;border-radius:999px;border:1px solid currentColor}
@@ -61,6 +66,7 @@ footer a{color:var(--accent)}
   <p id="empty">Aucun résultat.</p>
   <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a> · <a href="https://www.fai2r.org/vie-quotidienne/ouvrages-100-questions/" target="_blank" rel="noopener">FAI²R</a>, MaRIH, rhumatismes.net (Hôpital Cochin) et associations de patients pour les documents patients. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
   <span class="b new">récent</span> &lt; 1 an · <span class="b upd">mis à jour</span> nouvelle version HAS &lt; 1 an · <span class="b old">ancien</span> &gt; 3 ans · ☆ favoris enregistrés dans ce navigateur.<br>
+  Outil d'aide à l'orientation : il ne remplace ni l'avis médical ni la lecture des documents sources. Aucun cookie ni donnée personnelle collectés (les favoris restent dans votre navigateur).<br>
   Réalisé par Quentin Astouati.</footer>
 </div>
 <script>
@@ -94,6 +100,14 @@ const D = [
   ["Aplasies médullaires acquises et constitutionnelles","Hémato-immunologie",2023,"2023-04/pnds_aplasies-medullaires-acquises_et_constitutionnelles_20130301.pdf","p_3431519"],
   ["Syndromes hyperéosinophiliques","Hémato-immunologie",2022,"2022-06/pnds_she_document_complet.pdf","p_3346155"],
   ["Angioedème héréditaire","Hémato-immunologie",2024,"2024-06/pnds_angioedeme_2024-070524pretenvoijuincorr.pdf","p_3297816"],
+  ["Mastocytoses non avancées de l'adulte", "Hémato-immunologie", 2022, "2022-07/pnds_mastocytoses_non_avancees.pdf", "p_3353127"],
+  ["Déficits immunitaires héréditaires", "Hémato-immunologie", 2023, "2023-04/pnds_di_web_2023.pdf", "p_3431473"],
+  ["Hémophilie A acquise", "Hémato-immunologie", 2025, "2025-03/pnds_haa-crh_.pdf", "p_3594164"],
+  ["Syndromes de Willebrand acquis", "Hémato-immunologie", 2025, "2025-04/texte_pnds_syndrome_willebrand_acquis_2025.pdf", "p_3602131"],
+  ["Syndrome hémolytique et urémique (SHU)", "Hémato-immunologie", 2025, "2025-10/syndrome_hemolytique_et_uremique_-_pnds.pdf", "p_3236879"],
+  ["Neutropénies chroniques", "Hémato-immunologie", 2024, "2024-06/pnds_neutro_final.pdf", "p_3522408"],
+  ["Purpura thrombopénique immunologique de l'enfant et de l'adolescent", "Hémato-immunologie", 2025, "2025-04/pnds_pti_de_lenfant_et_de_ladolescent.pdf", null],
+  ["Anémie hémolytique auto-immune de l'enfant et de l'adolescent", "Hémato-immunologie", 2025, "2025-11/dir9/pnds_ahai_enfants_ados_has_2025_complet_.pdf", null],
   ["Maladie associée aux IgG4","Systémiques rares",2025,"2025-12/pnds_mag4_vf.pdf","p_3776085"],
   ["Maladie de Castleman","Systémiques rares",2019,"2019-11/pnds_castleman_2019.pdf","p_3121172"],
   ["Sarcoïdose pulmonaire","Systémiques rares",2026,"2026-04/dir2/respifil_pnds-sarcoidose.pdf","p_3921776"],
@@ -181,24 +195,29 @@ const store = { get(){ try { return JSON.parse(localStorage.getItem("pnds-fav"))
 let favs = new Set(store.get()), cat = "Toutes";
 const FAV = "★ Favoris", cats = ["Toutes", FAV, ...new Set(D.map(d => d[1]))];
 const $ = id => document.getElementById(id), q = $("q"), list = $("list");
-$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</button>`).join("");
-$("cats").onclick = e => { if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
-  [...$("cats").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
+$("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</button>`).join("") + `<button id="sortBtn" title="Changer l'ordre">↕ A → Z</button>`;
+$("cats").onclick = e => { if (e.target.id === "sortBtn") { sortRecent = !sortRecent; e.target.textContent = sortRecent ? "↕ Plus récents" : "↕ A → Z"; render(); return; }
+  if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
+  [...$("cats").children].forEach(b => b.id || b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
+const ICON2 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>';
 let tab = location.hash === "#patients" ? "patients" : "pnds";
 const HINT = {
-  pnds: `${ICON} sur une fiche : copie une phrase prête à coller dans un courrier, à l'attention du médecin traitant, avec le lien du PNDS. · ☆ : ajoute aux favoris.`,
+  pnds: `${ICON} : copie une phrase pour le courrier, à l'attention du médecin traitant, avec le lien du PNDS · ${ICON2} : copie en plus la phrase pour le patient avec son document · 📄 : documents patients liés · ☆ : favoris.`,
   patients: `Documents pour les patients et leurs proches, en accès libre : livrets « 100 questions », livrets de centres de référence et d'associations, pages « Les réponses à vos questions » de FAI²R. ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien.`
 };
-$("pcats").onclick = e => { if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
-$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab;
+$("pcats").onclick = e => { if (e.target.closest("#relClear")) { relT = null; render(); return; }
+  if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
+$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = null;
   history.replaceState(null, "", tab === "patients" ? "#patients" : location.pathname + location.search); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
   const t = Object.assign(document.createElement("textarea"), { value: text }); // repli si l'API presse-papiers est bloquée
   document.body.append(t); t.select(); document.execCommand("copy"); t.remove();
 }
-list.onclick = e => { const c = e.target.closest(".cp");
+list.onclick = e => { const l = e.target.closest(".rel");
+  if (l) { relT = l.dataset.t; tab = "patients"; pcat = "Tous"; q.value = ""; history.replaceState(null, "", "#patients"); render(); scrollTo(0, 0); return; }
+  const c = e.target.closest(".cp");
   if (c) { copy(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return; }
   const b = e.target.closest(".fav"); if (!b) return;
   const t = b.dataset.t; favs.has(t) ? favs.delete(t) : favs.add(t); store.set([...favs]); render(); };
@@ -207,13 +226,36 @@ const NOW = new Date(), months = pdf => { const [a, m] = pdf.split("/")[0].split
 const badge = (y, pdf, maj) => maj && months(maj) < 12 ? `<span class="b upd">mis à jour</span>` : pdf && months(pdf) < 12 ? `<span class="b new">récent</span>` : y != null && Y - y > 3 ? `<span class="b old">ancien</span>` : "";
 // Phrase prête à coller dans un courrier au médecin traitant.
 const phrase = (t, y, url) => `Information pour le médecin traitant : le Protocole National de Diagnostic et de Soins (PNDS) de la HAS « ${t} »${y ? ` (${y})` : ""} est disponible ici : ${url}. Il comporte une synthèse d'une à deux pages qui vous est destinée et reprend l'essentiel de la prise en charge.`.replace(/"/g, "&quot;");
+// PNDS → documents patients de la même maladie (motif cherché dans titre + mots-clés du document, sans accents).
+const REL = {
+  "Lupus systémique de l'adulte et de l'enfant": "lupus", "Syndrome des anti-phospholipides": "antiphospholipides|sapl",
+  "Sclérodermie systémique": "sclerodermie", "Maladie (syndrome) de Sjögren": "sjogren",
+  "Dermatomyosite de l'enfant et de l'adulte": "dermatomyosite|myopathies inflammatoires", "Myosite à inclusions": "myopathies inflammatoires",
+  "Vascularites associées aux ANCA (GPA, GEPA, PAM)": "\\bgpa\\b|\\bgepa\\b|\\bpam\\b|anca", "Vascularites nécrosantes systémiques (PAN)": "periarterite",
+  "Artérite à cellules géantes (Horton)": "horton", "Artérite de Takayasu": "takayasu", "Maladie de Behçet": "behcet",
+  "Syndrome de Cogan": "cogan", "Cryoglobulinémies": "cryoglobulin", "Maladie de Still de l'adulte": "\\bstill",
+  "Fièvre méditerranéenne familiale": "\\bfmf\\b|mediterraneenne", "Syndromes périodiques associés à la cryopyrine (CAPS)": "\\bcaps\\b|muckle",
+  "PFAPA (fièvre périodique)": "pfapa", "Amylose AA": "amylose aa|amyloses", "Polychondrite chronique atrophiante": "polychondrite",
+  "Uvéites chroniques non infectieuses": "uveite", "Purpura thrombopénique immunologique de l'adulte": "\\bpti\\b",
+  "Purpura thrombopénique immunologique de l'enfant et de l'adolescent": "\\bpti\\b",
+  "Purpura thrombotique thrombocytopénique": "\\bptt\\b", "Aplasies médullaires acquises et constitutionnelles": "aplasie|\\bhpn\\b",
+  "Maladie associée aux IgG4": "igg4", "Maladie de Castleman": "castleman", "Amylose AL": "amyloses", "Amyloses cardiaques": "amyloses",
+  "Mastocytoses non avancées de l'adulte": "mastocytose", "Déficits immunitaires héréditaires": "deficit immunitaire"
+};
+const relDocs = t => { const re = REL[t] && new RegExp(REL[t]); return re ? P.filter(p => re.test(norm(p[0] + " " + p[1])))
+  .sort((a, b) => (b[5] === "PDF") - (a[5] === "PDF") || (b[3] ?? 0) - (a[3] ?? 0)) : []; };
+// Date de version pour le tri « plus récents » : mise à jour, sinon mois du PDF, sinon année.
+const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
+let sortRecent = false, relT = null;
 function card([t, c, y, pdf, page, maj]){
-  const main = pdf ? H + pdf : J + page, on = favs.has(t);
+  const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t);
   return `<div class="card">
     <a class="t" href="${main}" target="_blank" rel="noopener">${t}</a>
     <button class="cp" data-s="${phrase(t, y, main)}" title="Copier une phrase pour le courrier (avec le lien)" aria-label="Copier une phrase pour le courrier">${ICON}</button>
+    ${rel.length ? `<button class="cp cp2" data-s="${phrase(t, y, main)}&#10;&#10;${phraseP(rel[0][0], rel[0][2], rel[0][3], rel[0][4], rel[0][5])}" title="Copier les deux phrases : médecin traitant + patient" aria-label="Copier les phrases médecin traitant et patient">${ICON2}</button>` : ""}
     <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori">${on ? "★" : "☆"}</button>
     <div class="m"><span>${c}</span>${badge(y, pdf, maj)}<span class="sp"></span>
+      ${rel.length ? `<button class="rel" data-t="${t}">📄 ${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}
       ${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }
@@ -232,8 +274,9 @@ function render(){
   $("cats").style.display = tab === "pnds" ? "" : "none";
   $("pcats").style.display = tab === "patients" ? "" : "none";
   if (tab === "patients") {
-    $("pcats").innerHTML = PCATS.map(c => `<button aria-pressed="${c===pcat}">${c}</button>`).join("");
-    const r = P.filter(p => (pcat === "Tous" || (pcat === "Livrets PDF") === (p[5] === "PDF")) && norm(p[0] + " " + p[1] + " " + p[2]).includes(s))
+    $("pcats").innerHTML = relT ? `<button class="chip" id="relClear">Documents liés au PNDS « ${relT} » ✕</button>`
+      : PCATS.map(c => `<button aria-pressed="${c===pcat}">${c}</button>`).join("");
+    const r = relT ? relDocs(relT) : P.filter(p => (pcat === "Tous" || (pcat === "Livrets PDF") === (p[5] === "PDF")) && norm(p[0] + " " + p[1] + " " + p[2]).includes(s))
                .sort((a, b) => (b[5] === "PDF") - (a[5] === "PDF") || a[0].localeCompare(b[0], "fr"));
     list.innerHTML = r.map(cardP).join("");
     $("empty").textContent = "Aucun livret pour cette recherche.";
@@ -241,12 +284,12 @@ function render(){
     return;
   }
   const r = D.filter(d => (cat==="Toutes" || (cat===FAV ? favs.has(d[0]) : d[1]===cat)) && norm(d[0]+" "+d[1]).includes(s))
-             .sort((a,b) => (favs.has(b[0]) - favs.has(a[0])) || a[0].localeCompare(b[0],"fr"));
+             .sort((a,b) => (favs.has(b[0]) - favs.has(a[0])) || (sortRecent ? vdate(b).localeCompare(vdate(a)) : 0) || a[0].localeCompare(b[0],"fr"));
   list.innerHTML = r.map(card).join("");
   $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : "Aucun résultat.";
   $("empty").style.display = r.length ? "none" : "block";
 }
-q.oninput = render; render();
+q.oninput = () => { relT = null; render(); }; render();
 </script>
 </body>
 </html>
