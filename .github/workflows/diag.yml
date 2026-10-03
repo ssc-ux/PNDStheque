@@ -7,16 +7,14 @@ jobs:
       - shell: bash {0}
         run: |
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          V=https://www.association-vascularites.org
-          for p in /les-vascularites-c-est-quoi/les-vascularites-necrosantes-systemiques-en-100-questions /infos-et-recherche-medicales/les-vascularites-necrosantes-systemiques-en-100-questions; do
-            echo "=== $p"; curl -sLA "$UA" -o v.html -w "%{http_code}\n" "$V$p"
-            sed 's/<[^>]*>/ /g' v.html | tr -s ' \n' | grep -i 'question\|pdf\|télécharg\|commander' | head -25
-            tr '\n' ' ' < v.html | grep -o 'href="[^"]*\(\.pdf\|100-questions\|question\)[^"]*"' | sort -u | head -30
-          done
-          echo "=== orphanet encyclopedie grand public"
-          for c in 117 536 90291 289390 80 397 3287 900 183 727 767 829 342 797 3002 98375 54057 88 91378 160 284264 728 1467 324 355 98292 221 85445 85443 91138 168956 35687 47612 1451; do
-            curl -sLA "$UA" "https://www.orpha.net/fr/disease/detail/$c" -o o.html
-            n=$(grep -o '<title>[^<]*' o.html | head -1)
-            l=$(tr '\n' ' ' < o.html | grep -o 'https\?://[^" ]*/pdfs/data/patho/Pub/[^" ]*\.pdf' | sort -u | head -3 | tr '\n' ' ')
-            echo "$c | $n | $l"
-          done
+          pdfs() { echo "=== $1"; curl -sLA "$UA" --max-time 25 "$1" | tr '\n' ' ' | grep -o '<a [^>]*href="[^"]*\.pdf[^"]*"[^>]*>[^<]\{0,120\}' | sed 's/\s\+/ /g; s/<a [^>]*href="\([^"]*\)"[^>]*>/\1 | /' | sort -u | head -40; }
+          for u in https://www.maladiesautoinflammatoires.fr/livretspatients https://www.maladiesautoinflammatoires.fr/livrets-patients https://www.maladiesautoinflammatoires.fr/tryptiques-patient \
+                   https://pitiesalpetriere.aphp.fr/lupus/la-mediatheque/ https://hpnfrance.com/documentations-patients/ \
+                   https://myopathiesinflammatoires.afm-telethon.fr/documentation/ https://www.association-sclerodermie.fr/association/documentation/ \
+                   https://sarcoidose-france.fr/documentation/ https://associationiris.org/documentation/nos-outils/ https://www.assocastleman.fr/ \
+                   https://www.vml-asso.org/maladie/fabry/ https://www.amsao.fr/ https://www.o-cyto.org/ https://affmf.fr/les-maladies/ \
+                   https://www.association-vascularites.org/les-vascularites-c-est-quoi/fiches-individuelles https://maladiesrares-necker.aphp.fr/100-questions-reponses-sur-la-mastocytose/ \
+                   https://marih.fr/ressources/ https://www.cereo.fr/ https://amylose.asso.fr/ ; do pdfs "$u"; done
+          echo "=== FAI2R questions-patients"
+          for s in behcet lupus-systemique sclerodermie-systemique myopathies-inflammatoires/dermatomyosite sarcoidose maladie-de-still-de-ladulte fievre-mediterraneenne-familiale uveites amylose-aa cryopyrinopathies; do
+            curl -sLA "$UA" -o /dev/null -w "%{http_code} $s\n" "https://www.fai2r.org/les-pathologies-rares/$s/questions-patients/"; done
