@@ -35,8 +35,12 @@ function viaCurl({ kind, url }) {
   } catch (e) { return `inaccessible (${e.message.split("\n")[0]})`; }
 }
 
+// Sites qui coupent toute connexion venant des serveurs GitHub (pare-feu anti-robots) : impossibles à
+// vérifier automatiquement, à contrôler à la main dans un navigateur.
+const UNCHECKABLE = ["rhumatismes.net"];
 const broken = [];
 for (const l of links) {
+  if (UNCHECKABLE.some(d => l.url.includes(d))) { console.log("?? ", l.kind, l.t, "(non vérifiable automatiquement)"); continue; }
   const err = await check(l);
   console.log(err ? "KO" : "OK", l.kind, l.t, err || "");
   if (err) broken.push(`- **${l.t}** (${l.kind}) → ${err} — ${l.url}`);
