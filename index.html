@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--k0:#2563eb;--k1:#db2777;--k2:#ea580c;--k3:#7c3aed;--k4:#0d9488;--sh:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.06);--bg:#f5f6fa;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e4e7ee;--accent:#1f5fbf;--chip:#eceef3;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
-:root[data-theme="dark"]{--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
+:root{--k0:#2563eb;--k1:#db2777;--k2:#ea580c;--k3:#7c3aed;--k4:#0d9488;--sh:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.06);--glow1:#d6e4ff;--glow2:#ecdfff;--glow3:#d9f3ea;--bg:#f5f6fa;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e4e7ee;--accent:#1f5fbf;--chip:#eceef3;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--glow1:#1a2850;--glow2:#2b1d4d;--glow3:#123329;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
+:root[data-theme="dark"]{--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--glow1:#1a2850;--glow2:#2b1d4d;--glow3:#123329;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -154,6 +154,10 @@ h1 a{display:inline-flex;align-items:center;gap:9px;font-weight:800}
 .tpl .acts button{border-radius:10px}
 .tpl .acts button.sec{padding:7px 10px}
 footer{border-top:0}
+/* Accueil : fond vivant */
+body.home{background:radial-gradient(circle at 10% 0%,var(--glow1) 0,transparent 42%),radial-gradient(circle at 95% 20%,var(--glow2) 0,transparent 40%),radial-gradient(circle at 50% 100%,var(--glow3) 0,transparent 45%),var(--bg);background-attachment:fixed;min-height:100vh}
+.home .top{background:transparent;box-shadow:none}
+#rot{background:linear-gradient(90deg,var(--k0),var(--k3));-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
 </style>
 </head>
 <body>
@@ -567,6 +571,7 @@ function render(){
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
   const home = tab === "accueil";
   $("accueil").style.display = home ? "block" : "none";
+  document.body.classList.toggle("home", home);
   [$("nTile0").textContent, $("nTile1").textContent, $("nTile2").textContent] = [`${D.length}`, `${P.length}`, `${T.length}`];
   const help = home || tab === "aide" || tab === "conseils";
   // Compteurs des onglets : nombre de résultats pour la recherche en cours.
