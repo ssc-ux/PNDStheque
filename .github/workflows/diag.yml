@@ -6,13 +6,17 @@ jobs:
     steps:
       - shell: bash {0}
         run: |
-          sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          echo "=== katana CP"; curl -sLA "$UA" -o cp.pdf -w "%{http_code} %{content_type}\n" https://www.katanasante.com/wp-content/uploads/2024/03/CP_Vascularites_100Q.pdf
-          pdfinfo cp.pdf | grep -i 'pages\|title'; pdftotext -l 2 cp.pdf - | head -40
-          echo "=== fai2r media search"
-          for q in vascularite VNS 100Q; do curl -sLA "$UA" "https://www.fai2r.org/wp-json/wp/v2/media?search=$q&per_page=50" | grep -o '"source_url":"[^"]*\.pdf"' | sed 's/\\//g'; done | sort -u
-          echo "=== france vascularites"
-          for u in https://www.association-vascularites.org/ https://www.association-vascularites.org/2-non-categorise/160-documentation-a-telecharger; do curl -sLA "$UA" "$u" | tr '\n' ' ' | grep -io '<a [^>]*href="[^"]*"[^>]*>[^<]*100 questions[^<]*\|href="[^"]*100[^"]*\.pdf"'; done | head
-          echo "=== katana pages"
-          for u in https://www.katanasante.com/nos-evenements/les-vascularites-en-100-questions/ https://www.editionskatanasante.com/portfolio/les-vascularites-necrosantes-systemiques/; do curl -sLA "$UA" "$u" | tr '\n' ' ' | grep -o 'href="[^"]*\.pdf"\|href="[^"]*\(calameo\|issuu\|flipbook\|feuilleter\|lire\)[^"]*"' | sort -u; done
+          V=https://www.association-vascularites.org
+          for p in /les-vascularites-c-est-quoi/les-vascularites-necrosantes-systemiques-en-100-questions /infos-et-recherche-medicales/les-vascularites-necrosantes-systemiques-en-100-questions; do
+            echo "=== $p"; curl -sLA "$UA" -o v.html -w "%{http_code}\n" "$V$p"
+            sed 's/<[^>]*>/ /g' v.html | tr -s ' \n' | grep -i 'question\|pdf\|télécharg\|commander' | head -25
+            tr '\n' ' ' < v.html | grep -o 'href="[^"]*\(\.pdf\|100-questions\|question\)[^"]*"' | sort -u | head -30
+          done
+          echo "=== orphanet encyclopedie grand public"
+          for c in 117 536 90291 289390 80 397 3287 900 183 727 767 829 342 797 3002 98375 54057 88 91378 160 284264 728 1467 324 355 98292 221 85445 85443 91138 168956 35687 47612 1451; do
+            curl -sLA "$UA" "https://www.orpha.net/fr/disease/detail/$c" -o o.html
+            n=$(grep -o '<title>[^<]*' o.html | head -1)
+            l=$(tr '\n' ' ' < o.html | grep -o 'https\?://[^" ]*/pdfs/data/patho/Pub/[^" ]*\.pdf' | sort -u | head -3 | tr '\n' ' ')
+            echo "$c | $n | $l"
+          done
