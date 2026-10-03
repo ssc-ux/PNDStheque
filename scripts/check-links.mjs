@@ -1,6 +1,7 @@
 // Vérifie tous les liens (PDF + pages HAS) déclarés entre DATA-START et DATA-END dans index.html.
 // Écrit la liste des liens cassés dans broken.md et sort en code 1 s'il y en a.
 import { writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { H, J, D, P, UA } from "./data.mjs";
 
 const links = D.flatMap(([t, , , pdf, page]) => [
@@ -21,7 +22,17 @@ async function check({ kind, url }) {
     if (kind === "PDF" && !type.includes("pdf")) return `pas un PDF (${type.split(";")[0]}) → ${r.url}`;
     if (kind !== "PDF" && /page introuvable|n'existe pas|404/i.test(body.match(/<title>([^<]*)/)?.[1] || "")) return "page introuvable";
     return null;
-  } catch (e) { return String(e.cause?.code || e.message); }
+  } catch (e) { return viaCurl({ kind, url }) ?? null; }
+}
+// Second essai avec curl : certains vieux serveurs (ex. rhumatismes.net) coupent la connexion TLS de Node
+// alors qu'ils répondent normalement aux navigateurs et à curl.
+function viaCurl({ kind, url }) {
+  try {
+    const [code, type = ""] = execFileSync("curl", ["-sL", "-A", UA, "-o", "/dev/null", "-w", "%{http_code} %{content_type}", url], { encoding: "utf8", timeout: 30000 }).split(" ");
+    if (code !== "200") return `HTTP ${code} (curl)`;
+    if (kind === "PDF" && !type.includes("pdf")) return `pas un PDF (${type}) (curl)`;
+    return null;
+  } catch (e) { return `inaccessible (${e.message.split("\n")[0]})`; }
 }
 
 const broken = [];
