@@ -14,6 +14,9 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-app
 .wrap{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
 h1{margin:0 0 4px;font-size:1.7rem}
 .sub{color:var(--muted);margin:0 0 8px}
+.tabs{display:flex;gap:4px;padding:4px;margin:0 0 14px;background:var(--chip);border:1px solid var(--line);border-radius:12px}
+.tabs button{flex:1;border:0;background:none;color:var(--muted);padding:9px 10px;border-radius:9px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .hint{color:var(--muted);font-size:.85rem;margin:0 0 18px}
 .hint svg{width:14px;height:14px;vertical-align:-2px}
 #q{width:100%;padding:12px 14px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
@@ -46,12 +49,16 @@ footer a{color:var(--accent)}
 <div class="wrap">
   <h1>PNDSthèque</h1>
   <p class="sub">Protocoles Nationaux de Diagnostic et de Soins (HAS) en médecine interne — 1 clic = PDF dans un nouvel onglet.</p>
-  <p class="hint"><span id="hintIcon"></span> sur une fiche : copie une phrase prête à coller dans un courrier au médecin traitant, avec le lien du PNDS. · ☆ : ajoute aux favoris.</p>
+  <div class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-tab="pnds" aria-selected="true">PNDS (médecins)</button>
+    <button role="tab" data-tab="patients" aria-selected="false">Livrets patients</button>
+  </div>
+  <p class="hint" id="hint"></p>
   <input id="q" type="search" placeholder="Rechercher une maladie (ex. lupus, Horton, ANCA…)" autocomplete="off" autofocus>
   <div class="cats" id="cats"></div>
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
-  <footer>Source : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a>. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
+  <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a> · <a href="https://www.fai2r.org/vie-quotidienne/ouvrages-100-questions/" target="_blank" rel="noopener">FAI²R — 100 questions</a>. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
   <span class="b new">récent</span> &lt; 1 an · <span class="b upd">mis à jour</span> nouvelle version HAS &lt; 1 an · <span class="b old">ancien</span> &gt; 3 ans · ☆ favoris enregistrés dans ce navigateur.<br>
   Réalisé par Quentin Astouati.</footer>
 </div>
@@ -94,6 +101,12 @@ const D = [
   ["Maladie de Fabry","Systémiques rares",2021,"2021-11/pnds_de_la_maladie_de_fabry_-_version_finale_-_20211115.pdf","p_3301584"],
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
 ];
+// Livrets patients « … 100 questions pour mieux gérer la maladie » (FAI²R), en PDF gratuit : [titre, maladie, année, URL]
+const P = [
+  ["Le lupus – 100 questions pour mieux gérer la maladie","lupus systémique",2024,"https://www.fai2r.org/wp-content/uploads/2024/02/LUPUS_100Q_FAI2R-2024.pdf"],
+  ["Le Gougerot-Sjögren – 100 questions pour mieux gérer la maladie","maladie de Sjögren",2021,"https://www.fai2r.org/wp-content/uploads/2021/09/SGS_100Q_version-en-ligne.pdf"],
+  ["La sclérodermie systémique – 100 questions pour mieux gérer la maladie","sclérodermie systémique",2021,"https://www.fai2r.org/wp-content/uploads/2021/07/Sclerodermie_100Q_version-en-ligne.pdf"]
+];
 // DATA-END
 const Y = new Date().getFullYear();
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -106,7 +119,13 @@ $("cats").innerHTML = cats.map(c => `<button aria-pressed="${c===cat}">${c}</but
 $("cats").onclick = e => { if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
   [...$("cats").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
-document.getElementById("hintIcon").innerHTML = ICON;
+let tab = location.hash === "#patients" ? "patients" : "pnds";
+const HINT = {
+  pnds: `${ICON} sur une fiche : copie une phrase prête à coller dans un courrier, à l'attention du médecin traitant, avec le lien du PNDS. · ☆ : ajoute aux favoris.`,
+  patients: `Livrets rédigés pour les patients et leurs proches par des spécialistes et des associations de patients (FAI²R). ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien du livret.`
+};
+$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab;
+  history.replaceState(null, "", tab === "patients" ? "#patients" : location.pathname + location.search); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
   const t = Object.assign(document.createElement("textarea"), { value: text }); // repli si l'API presse-papiers est bloquée
@@ -131,8 +150,24 @@ function card([t, c, y, pdf, page, maj]){
       ${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }
+// Phrase prête à coller dans le courrier du patient.
+const phraseP = (t, y, url) => `Pour mieux comprendre votre maladie, vous pouvez lire le livret « ${t} » (FAI²R, ${y}), rédigé par des médecins spécialistes avec des associations de patients et téléchargeable gratuitement : ${url}`.replace(/"/g, "&quot;");
+const cardP = ([t, m, y, url]) => `<div class="card">
+    <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
+    <button class="cp" style="right:8px" data-s="${phraseP(t, y, url)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button>
+    <div class="m"><span>${m}</span><span class="sp"></span><span>FAI²R ${y} · PDF ↗</span></div></div>`;
 function render(){
   const s = norm(q.value.trim());
+  [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
+  $("hint").innerHTML = HINT[tab];
+  $("cats").style.display = tab === "pnds" ? "" : "none";
+  if (tab === "patients") {
+    const r = P.filter(p => norm(p[0] + " " + p[1]).includes(s));
+    list.innerHTML = r.map(cardP).join("");
+    $("empty").textContent = "Aucun livret pour cette recherche.";
+    $("empty").style.display = r.length ? "none" : "block";
+    return;
+  }
   const r = D.filter(d => (cat==="Toutes" || (cat===FAV ? favs.has(d[0]) : d[1]===cat)) && norm(d[0]+" "+d[1]).includes(s))
              .sort((a,b) => (favs.has(b[0]) - favs.has(a[0])) || a[0].localeCompare(b[0],"fr"));
   list.innerHTML = r.map(card).join("");
