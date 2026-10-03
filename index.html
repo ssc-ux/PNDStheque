@@ -29,12 +29,12 @@ h1{margin:0 0 4px;font-size:1.7rem}
 .m a{color:var(--accent);text-decoration:none}
 .m a:hover{text-decoration:underline}
 .b{font-size:.72rem;font-weight:700;padding:1px 7px;border-radius:999px;border:1px solid currentColor}
-.b.new{color:var(--new)}.b.old{color:var(--old)}
+.b.new{color:var(--new)}.b.upd{color:var(--accent)}.b.old{color:var(--old)}
 .fav{position:absolute;top:8px;right:8px;background:none;border:0;cursor:pointer;font-size:1.25rem;line-height:1;color:var(--muted);padding:4px}
 .fav[aria-pressed=true]{color:var(--star)}
 .cp{position:absolute;top:8px;right:36px;background:none;border:0;cursor:pointer;color:var(--muted);padding:5px;line-height:0}
 .cp:hover{color:var(--accent)}.cp svg{width:17px;height:17px}
-.cp.ok::after{content:"Lien copié";position:absolute;right:0;top:-22px;white-space:nowrap;font-size:.72rem;line-height:1.4;background:var(--fg);color:var(--bg);padding:2px 7px;border-radius:6px}
+.cp.ok::after{content:"Phrase copiée";position:absolute;right:0;top:-22px;white-space:nowrap;font-size:.72rem;line-height:1.4;background:var(--fg);color:var(--bg);padding:2px 7px;border-radius:6px}
 #empty{color:var(--muted);display:none}
 footer{margin-top:32px;color:var(--muted);font-size:.8rem}
 footer a{color:var(--accent)}
@@ -49,12 +49,12 @@ footer a{color:var(--accent)}
   <div class="grid" id="list"></div>
   <p id="empty">Aucun résultat.</p>
   <footer>Source : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS — PNDS</a>. Vérifiez toujours la version la plus récente sur la page HAS de chaque protocole.<br>
-  <span class="b new">récent</span> &lt; 1 an · <span class="b old">ancien</span> &gt; 3 ans · ☆ favoris enregistrés dans ce navigateur.<br>
+  <span class="b new">récent</span> &lt; 1 an · <span class="b upd">mis à jour</span> nouvelle version HAS &lt; 1 an · <span class="b old">ancien</span> &gt; 3 ans · ☆ favoris enregistrés dans ce navigateur.<br>
   Réalisé par Quentin Astouati.</footer>
 </div>
 <script>
 // DATA-START
-// [titre, catégorie, année de version, PDF (chemin sous H) ou null, page HAS (id jcms) ou null]
+// [titre, catégorie, année de version, PDF (chemin sous H) ou null, page HAS (id jcms) ou null, mis à jour le "AAAA-MM" (facultatif)]
 const H = "https://www.has-sante.fr/upload/docs/application/pdf/", J = "https://www.has-sante.fr/jcms/";
 const D = [
   ["Lupus systémique de l'adulte et de l'enfant","Connectivites",2024,"2024-02/pnds_ls.pdf","p_3493410"],
@@ -109,19 +109,21 @@ async function copy(text){
   document.body.append(t); t.select(); document.execCommand("copy"); t.remove();
 }
 list.onclick = e => { const c = e.target.closest(".cp");
-  if (c) { copy(c.dataset.u).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return; }
+  if (c) { copy(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return; }
   const b = e.target.closest(".fav"); if (!b) return;
   const t = b.dataset.t; favs.has(t) ? favs.delete(t) : favs.add(t); store.set([...favs]); render(); };
 // "récent" = mis en ligne par la HAS il y a moins de 12 mois (mois tiré du chemin du PDF, ex. "2026-02/…")
 const NOW = new Date(), months = pdf => { const [a, m] = pdf.split("/")[0].split("-").map(Number); return (NOW.getFullYear() - a) * 12 + NOW.getMonth() + 1 - m; };
-const badge = (y, pdf) => pdf && months(pdf) < 12 ? `<span class="b new">récent</span>` : y != null && Y - y > 3 ? `<span class="b old">ancien</span>` : "";
-function card([t, c, y, pdf, page]){
+const badge = (y, pdf, maj) => maj && months(maj) < 12 ? `<span class="b upd">mis à jour</span>` : pdf && months(pdf) < 12 ? `<span class="b new">récent</span>` : y != null && Y - y > 3 ? `<span class="b old">ancien</span>` : "";
+// Phrase prête à coller dans un courrier au médecin traitant.
+const phrase = (t, y, url) => `Pour plus d'informations, vous pouvez consulter le Protocole National de Diagnostic et de Soins (PNDS) de la HAS « ${t} »${y ? ` (${y})` : ""} : ${url}`.replace(/"/g, "&quot;");
+function card([t, c, y, pdf, page, maj]){
   const main = pdf ? H + pdf : J + page, on = favs.has(t);
   return `<div class="card">
     <a class="t" href="${main}" target="_blank" rel="noopener">${t}</a>
-    <button class="cp" data-u="${main}" title="Copier le lien" aria-label="Copier le lien">${ICON}</button>
+    <button class="cp" data-s="${phrase(t, y, main)}" title="Copier une phrase pour le courrier (avec le lien)" aria-label="Copier une phrase pour le courrier">${ICON}</button>
     <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori">${on ? "★" : "☆"}</button>
-    <div class="m"><span>${c}</span>${badge(y, pdf)}<span class="sp"></span>
+    <div class="m"><span>${c}</span>${badge(y, pdf, maj)}<span class="sp"></span>
       ${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}
       <span>${pdf ? (y ?? "") + " · PDF ↗" : "page HAS ↗"}</span></div></div>`;
 }

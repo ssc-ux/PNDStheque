@@ -1,0 +1,42 @@
+name: Mises à jour des PNDS
+
+on:
+  schedule:
+    - cron: "11 7 * * 1" # chaque lundi
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Appliquer les mises à jour au site (sinon simple rapport)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/find-updates.mjs
+        env:
+          APPLY: ${{ (github.event_name == 'schedule' || inputs.apply) && '1' || '0' }}
+      - name: Publier et signaler
+        if: ${{ github.event_name == 'schedule' || inputs.apply }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git diff --quiet index.html && { echo "Aucune mise à jour."; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Mise à jour automatique des PNDS (nouvelles versions HAS)"
+          git push origin HEAD
+          git push origin HEAD:master || true
+          gh label create pnds-mis-a-jour --color 1d76db --force
+          body=$(node -e 'console.log(require("./updates.json").map(u => `- **${u.t}** : nouveau PDF https://www.has-sante.fr/upload/docs/application/pdf/${u.new}`).join("\n"))')
+          gh issue create --label pnds-mis-a-jour --title "PNDS mis à jour ($(date +%F))" \
+            --body "$(printf 'Nouvelles versions détectées et appliquées automatiquement au site (badge « mis à jour »).\n\n%s' "$body")"
