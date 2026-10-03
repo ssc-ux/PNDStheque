@@ -1,0 +1,8 @@
+name: diag (temporaire)
+on: workflow_dispatch
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/resolve.mjs p_3353127 p_3431473 p_3594164 p_3602131 p_3236879 p_3522408
