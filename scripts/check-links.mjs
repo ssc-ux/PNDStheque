@@ -14,7 +14,7 @@ const links = D.flatMap(([t, , , pdf, page]) => [
 async function check({ kind, url }) {
   try {
     // Referer = notre site : on teste le lien comme un vrai clic depuis la PNDSthèque.
-    const r = await fetch(url, { redirect: "follow", headers: { "User-Agent": UA, Referer: "https://ssc-ux.github.io/PNDStheque/" } });
+    const r = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(30000), headers: { "User-Agent": UA, Referer: "https://ssc-ux.github.io/PNDStheque/" } });
     const type = r.headers.get("content-type") || "";
     const body = kind === "PDF" ? "" : await r.text();
     await r.body?.cancel?.().catch(() => {});
