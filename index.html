@@ -116,8 +116,6 @@ const P = [
   ["Mieux connaître les amyloses", "amylose AL AA amyloses", "Association française contre l'amylose", 2020, "https://amylose.asso.fr/wp-content/uploads/2020/11/LivretMieuxConnaitreLamylose_Ed2020_WEB_V2.pdf", "PDF"],
   ["Amylose AA – fiches mémo patients et aidants", "amylose AA", "Association française contre l'amylose", 2023, "https://amylose.asso.fr/wp-content/uploads/2023/01/AA_Patients.pdf", "PDF"],
   ["Artérite à cellules géantes (Horton) – fiche patient", "Horton artérite à cellules géantes vascularite", "France Vascularites", 2020, "https://www.association-vascularites.org/images/fiches_individuelles_vascularites/fiche_ACG_v05_10_2020.pdf", "PDF"],
-  ["Abécédaire des vascularites systémiques", "vascularites ANCA GPA PAN Behçet Takayasu", "France Vascularites", 2017, "https://www.association-vascularites.org/images/definition_vascularites/abecedaire2/ABECEDAIRE_2017.pdf", "PDF"],
-  ["La maladie de Gaucher – livret d'information de base", "Gaucher maladie lysosomale", "International Gaucher Alliance", 2022, "https://gaucheralliance.org/wp-content/uploads/2022/12/GD-info-book_French.pdf", "PDF"],
   ["Syndrome des antiphospholipides – les réponses à vos questions", "SAPL", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-des-antiphospholipides/questions-patients/", "web"],
   ["Maladie de Horton et pseudo-polyarthrite rhizomélique – les réponses à vos questions", "artérite à cellules géantes PPR", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-de-horton-pseudo-polyarthrite-rhizomelique/questions-patients/", "web"],
   ["Maladie de Takayasu – les réponses à vos questions", "artérite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-de-takayasu/questions-patients/", "web"],
@@ -126,21 +124,20 @@ const P = [
   ["Granulomatose éosinophilique avec polyangéite – les réponses à vos questions", "GEPA Churg-Strauss ANCA vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/vascularites-a-anca/granulomatose-eosinophilique-polyangeite-churg-strauss/questions-patients/", "web"],
   ["Polyangéite microscopique – les réponses à vos questions", "PAM ANCA vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/vascularites-a-anca/micropolyangeite/questions-patients/", "web"],
   ["Purpura rhumatoïde (vascularite à IgA) – les réponses à vos questions", "vascularite IgA Henoch", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/purpura-rhumatoide/questions-patients/", "web"],
-  ["Vascularite cryoglobulinémique – les réponses à vos questions", "cryoglobulinémie", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/vascularite-cryoglobulinemique/questions-patients/", "web"],
-  ["Syndrome de Cogan – les réponses à vos questions", "vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/syndrome-de-cogan/questions-patients/", "web"],
-  ["Polychondrite atrophiante – les réponses à vos questions", "polychondrite chronique", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-vascularites/polychondrite-atrophiante/questions-patients/", "web"],
+  ["Vascularite cryoglobulinémique – les réponses à vos questions", "cryoglobulinémie", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/vascularite-cryoglobulinemique/questions-patients/", "web"],
+  ["Syndrome de Cogan – les réponses à vos questions", "vascularite", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-de-cogan/questions-patients/", "web"],
+  ["Polychondrite atrophiante – les réponses à vos questions", "polychondrite chronique", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/polychondrite-atrophiante/questions-patients/", "web"],
   ["Maladie de Still de l'adulte – les réponses à vos questions", "Still", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-de-still-de-ladulte/questions-patients/", "web"],
   ["Gougerot-Sjögren – les réponses à vos questions", "Sjögren", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/gougerot-sjogren/questions-patients/", "web"],
   ["Connectivite mixte – les réponses à vos questions", "Sharp", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/connectivite-mixte/questions-patients/", "web"],
   ["Syndrome des antisynthétases – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/antisynthetase/questions-patients/", "web"],
   ["Myosites nécrosantes auto-immunes – les réponses à vos questions", "myosite myopathie inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/myopathies-inflammatoires/myosites-necrosantes/questions-patients/", "web"],
   ["Amylose AA – les réponses à vos questions", "amylose", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/amylose-aa/questions-patients/", "web"],
-  ["Maladie associée aux IgG4 – les réponses à vos questions", "IgG4", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-systemiques/maladie-associee-aux-igg4/questions-patients/", "web"],
-  ["TRAPS – les réponses à vos questions", "auto-inflammatoire fièvre récurrente", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/traps/questions-patients/", "web"],
-  ["Syndrome de Muckle-Wells (CAPS) – les réponses à vos questions", "cryopyrine auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/syndrome-de-muckle-wells/questions-patients/", "web"],
-  ["Syndrome de Schnitzler – les réponses à vos questions", "auto-inflammatoire urticaire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/syndrome-de-schnitzler/questions-patients/", "web"],
-  ["Déficit en mévalonate kinase – les réponses à vos questions", "auto-inflammatoire HIDS", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/deficit-en-mevalonate-kinase/questions-patients/", "web"],
-  ["PFAPA – les réponses à vos questions", "fièvre périodique auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/x-autres-maladies-auto-inflammatoires/pfapa/questions-patients/", "web"]
+  ["Maladie associée aux IgG4 – les réponses à vos questions", "IgG4", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/maladie-associee-aux-igg4/questions-patients/", "web"],
+  ["Syndrome de Muckle-Wells (CAPS) – les réponses à vos questions", "cryopyrine auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-de-muckle-wells/questions-patients/", "web"],
+  ["Syndrome de Schnitzler – les réponses à vos questions", "auto-inflammatoire urticaire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/syndrome-de-schnitzler/questions-patients/", "web"],
+  ["Déficit en mévalonate kinase – les réponses à vos questions", "auto-inflammatoire HIDS", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/deficit-en-mevalonate-kinase/questions-patients/", "web"],
+  ["PFAPA – les réponses à vos questions", "fièvre périodique auto-inflammatoire", "FAI²R", null, "https://www.fai2r.org/les-pathologies-rares/pfapa/questions-patients/", "web"]
 ];
 // DATA-END
 const Y = new Date().getFullYear();
