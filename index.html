@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--k0:#2563eb;--k1:#db2777;--k2:#ea580c;--k3:#7c3aed;--k4:#0d9488;--sh:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.06);--glow1:#d6e4ff;--glow2:#ecdfff;--glow3:#d9f3ea;--bg:#f5f6fa;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e4e7ee;--accent:#1f5fbf;--chip:#eceef3;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--glow1:#1a2850;--glow2:#2b1d4d;--glow3:#123329;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
-:root[data-theme="dark"]{--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--glow1:#1a2850;--glow2:#2b1d4d;--glow3:#123329;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
+:root{--k0:#2563eb;--k1:#db2777;--k2:#ea580c;--k3:#7c3aed;--k4:#0d9488;--sh:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.06);--pnds:#17794a;--bg:#f5f6fa;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e4e7ee;--accent:#1f5fbf;--chip:#eceef3;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--pnds:#5cc68e;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}}
+:root[data-theme="dark"]{--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--pnds:#5cc68e;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -28,24 +28,6 @@ h1 a{color:inherit;text-decoration:none}
 .tabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
 .tabs .n{margin-left:5px;color:var(--accent);font-size:.8rem;font-variant-numeric:tabular-nums}
 .tabs .n:empty{display:none}
-/* Accueil */
-#accueil{display:none;padding:56px 0 8px}
-.hero-k{margin:0;color:var(--muted);font-size:1rem}
-.hero-rot{margin:6px 0 40px;font:600 clamp(1.6rem,5vw,2.4rem)/1.15 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.015em;text-wrap:balance}
-@media (max-width:600px){.hero-rot{min-height:2.3em}}
-#rot{display:inline-block;color:var(--accent);transition:opacity .35s,transform .35s}
-#rot.out{opacity:0;transform:translateY(6px)}
-@media (prefers-reduced-motion:reduce){#rot{transition:none}}
-.tiles{display:flex;flex-direction:column}
-.tiles{gap:10px;border:0}
-.tile{--c:var(--c1);--cs:var(--c1s);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;text-align:left;color:var(--fg);background:var(--cs);border:0;border-left:4px solid var(--c);border-radius:8px;padding:16px 18px;cursor:pointer;transition:transform .15s}
-.tile[data-go=patients]{--c:var(--c2);--cs:var(--c2s)}.tile[data-go=conseils]{--c:var(--c3);--cs:var(--c3s)}
-.tile:hover{transform:translateX(3px)}
-.tt{color:var(--c)}
-.tt{font-weight:600;font-size:1.1rem}
-.td{color:var(--muted);flex:1;min-width:0}
-.tn{color:var(--c);font-weight:600;font-size:.95rem;font-variant-numeric:tabular-nums}
-.home-help{color:var(--muted);font-size:.9rem;margin:20px 0 0}
 /* Listes */
 .cats{display:flex;gap:18px;margin:14px -16px 6px;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none}
 .cats::-webkit-scrollbar,.tabs::-webkit-scrollbar{display:none}
@@ -124,14 +106,6 @@ h1 a{display:inline-flex;align-items:center;gap:9px;font-weight:800}
 .tabs button[aria-selected=true]{background:var(--card);color:var(--fg);box-shadow:var(--sh);border:0}
 .tabs .n{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;line-height:18px}
 .pill{--cc:var(--muted);display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:600;color:var(--cc);background:color-mix(in srgb,var(--cc) 13%,transparent);white-space:nowrap}
-#accueil{padding:44px 0 8px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.tile{flex-direction:column;align-items:flex-start;gap:6px;background:var(--card);border:1px solid var(--line);border-left:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s}
-.tile:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(16,24,40,.1)}
-.tile .ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);margin-bottom:6px}
-.tile .ic svg{width:22px;height:22px}
-.tt{color:var(--fg);font-weight:700}
-.tn{margin-top:4px}
 .cats button{border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:500}
 .cats button[aria-pressed=true]{--cc:var(--accent);color:#fff;background:var(--cc);border-color:var(--cc)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:10px}
@@ -154,16 +128,41 @@ h1 a{display:inline-flex;align-items:center;gap:9px;font-weight:800}
 .tpl .acts button{border-radius:10px}
 .tpl .acts button.sec{padding:7px 10px}
 footer{border-top:0}
-/* Accueil : fond vivant */
-body.home{background:radial-gradient(circle at 10% 0%,var(--glow1) 0,transparent 42%),radial-gradient(circle at 95% 20%,var(--glow2) 0,transparent 40%),radial-gradient(circle at 50% 100%,var(--glow3) 0,transparent 45%),var(--bg);background-attachment:fixed;min-height:100vh}
-.home .top{background:transparent;box-shadow:none}
-#rot{background:linear-gradient(90deg,var(--k0),var(--k3));-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
+/* Accueil (même style que CorticoPlan) : logo au centre, recherche arrondie, onglets discrets en haut à droite. */
+.logo{background:#1f5fbf}
+#accueil,.accroche{display:none}
+.home::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 45% at 20% 18%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%),radial-gradient(55% 40% at 85% 30%,color-mix(in srgb,var(--pnds) 13%,transparent),transparent 70%),radial-gradient(50% 40% at 50% 95%,color-mix(in srgb,var(--c3) 9%,transparent),transparent 70%)}
+.home .top{position:static;display:flex;flex-direction:column;border:0;background:none;box-shadow:none}
+.home .top>:not(.tabs){width:100%;max-width:620px;margin-inline:auto}
+.home .tabs{order:-1;align-self:flex-end;gap:16px;margin:0 0 clamp(48px,14vh,120px);padding:0;background:none;border-radius:0}
+.home .tabs button{flex:none;padding:6px 0;font-size:.9rem;color:var(--muted);background:none;box-shadow:none}
+.home .tabs button:hover{color:var(--fg)}
+.home h1{display:flex;justify-content:center;margin:0 0 18px;font:600 clamp(2.2rem,9vw,3.4rem)/1 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.03em}
+.home h1 a{display:flex;align-items:center;gap:12px}
+.home h1 .logo{width:clamp(40px,10vw,52px);height:clamp(40px,10vw,52px);border-radius:12px;font-size:clamp(1.4rem,5vw,1.8rem)}
+.home .nm{background:linear-gradient(90deg,var(--accent),var(--pnds));-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
+.home .accroche{display:block;margin:0 0 16px;color:var(--muted);text-align:center}
+@media (max-width:600px){.home .accroche{min-height:3em}}
+#rot{display:inline-block;color:var(--accent);font-weight:600;transition:opacity .35s,transform .35s}
+#rot.out{opacity:0;transform:translateY(6px)}
+@media (prefers-reduced-motion:reduce){#rot{transition:none}}
+.home #q{padding:.9rem 1.25rem;font-size:1.05rem;border-radius:24px;box-shadow:0 1px 6px rgb(32 33 36/.12);transition:box-shadow .2s}
+.home #q:hover,.home #q:focus{box-shadow:0 2px 10px rgb(32 33 36/.22)}
+.home #accueil{display:block;max-width:720px;margin:0 auto;text-align:center}
+.boutons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px}
+.boutons button{min-height:40px;padding:0 18px;border:1px solid transparent;border-radius:8px;background:var(--card);color:var(--fg);font-size:.92rem;cursor:pointer}
+.boutons button:hover{border-color:var(--line);box-shadow:0 1px 2px rgb(0 0 0/.12)}
+.boutons .tn{margin-left:6px;color:var(--muted);font-variant-numeric:tabular-nums}
+.astuce{max-width:620px;margin:18px auto 0;color:var(--muted);font-size:.82rem}
+.astuce a{white-space:nowrap}
+.home footer{text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <h1><a href="./" id="home" title="Accueil"><span class="logo" aria-hidden="true">P</span>PNDSthèque</a></h1>
+    <h1><a href="./" id="home" title="Accueil"><span class="logo" aria-hidden="true">P</span><span class="nm">PNDSthèque</span></a></h1>
+    <p class="accroche" aria-live="polite">Pour <span id="rot">trouver un PNDS en 1 clic</span></p>
     <input id="q" type="search" placeholder="Rechercher : lupus, Horton, ANCA, colchicine…" autocomplete="off" aria-label="Rechercher">
     <nav class="tabs" role="tablist" id="tabs">
       <button role="tab" data-tab="pnds" aria-selected="true">PNDS<span class="n"></span></button>
@@ -173,15 +172,12 @@ body.home{background:radial-gradient(circle at 10% 0%,var(--glow1) 0,transparent
     </nav>
   </header>
   <section id="accueil">
-    
-      <p class="hero-k">PNDSthèque pour…</p>
-      <p class="hero-rot" aria-live="polite"><span id="rot">trouver un PNDS en 1 clic</span></p>
-    <div class="tiles">
-      <button class="tile" data-go="pnds"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><span class="tt">PNDS</span><span class="td">protocoles HAS en PDF</span><span class="tn" id="nTile0"></span></button>
-      <button class="tile" data-go="patients"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 20a6.5 6.5 0 0 0-3-5.5"/></svg></span><span class="tt">Patients</span><span class="td">livrets et fiches gratuits</span><span class="tn" id="nTile1"></span></button>
-      <button class="tile" data-go="conseils"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span class="tt">Conseils</span><span class="td">paragraphes pour le courrier</span><span class="tn" id="nTile2"></span></button>
+    <div class="boutons">
+      <button type="button" data-go="pnds">Parcourir les PNDS<span class="tn" id="nTile0"></span></button>
+      <button type="button" data-go="patients">Documents patients<span class="tn" id="nTile1"></span></button>
+      <button type="button" data-go="conseils">Conseils courrier<span class="tn" id="nTile2"></span></button>
     </div>
-    <p class="home-help"><a href="#aide" id="homeAide">Mode d'emploi</a></p>
+    <p class="astuce">🔎 Astuce : tapez une maladie ou un médicament, l'onglet qui contient des résultats s'ouvre tout seul. <a href="#aide" id="homeAide">Mode d'emploi</a></p>
   </section>
   <div class="cats" id="cats"></div>
   <div class="cats" id="pcats"></div>
@@ -193,7 +189,7 @@ body.home{background:radial-gradient(circle at 10% 0%,var(--glow1) 0,transparent
     <h2>Comment utiliser ce site ?</h2>
     <p>La PNDSthèque rassemble en un seul endroit les <strong>Protocoles Nationaux de Diagnostic et de Soins (PNDS)</strong> de la HAS utiles en médecine interne, ainsi que des <strong>documents d'information gratuits pour les patients</strong>. Elle sert à retrouver un protocole en quelques secondes et à transmettre facilement les bons liens dans vos courriers.</p>
 
-    <p>Depuis l'<strong>accueil</strong> (clic sur le logo « P »), trois tuiles mènent aux trois outils. Une recherche tapée directement sur l'accueil ouvre l'onglet qui contient des résultats.</p>
+    <p>Depuis l'<strong>accueil</strong> (clic sur le logo « P »), trois boutons mènent aux trois outils. Une recherche tapée directement sur l'accueil ouvre l'onglet qui contient des résultats.</p>
     <h3>1. Trouver un PNDS (onglet « PNDS »)</h3>
     <ul>
       <li>Tapez le nom de la maladie dans la barre de recherche (les accents ne comptent pas), ou filtrez par catégorie.</li>
@@ -570,8 +566,7 @@ function render(){
   const s = norm(q.value.trim());
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
   const home = tab === "accueil";
-  $("accueil").style.display = home ? "block" : "none";
-  document.body.classList.toggle("home", home);
+    document.body.classList.toggle("home", home);
   [$("nTile0").textContent, $("nTile1").textContent, $("nTile2").textContent] = [`${D.length}`, `${P.length}`, `${T.length}`];
   const help = home || tab === "aide" || tab === "conseils";
   // Compteurs des onglets : nombre de résultats pour la recherche en cours.
