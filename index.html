@@ -157,7 +157,7 @@ footer{border-top:0}
 .astuce a{white-space:nowrap}
 .home footer{text-align:center}
 /* Livrets « 100 questions » mis en avant */
-.card.q100{background:color-mix(in srgb,var(--k3) 8%,var(--card));border-color:color-mix(in srgb,var(--k3) 40%,var(--line))}
+.card.q100{background:color-mix(in srgb,var(--k2) 8%,var(--card));border-color:color-mix(in srgb,var(--k2) 40%,var(--line))}
 </style>
 </head>
 <body>
@@ -563,7 +563,7 @@ const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, 
 const cardP = ([t, kw, src, y, url, kind]) => `<div class="card${/100 questions/i.test(t) ? " q100" : ""}">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <span class="acts"><button class="cp" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button></span>
-    <div class="m">${/100 questions/i.test(t) ? `<span class="pill" style="--cc:var(--k3)">100 questions</span>` : ""}<span class="pill" style="--cc:var(--k${kind === "PDF" ? 1 : 0})">${kind === "PDF" ? "Livret PDF" : "En ligne"}</span><span>${src}</span>${y ? `<span>· ${y}</span>` : ""}</div></div>`;
+    <div class="m">${/100 questions/i.test(t) ? `<span class="pill" style="--cc:var(--k2)">100 questions</span>` : ""}<span class="pill" style="--cc:var(--k${kind === "PDF" ? 1 : 0})">${kind === "PDF" ? "Livret PDF" : "En ligne"}</span><span>${src}</span>${y ? `<span>· ${y}</span>` : ""}</div></div>`;
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
