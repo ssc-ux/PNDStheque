@@ -156,6 +156,8 @@ footer{border-top:0}
 .astuce{max-width:620px;margin:18px auto 0;color:var(--muted);font-size:.82rem}
 .astuce a{white-space:nowrap}
 .home footer{text-align:center}
+/* Livrets « 100 questions » mis en avant */
+.card.q100{background:color-mix(in srgb,var(--k3) 8%,var(--card));border-color:color-mix(in srgb,var(--k3) 40%,var(--line))}
 </style>
 </head>
 <body>
@@ -558,10 +560,10 @@ function card([t, c, y, pdf, page, maj]){
 }
 // Phrase prête à coller dans le courrier du patient.
 const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
-const cardP = ([t, kw, src, y, url, kind]) => `<div class="card">
+const cardP = ([t, kw, src, y, url, kind]) => `<div class="card${/100 questions/i.test(t) ? " q100" : ""}">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <span class="acts"><button class="cp" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button></span>
-    <div class="m"><span class="pill" style="--cc:var(--k${kind === "PDF" ? 1 : 0})">${kind === "PDF" ? "Livret PDF" : "En ligne"}</span><span>${src}</span>${y ? `<span>· ${y}</span>` : ""}</div></div>`;
+    <div class="m">${/100 questions/i.test(t) ? `<span class="pill" style="--cc:var(--k3)">100 questions</span>` : ""}<span class="pill" style="--cc:var(--k${kind === "PDF" ? 1 : 0})">${kind === "PDF" ? "Livret PDF" : "En ligne"}</span><span>${src}</span>${y ? `<span>· ${y}</span>` : ""}</div></div>`;
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
