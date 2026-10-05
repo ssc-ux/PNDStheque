@@ -1,0 +1,16 @@
+name: Nettoyage historique
+on: workflow_dispatch
+permissions:
+  actions: write
+jobs:
+  nettoyage:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SELF: ${{ github.run_id }}
+        run: |
+          gh api --paginate "repos/$REPO/actions/runs?per_page=100" -q '.workflow_runs[].id' | grep -vx "$SELF" | while read id; do
+            gh api -X DELETE "repos/$REPO/actions/runs/$id" && echo "supprimé $id"
+          done
