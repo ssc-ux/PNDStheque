@@ -539,8 +539,10 @@ const REL = {
   "Maladie associée aux IgG4": "igg4", "Maladie de Castleman": "castleman", "Amylose AL": "amyloses", "Amyloses cardiaques": "amyloses",
   "Mastocytoses non avancées de l'adulte": "mastocytose", "Déficits immunitaires héréditaires": "deficit immunitaire"
 };
+// Livrets « 100 questions » toujours en tête des documents patients.
+const q100 = p => /100 questions/i.test(p[0]);
 const relDocs = t => { const re = REL[t] && new RegExp(REL[t]); return re ? P.filter(p => re.test(norm(p[0] + " " + p[1])))
-  .sort((a, b) => (b[5] === "PDF") - (a[5] === "PDF") || (b[3] ?? 0) - (a[3] ?? 0)) : []; };
+  .sort((a, b) => q100(b) - q100(a) || (b[5] === "PDF") - (a[5] === "PDF") || (b[3] ?? 0) - (a[3] ?? 0)) : []; };
 // Date de version pour le tri « plus récents » : mise à jour, sinon mois du PDF, sinon année.
 const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
 let sortRecent = false, relT = null;
@@ -586,7 +588,7 @@ function render(){
     $("pcats").innerHTML = relT ? `<button class="chip" id="relClear">Documents liés au PNDS « ${relT} » ✕</button>`
       : PCATS.map(c => `<button aria-pressed="${c===pcat}">${c}</button>`).join("");
     const r = relT ? relDocs(relT) : P.filter(p => (pcat === "Tous" || (pcat === "Livrets PDF") === (p[5] === "PDF")) && norm(p[0] + " " + p[1] + " " + p[2]).includes(s))
-               .sort((a, b) => (b[5] === "PDF") - (a[5] === "PDF") || a[0].localeCompare(b[0], "fr"));
+               .sort((a, b) => q100(b) - q100(a) || (b[5] === "PDF") - (a[5] === "PDF") || a[0].localeCompare(b[0], "fr"));
     list.innerHTML = r.map(cardP).join("");
     $("count").textContent = `${r.length} document${r.length > 1 ? "s" : ""}`;
     $("empty").textContent = nD ? `Aucun document patient. ${nD} PNDS correspond${nD > 1 ? "ent" : ""} à « ${q.value.trim()} » : onglet PNDS.` : "Aucun document pour cette recherche.";
