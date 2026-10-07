@@ -124,6 +124,7 @@ h1 a{display:inline-flex;align-items:center;gap:9px;font-weight:800}
 .ctt{flex-basis:100%;order:0}
 .ctile::after{content:none}
 .rh{margin:22px 0 0;font:600 .95rem/1.3 "Plus Jakarta Sans",system-ui,sans-serif;color:var(--muted)}
+.rg{grid-column:1/-1;margin:10px 0 -4px}
 .rs{flex-basis:100%;color:var(--muted);font-size:.85rem}
 .tpl{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--sh);margin-top:14px}
 .tpl textarea{background:var(--bg)}
@@ -223,7 +224,7 @@ footer{border-top:0}
     <h3>3. Recommandations internationales (onglet « Recos »)</h3>
     <ul>
       <li>Les recommandations des sociétés savantes internationales (<strong>EULAR</strong>, <strong>ACR</strong>, et pour certaines maladies KDIGO, ERS, ATS, ASH, ISTH), dans leur <strong>dernière version</strong> uniquement. Un clic sur le titre ouvre l'article (en anglais, généralement en accès libre).</li>
-      <li>L'onglet s'ouvre sur la <strong>liste des maladies</strong>, rangées par catégorie comme les PNDS, plus une catégorie « Transversal » (vaccins, infections, grossesse, ostéoporose cortico-induite, risque cardiovasculaire). Un clic sur une maladie affiche ses recommandations, puis ses critères de classification ACR/EULAR.</li>
+      <li>L'onglet s'ouvre sur la <strong>liste des maladies</strong>, rangées par catégorie comme les PNDS, plus une catégorie « Transversal » (vaccins, infections, grossesse, ostéoporose cortico-induite, risque cardiovasculaire). Un clic sur une maladie affiche son PNDS de la HAS, puis ses recommandations internationales et ses critères de classification ACR/EULAR.</li>
       <li>Depuis une fiche PNDS, le lien <strong>« n recos »</strong> affiche directement les recommandations internationales de la même maladie.</li>
     </ul>
     <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Lupus systémique », cliquez sur « recos » : s'affichent les recommandations EULAR et ACR du lupus et de la néphropathie lupique, KDIGO et les critères de classification EULAR/ACR 2019.</div>
@@ -304,12 +305,12 @@ const D = [
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
 ];
 // Recommandations internationales, dernière version uniquement : [titre, mots-clés, société, année, DOI, maladie (voir RM), "critères" (facultatif)]
-// Maladies de l'onglet « Recos », dans l'ordre d'affichage : [maladie, catégorie]
-const RM = [["Lupus systémique","Connectivites"],["Syndrome des antiphospholipides","Connectivites"],["Sclérodermie systémique","Connectivites"],["Maladie de Sjögren","Connectivites"],["Myopathies inflammatoires","Connectivites"],["Pneumopathies interstitielles","Connectivites"],
-  ["Vascularites associées aux ANCA","Vascularites"],["Horton, Takayasu et pseudo-polyarthrite rhizomélique","Vascularites"],["Périartérite noueuse","Vascularites"],["Maladie de Behçet","Vascularites"],
-  ["Maladie de Still","Auto-inflammatoires"],["Fièvre méditerranéenne familiale","Auto-inflammatoires"],["Maladies auto-inflammatoires liées à l'IL-1","Auto-inflammatoires"],
-  ["Purpura thrombopénique immunologique (PTI)","Hémato-immunologie"],["Purpura thrombotique thrombocytopénique (PTT)","Hémato-immunologie"],
-  ["Maladie associée aux IgG4","Systémiques rares"],["Sarcoïdose","Systémiques rares"],
+// Maladies de l'onglet « Recos », dans l'ordre d'affichage : [maladie, catégorie, PNDS correspondants (titres de D, facultatif)]
+const RM = [["Lupus systémique","Connectivites",["Lupus systémique de l'adulte et de l'enfant"]],["Syndrome des antiphospholipides","Connectivites",["Syndrome des anti-phospholipides"]],["Sclérodermie systémique","Connectivites",["Sclérodermie systémique"]],["Maladie de Sjögren","Connectivites",["Maladie (syndrome) de Sjögren"]],["Myopathies inflammatoires","Connectivites",["Dermatomyosite de l'enfant et de l'adulte","Myosite à inclusions"]],["Pneumopathies interstitielles","Connectivites"],
+  ["Vascularites associées aux ANCA","Vascularites",["Vascularites associées aux ANCA (GPA, GEPA, PAM)"]],["Horton, Takayasu et pseudo-polyarthrite rhizomélique","Vascularites",["Artérite à cellules géantes (Horton)","Artérite de Takayasu"]],["Périartérite noueuse","Vascularites",["Vascularites nécrosantes systémiques (PAN)"]],["Maladie de Behçet","Vascularites",["Maladie de Behçet"]],
+  ["Maladie de Still","Auto-inflammatoires",["Maladie de Still de l'adulte"]],["Fièvre méditerranéenne familiale","Auto-inflammatoires",["Fièvre méditerranéenne familiale"]],["Maladies auto-inflammatoires liées à l'IL-1","Auto-inflammatoires",["Syndromes périodiques associés à la cryopyrine (CAPS)"]],
+  ["Purpura thrombopénique immunologique (PTI)","Hémato-immunologie",["Purpura thrombopénique immunologique de l'adulte","Purpura thrombopénique immunologique de l'enfant et de l'adolescent"]],["Purpura thrombotique thrombocytopénique (PTT)","Hémato-immunologie",["Purpura thrombotique thrombocytopénique"]],
+  ["Maladie associée aux IgG4","Systémiques rares",["Maladie associée aux IgG4"]],["Sarcoïdose","Systémiques rares",["Sarcoïdose pulmonaire"]],
   ["Vaccinations","Transversal"],["Infections : dépistage et prophylaxie","Transversal"],["Grossesse et procréation","Transversal"],["Ostéoporose cortico-induite","Transversal"],["Risque cardiovasculaire","Transversal"]];
 const DOI = "https://doi.org/";
 const R = [
@@ -630,7 +631,7 @@ const relRecos = t => { const re = REL[t] && new RegExp(REL[t]); return re ? R.f
 const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
 let sortRecent = false, relT = null, relR = null, rmal = null;
 function card([t, c, y, pdf, page, maj]){
-  const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t), nR = relRecos(t).length;
+  const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t), nR = tab === "recos" ? 0 : relRecos(t).length;
   return `<div class="card">
     <a class="t" href="${main}" target="_blank" rel="noopener">${t}</a>
     <span class="acts">
@@ -652,7 +653,7 @@ const cardR = r => `<div class="card">
     <span class="acts"><button class="cp" data-s="${refR(r)}" title="Copier la référence (avec le lien)" aria-label="Copier la référence">${ICON}</button></span>
     <div class="m">${rmal ? "" : `<span class="pill" style="${CC(rcat(r))}">${r[5]}</span>`}<b>${r[2]}</b><span>${r[3]}</span></div></div>`;
 // Accueil de l'onglet « Recos » : une tuile par maladie, regroupées par catégorie.
-$("rtiles").innerHTML = [...new Set(RM.map(m => m[1]))].map(c => `<h3 class="rh">${c}</h3><div class="ctiles">${RM.map(([m, mc], i) => mc !== c ? "" : (r => `<button class="ctile" data-mal="${i}"><span class="ctt">${m}</span><span class="pill" style="${CC(c)}">${r.length} reco${r.length > 1 ? "s" : ""}</span><span class="rs">${[...new Set(r.map(x => x[2]))].join(" · ")}</span></button>`)(R.filter(x => x[5] === m))).join("")}</div>`).join("");
+$("rtiles").innerHTML = [...new Set(RM.map(m => m[1]))].map(c => `<h3 class="rh">${c}</h3><div class="ctiles">${RM.map(([m, mc], i) => mc !== c ? "" : (r => `<button class="ctile" data-mal="${i}"><span class="ctt">${m}</span><span class="pill" style="${CC(c)}">${r.length} reco${r.length > 1 ? "s" : ""}</span><span class="rs">${[...(RM[i][2] ? ["PNDS HAS"] : []), ...new Set(r.map(x => x[2]))].join(" · ")}</span></button>`)(R.filter(x => x[5] === m))).join("")}</div>`).join("");
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
@@ -683,7 +684,9 @@ function render(){
     const tiles = !relR && !rmal && !s;
     $("list").style.display = $("bar").style.display = tiles ? "none" : "";
     const r = tiles ? [] : relR ? relRecos(relR) : R.filter(x => (s ? rTxt(x).includes(s) : x[5] === rmal)).sort(rsort);
-    list.innerHTML = r.map(cardR).join("");
+    // Vue d'une maladie : ses PNDS de la HAS d'abord, puis les recommandations internationales.
+    const pn = rmal && !s ? D.filter(d => (RM.find(m => m[0] === rmal)[2] || []).includes(d[0])) : [];
+    list.innerHTML = pn.length ? `<h3 class="rh rg">PNDS de la HAS</h3>${pn.map(card).join("")}<h3 class="rh rg">Recommandations internationales</h3>${r.map(cardR).join("")}` : r.map(cardR).join("");
     $("count").textContent = `${rmal && !s ? rmal + " · " : ""}${r.length} recommandation${r.length > 1 ? "s" : ""}`;
     $("empty").textContent = nD ? `Aucune recommandation internationale. ${nD} PNDS correspond${nD > 1 ? "ent" : ""} à « ${q.value.trim()} » : onglet PNDS.` : "Aucune recommandation pour cette recherche.";
     $("empty").style.display = r.length || tiles ? "none" : "block";
