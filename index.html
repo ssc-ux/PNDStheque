@@ -168,6 +168,7 @@ footer{border-top:0}
     <input id="q" type="search" placeholder="Rechercher : lupus, Horton, ANCA, colchicine…" autocomplete="off" aria-label="Rechercher">
     <nav class="tabs" role="tablist" id="tabs">
       <button role="tab" data-tab="pnds" aria-selected="true">PNDS<span class="n"></span></button>
+      <button role="tab" data-tab="recos" aria-selected="false">Recos<span class="n"></span></button>
       <button role="tab" data-tab="patients" aria-selected="false">Patients<span class="n"></span></button>
       <button role="tab" data-tab="conseils" aria-selected="false">Conseils<span class="n"></span></button>
       <button role="tab" data-tab="aide" aria-selected="false">Aide</button>
@@ -176,12 +177,14 @@ footer{border-top:0}
   <section id="accueil">
     <div class="boutons">
       <button type="button" data-go="pnds">Parcourir les PNDS<span class="tn" id="nTile0"></span></button>
+      <button type="button" data-go="recos">Recos EULAR, ACR…<span class="tn" id="nTile3"></span></button>
       <button type="button" data-go="patients">Documents patients<span class="tn" id="nTile1"></span></button>
       <button type="button" data-go="conseils">Conseils courrier<span class="tn" id="nTile2"></span></button>
     </div>
     <p class="astuce">🔎 Astuce : tapez une maladie ou un médicament, l'onglet qui contient des résultats s'ouvre tout seul. <a href="#aide" id="homeAide">Mode d'emploi</a></p>
   </section>
   <div class="cats" id="cats"></div>
+  <div class="cats" id="rcats"></div>
   <div class="cats" id="pcats"></div>
   <div class="bar" id="bar"><span id="count"></span><button id="sortBtn" title="Changer l'ordre">A → Z ▾</button></div>
   <div class="grid" id="list"></div>
@@ -214,7 +217,15 @@ footer{border-top:0}
       Pour mieux comprendre votre maladie, vous pouvez consulter le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024), conçu pour les patients et leurs proches et accessible gratuitement : https://www.fai2r.org/…/LUPUS_100Q_FAI2R-2024.pdf</blockquote>
       Avec <span class="ic" id="gi5"></span> seul, vous n'obtenez que le premier paragraphe (pour le médecin traitant).</div>
 
-    <h3>3. Donner de l'information au patient (onglet « Patients »)</h3>
+    <h3>3. Recommandations internationales (onglet « Recos »)</h3>
+    <ul>
+      <li>Les recommandations des sociétés savantes internationales (<strong>EULAR</strong>, <strong>ACR</strong>, et pour certaines maladies KDIGO, ERS, ATS, ASH, ISTH), dans leur <strong>dernière version</strong> uniquement. Un clic sur le titre ouvre l'article (en anglais, généralement en accès libre).</li>
+      <li>Classées par catégorie, comme les PNDS, avec une catégorie « Transversal » (vaccins, infections, grossesse, ostéoporose, risque cardiovasculaire). Le filtre « Critères de classification » regroupe les critères ACR/EULAR.</li>
+      <li>Depuis une fiche PNDS, le lien <strong>« n recos »</strong> affiche directement les recommandations internationales de la même maladie.</li>
+    </ul>
+    <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Lupus systémique », cliquez sur « recos » : s'affichent les recommandations EULAR et ACR du lupus et de la néphropathie lupique, KDIGO et les critères de classification EULAR/ACR 2019.</div>
+
+    <h3>4. Donner de l'information au patient (onglet « Patients »)</h3>
     <ul>
       <li>Documents <strong>gratuits</strong> et vérifiés : livrets « 100 questions », livrets et fiches des centres de référence, des filières de santé et des associations de patients, pages « Les réponses à vos questions » de FAI²R.</li>
       <li>Depuis une fiche PNDS, le lien <strong>« n doc. patients »</strong> affiche directement les documents de la même maladie.</li>
@@ -223,14 +234,14 @@ footer{border-top:0}
     <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Vascularites associées aux ANCA », cliquez sur « doc. patients » : s'affichent les fiches patients GPA, GEPA et PAM de France Vascularites et les pages FAI²R correspondantes. Choisissez celle qui correspond à la maladie de votre patient et cliquez sur <span class="ic" id="gi6"></span>.</div>
     <div class="ex"><b>Exemple :</b> un patient débute un traitement par colchicine ou tocilizumab ? Tapez le nom du médicament dans l'onglet « Patients » : une fiche dédiée (précautions, vaccins…) est disponible.</div>
 
-    <h3>4. Paragraphes de conseils (onglet « Conseils »)</h3>
+    <h3>5. Paragraphes de conseils (onglet « Conseils »)</h3>
     <ul>
       <li>Des paragraphes types à coller dans le courrier, rédigés d'après les sources officielles citées sous chaque bloc (PNDS de la HAS, livrets de la filière FAI²R).</li>
       <li>Le texte se modifie directement sur la page : les éléments entre [crochets] sont à adapter au patient (dose, dates, options). « Copier » prend en compte vos modifications ; « Réinitialiser » restaure le texte d'origine.</li>
     </ul>
     <div class="ex"><b>Exemple :</b> un patient débute 40 mg/j de prednisone. Cliquez sur « Mesures associées à la corticothérapie », remplacez « [dose] » par « 40 », supprimez les mentions entre crochets inutiles (AVK, diurétique…), puis « Copier » : le paragraphe est prêt pour le courrier.</div>
 
-    <h3>5. Un site tenu à jour automatiquement</h3>
+    <h3>6. Un site tenu à jour automatiquement</h3>
     <ul>
       <li>Chaque semaine, tous les liens sont vérifiés et les PNDS sont comparés à la dernière version publiée par la HAS : une nouvelle version remplace automatiquement l'ancienne (badge « mis à jour »).</li>
       <li>Chaque jour, les nouveaux PNDS de médecine interne publiés par la HAS sont repérés ; chaque mois, les nouveaux documents patients de nos sources.</li>
@@ -239,7 +250,7 @@ footer{border-top:0}
 
     <p class="note">Outil d'aide à l'orientation : il ne remplace ni l'avis médical ni la lecture des documents sources. Aucun cookie ni donnée personnelle n'est collecté.</p>
   </section>
-  <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS</a>, FAI²R, MaRIH, centres de référence et associations de patients. Outil d'aide à l'orientation, qui ne remplace ni l'avis médical ni la lecture des documents sources. Aucune donnée personnelle collectée.<br>
+  <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS</a>, EULAR, ACR, FAI²R, MaRIH, centres de référence et associations de patients. Outil d'aide à l'orientation, qui ne remplace ni l'avis médical ni la lecture des documents sources. Aucune donnée personnelle collectée.<br>
   Réalisé par Quentin Astouati.</footer>
 </div>
 <script>
@@ -288,6 +299,56 @@ const D = [
   ["Amyloses cardiaques","Systémiques rares",2021,"2021-12/pnds_amyloses_cardiaques_v20_version_finale_31082021.pdf","p_3306904"],
   ["Maladie de Fabry","Systémiques rares",2021,"2021-11/pnds_de_la_maladie_de_fabry_-_version_finale_-_20211115.pdf","p_3301584"],
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
+];
+// Recommandations internationales, dernière version uniquement : [titre, mots-clés, société, année, DOI, catégorie, "critères" (facultatif)]
+const DOI = "https://doi.org/";
+const R = [
+  ["Lupus systémique – prise en charge", "lupus LES SLE", "EULAR", 2023, "10.1136/ard-2023-224762", "Connectivites"],
+  ["Lupus systémique – traitement", "lupus LES SLE", "ACR", 2025, "10.1002/art.43452", "Connectivites"],
+  ["Lupus avec atteinte rénale (néphropathie lupique)", "lupus néphropathie lupique glomérulonéphrite rein", "EULAR", 2025, "10.1016/j.ard.2025.09.007", "Connectivites"],
+  ["Néphropathie lupique – dépistage, traitement et suivi", "lupus néphropathie lupique glomérulonéphrite rein", "ACR", 2024, "10.1002/art.43212", "Connectivites"],
+  ["Néphropathie lupique", "lupus néphropathie lupique glomérulonéphrite rein", "KDIGO", 2024, "10.1016/j.kint.2023.09.002", "Connectivites"],
+  ["Lupus systémique – critères de classification", "lupus LES SLE", "EULAR/ACR", 2019, "10.1136/annrheumdis-2018-214819", "Connectivites", "critères"],
+  ["Syndrome des antiphospholipides de l'adulte – prise en charge", "SAPL antiphospholipides anticoagulant thrombose", "EULAR", 2019, "10.1136/annrheumdis-2019-215213", "Connectivites"],
+  ["Syndrome des antiphospholipides – critères de classification", "SAPL antiphospholipides", "ACR/EULAR", 2023, "10.1002/art.42624", "Connectivites", "critères"],
+  ["Sclérodermie systémique – traitement", "sclérodermie ScS Raynaud ulcères digitaux", "EULAR", 2023, "10.1136/ard-2024-226430", "Connectivites"],
+  ["Sclérodermie systémique – critères de classification", "sclérodermie ScS", "ACR/EULAR", 2013, "10.1136/annrheumdis-2013-204424", "Connectivites", "critères"],
+  ["Maladie de Sjögren – traitements locaux et systémiques", "Sjögren Gougerot sécheresse", "EULAR", 2019, "10.1136/annrheumdis-2019-216114", "Connectivites"],
+  ["Maladie de Sjögren – critères de classification", "Sjögren Gougerot", "ACR/EULAR", 2016, "10.1136/annrheumdis-2016-210571", "Connectivites", "critères"],
+  ["Myopathies inflammatoires (dermatomyosite, myosites) – critères de classification", "myopathies inflammatoires dermatomyosite myosite polymyosite", "EULAR/ACR", 2017, "10.1136/annrheumdis-2017-211468", "Connectivites", "critères"],
+  ["Pneumopathies interstitielles des connectivites", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon", "ERS/EULAR", 2026, "10.1183/13993003.02533-2024", "Connectivites"],
+  ["Pneumopathies interstitielles des maladies auto-immunes – traitement", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon", "ACR/CHEST", 2023, "10.1002/art.42861", "Connectivites"],
+  ["Pneumopathies interstitielles des maladies auto-immunes – dépistage et surveillance", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon EFR scanner", "ACR/CHEST", 2023, "10.1002/art.43106", "Connectivites"],
+  ["Vascularites associées aux ANCA – prise en charge", "ANCA GPA GEPA PAM Wegener vascularite", "EULAR", 2022, "10.1136/ard-2022-223764", "Vascularites"],
+  ["Vascularites associées aux ANCA – prise en charge", "ANCA GPA GEPA PAM Wegener vascularite", "ACR/VF", 2021, "10.1002/art.41773", "Vascularites"],
+  ["Vascularites associées aux ANCA – atteinte rénale", "ANCA GPA PAM vascularite rein glomérulonéphrite", "KDIGO", 2024, "10.1016/j.kint.2023.10.008", "Vascularites"],
+  ["Granulomatose avec polyangéite (GPA) – critères de classification", "ANCA GPA Wegener vascularite", "ACR/EULAR", 2022, "10.1002/art.41986", "Vascularites", "critères"],
+  ["Polyangéite microscopique (PAM) – critères de classification", "ANCA PAM vascularite", "ACR/EULAR", 2022, "10.1002/art.41983", "Vascularites", "critères"],
+  ["Granulomatose éosinophilique avec polyangéite (GEPA) – critères de classification", "ANCA GEPA Churg-Strauss vascularite", "ACR/EULAR", 2022, "10.1002/art.41982", "Vascularites", "critères"],
+  ["Pseudo-polyarthrite rhizomélique et vascularites des gros vaisseaux (Horton, Takayasu)", "PPR pseudo-polyarthrite rhizomélique Horton artérite à cellules géantes Takayasu aortite", "EULAR", 2025, "10.1016/j.ard.2026.06.009", "Vascularites"],
+  ["Artérite à cellules géantes et artérite de Takayasu", "Horton artérite à cellules géantes Takayasu", "ACR/VF", 2021, "10.1002/art.41774", "Vascularites"],
+  ["Imagerie des vascularites des gros vaisseaux (échographie, TEP, IRM)", "Horton artérite à cellules géantes Takayasu aortite échographie TEP", "EULAR", 2023, "10.1136/ard-2023-224543", "Vascularites"],
+  ["Artérite à cellules géantes (Horton) – critères de classification", "Horton artérite à cellules géantes", "ACR/EULAR", 2022, "10.1136/ard-2022-223480", "Vascularites", "critères"],
+  ["Artérite de Takayasu – critères de classification", "Takayasu", "ACR/EULAR", 2022, "10.1002/art.42324", "Vascularites", "critères"],
+  ["Périartérite noueuse", "PAN périartérite noueuse vascularite", "ACR/VF", 2021, "10.1002/art.41776", "Vascularites"],
+  ["Maladie de Behçet", "Behçet aphtose", "EULAR", 2025, "10.1016/j.ard.2026.02.009", "Vascularites"],
+  ["Maladie de Still (de l'adulte et forme systémique de l'enfant)", "Still auto-inflammatoire", "EULAR/PReS", 2024, "10.1136/ard-2024-225851", "Auto-inflammatoires"],
+  ["Fièvre méditerranéenne familiale", "FMF fièvre méditerranéenne colchicine auto-inflammatoire", "EULAR", 2016, "10.1136/annrheumdis-2015-208690", "Auto-inflammatoires"],
+  ["Maladies auto-inflammatoires liées à l'IL-1 (CAPS, TRAPS, MKD, DIRA)", "CAPS Muckle-Wells TRAPS MKD DIRA auto-inflammatoire anakinra canakinumab", "EULAR/ACR", 2021, "10.1136/annrheumdis-2021-221801", "Auto-inflammatoires"],
+  ["Purpura thrombopénique immunologique (PTI)", "PTI thrombopénie", "ASH", 2019, "10.1182/bloodadvances.2019000966", "Hémato-immunologie"],
+  ["Purpura thrombopénique immunologique (PTI) – consensus international", "PTI thrombopénie", "Consensus international", 2019, "10.1182/bloodadvances.2019000812", "Hémato-immunologie"],
+  ["Purpura thrombotique thrombocytopénique (PTT) – traitement", "PTT microangiopathie thrombotique ADAMTS13 caplacizumab", "ISTH", 2020, "10.1111/jth.15010", "Hémato-immunologie"],
+  ["Maladie associée aux IgG4 – critères de classification", "IgG4", "ACR/EULAR", 2019, "10.1136/annrheumdis-2019-216561", "Systémiques rares", "critères"],
+  ["Sarcoïdose – traitement", "sarcoïdose", "ERS", 2021, "10.1183/13993003.04079-2020", "Systémiques rares"],
+  ["Sarcoïdose – diagnostic et dépistage des atteintes", "sarcoïdose", "ATS", 2020, "10.1164/rccm.202002-0251ST", "Systémiques rares"],
+  ["Vaccinations au cours des rhumatismes inflammatoires auto-immuns", "vaccins vaccination immunodéprimé immunosuppresseur", "EULAR", 2019, "10.1136/annrheumdis-2019-215882", "Transversal"],
+  ["Vaccinations au cours des maladies rhumatismales", "vaccins vaccination immunodéprimé immunosuppresseur", "ACR", 2022, "10.1002/art.42386", "Transversal"],
+  ["Dépistage et prophylaxie des infections (tuberculose, hépatites, pneumocystose…)", "infections tuberculose hépatite pneumocystose prophylaxie immunosuppresseur bilan", "EULAR", 2022, "10.1136/ard-2022-223335", "Transversal"],
+  ["Traitements de fond, procréation, grossesse et allaitement", "grossesse allaitement contraception procréation immunosuppresseur", "EULAR", 2024, "10.1016/j.ard.2025.02.023", "Transversal"],
+  ["Santé reproductive (contraception, grossesse, traitements)", "grossesse allaitement contraception procréation lupus SAPL", "ACR", 2020, "10.1002/art.41191", "Transversal"],
+  ["Santé de la femme, contraception et grossesse au cours du lupus et du SAPL", "grossesse contraception ménopause lupus SAPL antiphospholipides", "EULAR", 2016, "10.1136/annrheumdis-2016-209770", "Transversal"],
+  ["Ostéoporose cortico-induite – prévention et traitement", "corticoïdes corticothérapie ostéoporose", "ACR", 2022, "10.1002/art.42646", "Transversal"],
+  ["Risque cardiovasculaire (dont lupus et SAPL)", "cardiovasculaire lupus SAPL antiphospholipides athérome", "EULAR", 2022, "10.1136/annrheumdis-2021-221733", "Transversal"]
 ];
 // Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web"] — uniquement des documents gratuits
 const P = [
@@ -476,15 +537,15 @@ $("cats").onclick = e => {
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
 const ICON2 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>';
 for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", ICON2], ["gi5", ICON], ["gi6", ICON]]) document.getElementById(id).innerHTML = ic;
-let tab = ["#pnds", "#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "accueil";
+let tab = ["#pnds", "#recos", "#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "accueil";
 // Accueil : bandeau défilant et tuiles vers les onglets.
-const ROT = ["trouver un PNDS en 1 clic", "trouver une fiche d'information patient", "générer un texte pour le courrier", "générer des fiches conseils médicaments et maladies"];
+const ROT = ["trouver un PNDS en 1 clic", "trouver une reco EULAR ou ACR", "trouver une fiche d'information patient", "générer un texte pour le courrier", "générer des fiches conseils médicaments et maladies"];
 let rotI = 0;
 setInterval(() => { if (tab !== "accueil" || matchMedia("(prefers-reduced-motion: reduce)").matches && rotI > 99) return;
   const el = $("rot"); el.classList.add("out");
   setTimeout(() => { rotI = (rotI + 1) % ROT.length; el.textContent = ROT[rotI]; el.classList.remove("out"); }, 350); }, 2600);
 let tplOpen = null;
-const go = t => { tab = t; relT = null; tplOpen = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
+const go = t => { tab = t; relT = relR = null; tplOpen = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
 $("accueil").onclick = e => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };
 $("home").onclick = e => { e.preventDefault(); q.value = ""; go("accueil"); };
 $("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
@@ -505,9 +566,11 @@ const HINT = {
   pnds: `${ICON} : copie une phrase pour le courrier, à l'attention du médecin traitant, avec le lien du PNDS · ${ICON2} : copie en plus la phrase pour le patient avec son document · 📄 : documents patients liés · ☆ : favoris.`,
   patients: `Documents pour les patients et leurs proches, en accès libre : livrets « 100 questions », livrets de centres de référence et d'associations, pages « Les réponses à vos questions » de FAI²R. ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien.`
 };
+$("rcats").onclick = e => { if (e.target.closest("#relRClear")) { relR = null; render(); return; }
+  if (e.target.tagName !== "BUTTON") return; rcat = e.target.textContent; render(); };
 $("pcats").onclick = e => { if (e.target.closest("#relClear")) { relT = null; render(); return; }
   if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
-$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = null; tplOpen = null;
+$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = relR = null; tplOpen = null;
   history.replaceState(null, "", "#" + tab); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
@@ -515,6 +578,7 @@ async function copy(text){
   document.body.append(t); t.select(); document.execCommand("copy"); t.remove();
 }
 list.onclick = e => { const l = e.target.closest(".rel");
+  if (l && l.dataset.r) { relR = l.dataset.r; tab = "recos"; rcat = "Toutes"; q.value = ""; history.replaceState(null, "", "#recos"); render(); scrollTo(0, 0); return; }
   if (l) { relT = l.dataset.t; tab = "patients"; pcat = "Tous"; q.value = ""; history.replaceState(null, "", "#patients"); render(); scrollTo(0, 0); return; }
   const c = e.target.closest(".cp");
   if (c) { copy(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return; }
@@ -539,24 +603,31 @@ const REL = {
   "Purpura thrombopénique immunologique de l'enfant et de l'adolescent": "\\bpti\\b",
   "Purpura thrombotique thrombocytopénique": "\\bptt\\b", "Aplasies médullaires acquises et constitutionnelles": "aplasie|\\bhpn\\b",
   "Maladie associée aux IgG4": "igg4", "Maladie de Castleman": "castleman", "Amylose AL": "amyloses", "Amyloses cardiaques": "amyloses",
-  "Mastocytoses non avancées de l'adulte": "mastocytose", "Déficits immunitaires héréditaires": "deficit immunitaire"
+  "Mastocytoses non avancées de l'adulte": "mastocytose", "Déficits immunitaires héréditaires": "deficit immunitaire",
+  "Sarcoïdose pulmonaire": "sarcoidose"
 };
 // Livrets « 100 questions » toujours en tête des documents patients.
 const q100 = p => /100 questions/i.test(p[0]);
 const relDocs = t => { const re = REL[t] && new RegExp(REL[t]); return re ? P.filter(p => re.test(norm(p[0] + " " + p[1])))
   .sort((a, b) => q100(b) - q100(a) || (b[5] === "PDF") - (a[5] === "PDF") || (b[3] ?? 0) - (a[3] ?? 0)) : []; };
 // Date de version pour le tri « plus récents » : mise à jour, sinon mois du PDF, sinon année.
+// PNDS → recommandations internationales de la même maladie (même motif que pour les documents patients).
+const rTxt = r => norm(r[0] + " " + r[1] + " " + r[2] + " " + r[5]), crit = r => r[6] === "critères";
+const RCATS = ["Toutes", ...new Set(D.map(d => d[1]).concat(R.map(r => r[5])))].filter(c => c === "Toutes" || R.some(r => r[5] === c)).concat("Critères de classification");
+// Tri : par catégorie, puis dans l'ordre de la liste R (regroupée par maladie, critères après les recommandations).
+const rsort = (a, b) => RCATS.indexOf(a[5]) - RCATS.indexOf(b[5]) || R.indexOf(a) - R.indexOf(b);
+const relRecos = t => { const re = REL[t] && new RegExp(REL[t]); return re ? R.filter(r => re.test(norm(r[0] + " " + r[1]))).sort(rsort) : []; };
 const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
-let sortRecent = false, relT = null;
+let sortRecent = false, relT = null, relR = null, rcat = "Toutes";
 function card([t, c, y, pdf, page, maj]){
-  const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t);
+  const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t), nR = relRecos(t).length;
   return `<div class="card">
     <a class="t" href="${main}" target="_blank" rel="noopener">${t}</a>
     <span class="acts">
       <button class="cp" data-s="${phrase(t, y, main)}" title="Copier la phrase pour le médecin traitant (avec le lien)" aria-label="Copier une phrase pour le courrier">${ICON}</button>
       ${rel.length ? `<button class="cp" data-s="${phrase(t, y, main)}&#10;&#10;${phraseP(rel[0][0], rel[0][2], rel[0][3], rel[0][4], rel[0][5])}" title="Copier les deux phrases : médecin traitant + patient" aria-label="Copier les phrases médecin traitant et patient">${ICON2}</button>` : ""}
       <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori" title="Favori">${on ? "★" : "☆"}</button></span>
-    <div class="m"><span class="pill" style="${CC(c)}">${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
+    <div class="m"><span class="pill" style="${CC(c)}">${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${nR ? `<button class="rel" data-r="${t}">${nR} reco${nR > 1 ? "s" : ""}</button>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
 const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
@@ -564,6 +635,12 @@ const cardP = ([t, kw, src, y, url, kind]) => `<div class="card${/100 questions/
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <span class="acts"><button class="cp" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button></span>
     <div class="m">${/100 questions/i.test(t) ? `<span class="pill" style="--cc:var(--k2)">100 questions</span>` : ""}<span class="pill" style="--cc:var(--k${kind === "PDF" ? 1 : 0})">${kind === "PDF" ? "Livret PDF" : "En ligne"}</span><span>${src}</span>${y ? `<span>· ${y}</span>` : ""}</div></div>`;
+// Référence prête à coller (ex. « Recommandations EULAR 2023 – Lupus systémique – prise en charge : https://doi.org/… »).
+const refR = ([t, , soc, y, doi, , c]) => `${c ? "Critères de classification" : "Recommandations"} ${soc} ${y} – ${t.replace(/ – critères de classification$/, "")} : ${DOI + doi}`.replace(/"/g, "&quot;");
+const cardR = r => `<div class="card">
+    <a class="t" href="${DOI + r[4]}" target="_blank" rel="noopener">${r[0]}</a>
+    <span class="acts"><button class="cp" data-s="${refR(r)}" title="Copier la référence (avec le lien)" aria-label="Copier la référence">${ICON}</button></span>
+    <div class="m"><span class="pill" style="${CC(r[5])}">${r[5]}</span><b>${r[2]}</b><span>${r[3]}</span></div></div>`;
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
@@ -571,21 +648,32 @@ function render(){
   [...$("tabs").children].forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab));
   const home = tab === "accueil";
     document.body.classList.toggle("home", home);
-  [$("nTile0").textContent, $("nTile1").textContent, $("nTile2").textContent] = [`${D.length}`, `${P.length}`, `${T.length}`];
+  [$("nTile0").textContent, $("nTile1").textContent, $("nTile2").textContent, $("nTile3").textContent] = [`${D.length}`, `${P.length}`, `${T.length}`, `${R.length}`];
   const help = home || tab === "aide" || tab === "conseils";
   // Compteurs des onglets : nombre de résultats pour la recherche en cours.
   const [nD, nP] = [D.filter(d => norm(d[0] + " " + d[1]).includes(s)).length, P.filter(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)).length];
-  const nT = T.filter(x => norm(x.titre + " " + x.texte).includes(s)).length;
-  const nEl = $("tabs").querySelectorAll(".n"); nEl[0].textContent = s ? nD : ""; nEl[1].textContent = s ? nP : ""; nEl[2].textContent = s ? nT : "";
+  const nT = T.filter(x => norm(x.titre + " " + x.texte).includes(s)).length, nR = R.filter(r => rTxt(r).includes(s)).length;
+  const nEl = $("tabs").querySelectorAll(".n"); [nD, nR, nP, nT].forEach((n, i) => nEl[i].textContent = s ? n : "");
   T.forEach((x, i) => { $("tplBox" + i).hidden = tplOpen !== i; $("ct" + i).hidden = !!s && !norm(x.titre + " " + x.texte).includes(s); });
   $("ctiles").hidden = $("chint").hidden = tplOpen != null;
   $("list").style.display = $("bar").style.display = help ? "none" : "";
   $("guide").style.display = tab === "aide" ? "block" : "none";
   $("conseils").style.display = tab === "conseils" ? "block" : "none";
-  if (help) { $("cats").style.display = $("pcats").style.display = $("empty").style.display = "none"; return; }
+  if (help) { $("cats").style.display = $("pcats").style.display = $("rcats").style.display = $("empty").style.display = "none"; return; }
   $("sortBtn").style.display = tab === "pnds" ? "" : "none";
   $("cats").style.display = tab === "pnds" ? "" : "none";
   $("pcats").style.display = tab === "patients" ? "" : "none";
+  $("rcats").style.display = tab === "recos" ? "" : "none";
+  if (tab === "recos") {
+    $("rcats").innerHTML = relR ? `<button class="chip" id="relRClear">Recommandations liées au PNDS « ${relR} » ✕</button>`
+      : RCATS.map(c => `<button aria-pressed="${c===rcat}" style="${CC(c)}">${c}</button>`).join("");
+    const r = relR ? relRecos(relR) : R.filter(x => (rcat === "Toutes" || (rcat === "Critères de classification" ? crit(x) : x[5] === rcat)) && rTxt(x).includes(s)).sort(rsort);
+    list.innerHTML = r.map(cardR).join("");
+    $("count").textContent = `${r.length} recommandation${r.length > 1 ? "s" : ""}`;
+    $("empty").textContent = nD ? `Aucune recommandation internationale. ${nD} PNDS correspond${nD > 1 ? "ent" : ""} à « ${q.value.trim()} » : onglet PNDS.` : "Aucune recommandation pour cette recherche.";
+    $("empty").style.display = r.length ? "none" : "block";
+    return;
+  }
   if (tab === "patients") {
     $("pcats").innerHTML = relT ? `<button class="chip" id="relClear">Documents liés au PNDS « ${relT} » ✕</button>`
       : PCATS.map(c => `<button aria-pressed="${c===pcat}">${c}</button>`).join("");
@@ -604,9 +692,9 @@ function render(){
   $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : nP ? `Aucun PNDS. ${nP} document${nP > 1 ? "s" : ""} patient${nP > 1 ? "s" : ""} correspond${nP > 1 ? "ent" : ""} : onglet Patients.` : "Aucun résultat.";
   $("empty").style.display = r.length ? "none" : "block";
 }
-q.oninput = () => { relT = null; tplOpen = null;
+q.oninput = () => { relT = relR = null; tplOpen = null;
   if (tab === "accueil" && q.value.trim()) { const s = norm(q.value.trim());
-    tab = D.some(d => norm(d[0] + " " + d[1]).includes(s)) ? "pnds" : P.some(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)) ? "patients" : T.some(x => norm(x.titre + " " + x.texte).includes(s)) ? "conseils" : "pnds";
+    tab = D.some(d => norm(d[0] + " " + d[1]).includes(s)) ? "pnds" : P.some(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)) ? "patients" : R.some(r => rTxt(r).includes(s)) ? "recos" : T.some(x => norm(x.titre + " " + x.texte).includes(s)) ? "conseils" : "pnds";
     history.replaceState(null, "", "#" + tab); }
   render(); }; render();
 // Curseur directement dans la recherche sur ordinateur (pas sur mobile, pour ne pas ouvrir le clavier).
