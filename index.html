@@ -123,6 +123,8 @@ h1 a{display:inline-flex;align-items:center;gap:9px;font-weight:800}
 .ctile .pill{order:-1}
 .ctt{flex-basis:100%;order:0}
 .ctile::after{content:none}
+.rh{margin:22px 0 0;font:600 .95rem/1.3 "Plus Jakarta Sans",system-ui,sans-serif;color:var(--muted)}
+.rs{flex-basis:100%;color:var(--muted);font-size:.85rem}
 .tpl{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--sh);margin-top:14px}
 .tpl textarea{background:var(--bg)}
 .tpl .acts button{border-radius:10px}
@@ -185,6 +187,7 @@ footer{border-top:0}
   </section>
   <div class="cats" id="cats"></div>
   <div class="cats" id="rcats"></div>
+  <section id="rtiles"></section>
   <div class="cats" id="pcats"></div>
   <div class="bar" id="bar"><span id="count"></span><button id="sortBtn" title="Changer l'ordre">A → Z ▾</button></div>
   <div class="grid" id="list"></div>
@@ -220,7 +223,7 @@ footer{border-top:0}
     <h3>3. Recommandations internationales (onglet « Recos »)</h3>
     <ul>
       <li>Les recommandations des sociétés savantes internationales (<strong>EULAR</strong>, <strong>ACR</strong>, et pour certaines maladies KDIGO, ERS, ATS, ASH, ISTH), dans leur <strong>dernière version</strong> uniquement. Un clic sur le titre ouvre l'article (en anglais, généralement en accès libre).</li>
-      <li>Classées par catégorie, comme les PNDS, avec une catégorie « Transversal » (vaccins, infections, grossesse, ostéoporose, risque cardiovasculaire). Le filtre « Critères de classification » regroupe les critères ACR/EULAR.</li>
+      <li>L'onglet s'ouvre sur la <strong>liste des maladies</strong>, rangées par catégorie comme les PNDS, plus une catégorie « Transversal » (vaccins, infections, grossesse, ostéoporose cortico-induite, risque cardiovasculaire). Un clic sur une maladie affiche ses recommandations, puis ses critères de classification ACR/EULAR.</li>
       <li>Depuis une fiche PNDS, le lien <strong>« n recos »</strong> affiche directement les recommandations internationales de la même maladie.</li>
     </ul>
     <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Lupus systémique », cliquez sur « recos » : s'affichent les recommandations EULAR et ACR du lupus et de la néphropathie lupique, KDIGO et les critères de classification EULAR/ACR 2019.</div>
@@ -300,55 +303,62 @@ const D = [
   ["Maladie de Fabry","Systémiques rares",2021,"2021-11/pnds_de_la_maladie_de_fabry_-_version_finale_-_20211115.pdf","p_3301584"],
   ["Maladie de Gaucher","Systémiques rares",2022,"2022-05/pnds_maladie_de_gaucher_cetg_avril_2022.pdf","p_3339127"]
 ];
-// Recommandations internationales, dernière version uniquement : [titre, mots-clés, société, année, DOI, catégorie, "critères" (facultatif)]
+// Recommandations internationales, dernière version uniquement : [titre, mots-clés, société, année, DOI, maladie (voir RM), "critères" (facultatif)]
+// Maladies de l'onglet « Recos », dans l'ordre d'affichage : [maladie, catégorie]
+const RM = [["Lupus systémique","Connectivites"],["Syndrome des antiphospholipides","Connectivites"],["Sclérodermie systémique","Connectivites"],["Maladie de Sjögren","Connectivites"],["Myopathies inflammatoires","Connectivites"],["Pneumopathies interstitielles","Connectivites"],
+  ["Vascularites associées aux ANCA","Vascularites"],["Horton, Takayasu et pseudo-polyarthrite rhizomélique","Vascularites"],["Périartérite noueuse","Vascularites"],["Maladie de Behçet","Vascularites"],
+  ["Maladie de Still","Auto-inflammatoires"],["Fièvre méditerranéenne familiale","Auto-inflammatoires"],["Maladies auto-inflammatoires liées à l'IL-1","Auto-inflammatoires"],
+  ["Purpura thrombopénique immunologique (PTI)","Hémato-immunologie"],["Purpura thrombotique thrombocytopénique (PTT)","Hémato-immunologie"],
+  ["Maladie associée aux IgG4","Systémiques rares"],["Sarcoïdose","Systémiques rares"],
+  ["Vaccinations","Transversal"],["Infections : dépistage et prophylaxie","Transversal"],["Grossesse et procréation","Transversal"],["Ostéoporose cortico-induite","Transversal"],["Risque cardiovasculaire","Transversal"]];
 const DOI = "https://doi.org/";
 const R = [
-  ["Lupus systémique – prise en charge", "lupus LES SLE", "EULAR", 2023, "10.1136/ard-2023-224762", "Connectivites"],
-  ["Lupus systémique – traitement", "lupus LES SLE", "ACR", 2025, "10.1002/art.43452", "Connectivites"],
-  ["Lupus avec atteinte rénale (néphropathie lupique)", "lupus néphropathie lupique glomérulonéphrite rein", "EULAR", 2025, "10.1016/j.ard.2025.09.007", "Connectivites"],
-  ["Néphropathie lupique – dépistage, traitement et suivi", "lupus néphropathie lupique glomérulonéphrite rein", "ACR", 2024, "10.1002/art.43212", "Connectivites"],
-  ["Néphropathie lupique", "lupus néphropathie lupique glomérulonéphrite rein", "KDIGO", 2024, "10.1016/j.kint.2023.09.002", "Connectivites"],
-  ["Lupus systémique – critères de classification", "lupus LES SLE", "EULAR/ACR", 2019, "10.1136/annrheumdis-2018-214819", "Connectivites", "critères"],
-  ["Syndrome des antiphospholipides de l'adulte – prise en charge", "SAPL antiphospholipides anticoagulant thrombose", "EULAR", 2019, "10.1136/annrheumdis-2019-215213", "Connectivites"],
-  ["Syndrome des antiphospholipides – critères de classification", "SAPL antiphospholipides", "ACR/EULAR", 2023, "10.1002/art.42624", "Connectivites", "critères"],
-  ["Sclérodermie systémique – traitement", "sclérodermie ScS Raynaud ulcères digitaux", "EULAR", 2023, "10.1136/ard-2024-226430", "Connectivites"],
-  ["Sclérodermie systémique – critères de classification", "sclérodermie ScS", "ACR/EULAR", 2013, "10.1136/annrheumdis-2013-204424", "Connectivites", "critères"],
-  ["Maladie de Sjögren – traitements locaux et systémiques", "Sjögren Gougerot sécheresse", "EULAR", 2019, "10.1136/annrheumdis-2019-216114", "Connectivites"],
-  ["Maladie de Sjögren – critères de classification", "Sjögren Gougerot", "ACR/EULAR", 2016, "10.1136/annrheumdis-2016-210571", "Connectivites", "critères"],
-  ["Myopathies inflammatoires (dermatomyosite, myosites) – critères de classification", "myopathies inflammatoires dermatomyosite myosite polymyosite", "EULAR/ACR", 2017, "10.1136/annrheumdis-2017-211468", "Connectivites", "critères"],
-  ["Pneumopathies interstitielles des connectivites", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon", "ERS/EULAR", 2026, "10.1183/13993003.02533-2024", "Connectivites"],
-  ["Pneumopathies interstitielles des maladies auto-immunes – traitement", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon", "ACR/CHEST", 2023, "10.1002/art.42861", "Connectivites"],
-  ["Pneumopathies interstitielles des maladies auto-immunes – dépistage et surveillance", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon EFR scanner", "ACR/CHEST", 2023, "10.1002/art.43106", "Connectivites"],
-  ["Vascularites associées aux ANCA – prise en charge", "ANCA GPA GEPA PAM Wegener vascularite", "EULAR", 2022, "10.1136/ard-2022-223764", "Vascularites"],
-  ["Vascularites associées aux ANCA – prise en charge", "ANCA GPA GEPA PAM Wegener vascularite", "ACR/VF", 2021, "10.1002/art.41773", "Vascularites"],
-  ["Vascularites associées aux ANCA – atteinte rénale", "ANCA GPA PAM vascularite rein glomérulonéphrite", "KDIGO", 2024, "10.1016/j.kint.2023.10.008", "Vascularites"],
-  ["Granulomatose avec polyangéite (GPA) – critères de classification", "ANCA GPA Wegener vascularite", "ACR/EULAR", 2022, "10.1002/art.41986", "Vascularites", "critères"],
-  ["Polyangéite microscopique (PAM) – critères de classification", "ANCA PAM vascularite", "ACR/EULAR", 2022, "10.1002/art.41983", "Vascularites", "critères"],
-  ["Granulomatose éosinophilique avec polyangéite (GEPA) – critères de classification", "ANCA GEPA Churg-Strauss vascularite", "ACR/EULAR", 2022, "10.1002/art.41982", "Vascularites", "critères"],
-  ["Pseudo-polyarthrite rhizomélique et vascularites des gros vaisseaux (Horton, Takayasu)", "PPR pseudo-polyarthrite rhizomélique Horton artérite à cellules géantes Takayasu aortite", "EULAR", 2025, "10.1016/j.ard.2026.06.009", "Vascularites"],
-  ["Artérite à cellules géantes et artérite de Takayasu", "Horton artérite à cellules géantes Takayasu", "ACR/VF", 2021, "10.1002/art.41774", "Vascularites"],
-  ["Imagerie des vascularites des gros vaisseaux (échographie, TEP, IRM)", "Horton artérite à cellules géantes Takayasu aortite échographie TEP", "EULAR", 2023, "10.1136/ard-2023-224543", "Vascularites"],
-  ["Artérite à cellules géantes (Horton) – critères de classification", "Horton artérite à cellules géantes", "ACR/EULAR", 2022, "10.1136/ard-2022-223480", "Vascularites", "critères"],
-  ["Artérite de Takayasu – critères de classification", "Takayasu", "ACR/EULAR", 2022, "10.1002/art.42324", "Vascularites", "critères"],
-  ["Périartérite noueuse", "PAN périartérite noueuse vascularite", "ACR/VF", 2021, "10.1002/art.41776", "Vascularites"],
-  ["Maladie de Behçet", "Behçet aphtose", "EULAR", 2025, "10.1016/j.ard.2026.02.009", "Vascularites"],
-  ["Maladie de Still (de l'adulte et forme systémique de l'enfant)", "Still auto-inflammatoire", "EULAR/PReS", 2024, "10.1136/ard-2024-225851", "Auto-inflammatoires"],
-  ["Fièvre méditerranéenne familiale", "FMF fièvre méditerranéenne colchicine auto-inflammatoire", "EULAR", 2016, "10.1136/annrheumdis-2015-208690", "Auto-inflammatoires"],
-  ["Maladies auto-inflammatoires liées à l'IL-1 (CAPS, TRAPS, MKD, DIRA)", "CAPS Muckle-Wells TRAPS MKD DIRA auto-inflammatoire anakinra canakinumab", "EULAR/ACR", 2021, "10.1136/annrheumdis-2021-221801", "Auto-inflammatoires"],
-  ["Purpura thrombopénique immunologique (PTI)", "PTI thrombopénie", "ASH", 2019, "10.1182/bloodadvances.2019000966", "Hémato-immunologie"],
-  ["Purpura thrombopénique immunologique (PTI) – consensus international", "PTI thrombopénie", "Consensus international", 2019, "10.1182/bloodadvances.2019000812", "Hémato-immunologie"],
-  ["Purpura thrombotique thrombocytopénique (PTT) – traitement", "PTT microangiopathie thrombotique ADAMTS13 caplacizumab", "ISTH", 2020, "10.1111/jth.15010", "Hémato-immunologie"],
-  ["Maladie associée aux IgG4 – critères de classification", "IgG4", "ACR/EULAR", 2019, "10.1136/annrheumdis-2019-216561", "Systémiques rares", "critères"],
-  ["Sarcoïdose – traitement", "sarcoïdose", "ERS", 2021, "10.1183/13993003.04079-2020", "Systémiques rares"],
-  ["Sarcoïdose – diagnostic et dépistage des atteintes", "sarcoïdose", "ATS", 2020, "10.1164/rccm.202002-0251ST", "Systémiques rares"],
-  ["Vaccinations au cours des rhumatismes inflammatoires auto-immuns", "vaccins vaccination immunodéprimé immunosuppresseur", "EULAR", 2019, "10.1136/annrheumdis-2019-215882", "Transversal"],
-  ["Vaccinations au cours des maladies rhumatismales", "vaccins vaccination immunodéprimé immunosuppresseur", "ACR", 2022, "10.1002/art.42386", "Transversal"],
-  ["Dépistage et prophylaxie des infections (tuberculose, hépatites, pneumocystose…)", "infections tuberculose hépatite pneumocystose prophylaxie immunosuppresseur bilan", "EULAR", 2022, "10.1136/ard-2022-223335", "Transversal"],
-  ["Traitements de fond, procréation, grossesse et allaitement", "grossesse allaitement contraception procréation immunosuppresseur", "EULAR", 2024, "10.1016/j.ard.2025.02.023", "Transversal"],
-  ["Santé reproductive (contraception, grossesse, traitements)", "grossesse allaitement contraception procréation lupus SAPL", "ACR", 2020, "10.1002/art.41191", "Transversal"],
-  ["Santé de la femme, contraception et grossesse au cours du lupus et du SAPL", "grossesse contraception ménopause lupus SAPL antiphospholipides", "EULAR", 2016, "10.1136/annrheumdis-2016-209770", "Transversal"],
-  ["Ostéoporose cortico-induite – prévention et traitement", "corticoïdes corticothérapie ostéoporose", "ACR", 2022, "10.1002/art.42646", "Transversal"],
-  ["Risque cardiovasculaire (dont lupus et SAPL)", "cardiovasculaire lupus SAPL antiphospholipides athérome", "EULAR", 2022, "10.1136/annrheumdis-2021-221733", "Transversal"]
+  ["Lupus systémique – prise en charge", "lupus LES SLE", "EULAR", 2023, "10.1136/ard-2023-224762", "Lupus systémique"],
+  ["Lupus systémique – traitement", "lupus LES SLE", "ACR", 2025, "10.1002/art.43452", "Lupus systémique"],
+  ["Lupus avec atteinte rénale (néphropathie lupique)", "lupus néphropathie lupique glomérulonéphrite rein", "EULAR", 2025, "10.1016/j.ard.2025.09.007", "Lupus systémique"],
+  ["Néphropathie lupique – dépistage, traitement et suivi", "lupus néphropathie lupique glomérulonéphrite rein", "ACR", 2024, "10.1002/art.43212", "Lupus systémique"],
+  ["Néphropathie lupique", "lupus néphropathie lupique glomérulonéphrite rein", "KDIGO", 2024, "10.1016/j.kint.2023.09.002", "Lupus systémique"],
+  ["Lupus systémique – critères de classification", "lupus LES SLE", "EULAR/ACR", 2019, "10.1136/annrheumdis-2018-214819", "Lupus systémique", "critères"],
+  ["Syndrome des antiphospholipides de l'adulte – prise en charge", "SAPL antiphospholipides anticoagulant thrombose", "EULAR", 2019, "10.1136/annrheumdis-2019-215213", "Syndrome des antiphospholipides"],
+  ["Syndrome des antiphospholipides – critères de classification", "SAPL antiphospholipides", "ACR/EULAR", 2023, "10.1002/art.42624", "Syndrome des antiphospholipides", "critères"],
+  ["Sclérodermie systémique – traitement", "sclérodermie ScS Raynaud ulcères digitaux", "EULAR", 2023, "10.1136/ard-2024-226430", "Sclérodermie systémique"],
+  ["Sclérodermie systémique – critères de classification", "sclérodermie ScS", "ACR/EULAR", 2013, "10.1136/annrheumdis-2013-204424", "Sclérodermie systémique", "critères"],
+  ["Maladie de Sjögren – traitements locaux et systémiques", "Sjögren Gougerot sécheresse", "EULAR", 2019, "10.1136/annrheumdis-2019-216114", "Maladie de Sjögren"],
+  ["Maladie de Sjögren – critères de classification", "Sjögren Gougerot", "ACR/EULAR", 2016, "10.1136/annrheumdis-2016-210571", "Maladie de Sjögren", "critères"],
+  ["Myopathies inflammatoires (dermatomyosite, myosites) – critères de classification", "myopathies inflammatoires dermatomyosite myosite polymyosite", "EULAR/ACR", 2017, "10.1136/annrheumdis-2017-211468", "Myopathies inflammatoires", "critères"],
+  ["Pneumopathies interstitielles des connectivites", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon", "ERS/EULAR", 2026, "10.1183/13993003.02533-2024", "Pneumopathies interstitielles"],
+  ["Pneumopathies interstitielles des maladies auto-immunes – traitement", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon", "ACR/CHEST", 2023, "10.1002/art.42861", "Pneumopathies interstitielles"],
+  ["Pneumopathies interstitielles des maladies auto-immunes – dépistage et surveillance", "pneumopathie interstitielle PID sclérodermie Sjögren myopathies inflammatoires dermatomyosite poumon EFR scanner", "ACR/CHEST", 2023, "10.1002/art.43106", "Pneumopathies interstitielles"],
+  ["Vascularites associées aux ANCA – prise en charge", "ANCA GPA GEPA PAM Wegener vascularite", "EULAR", 2022, "10.1136/ard-2022-223764", "Vascularites associées aux ANCA"],
+  ["Vascularites associées aux ANCA – prise en charge", "ANCA GPA GEPA PAM Wegener vascularite", "ACR/VF", 2021, "10.1002/art.41773", "Vascularites associées aux ANCA"],
+  ["Vascularites associées aux ANCA – atteinte rénale", "ANCA GPA PAM vascularite rein glomérulonéphrite", "KDIGO", 2024, "10.1016/j.kint.2023.10.008", "Vascularites associées aux ANCA"],
+  ["Granulomatose avec polyangéite (GPA) – critères de classification", "ANCA GPA Wegener vascularite", "ACR/EULAR", 2022, "10.1002/art.41986", "Vascularites associées aux ANCA", "critères"],
+  ["Polyangéite microscopique (PAM) – critères de classification", "ANCA PAM vascularite", "ACR/EULAR", 2022, "10.1002/art.41983", "Vascularites associées aux ANCA", "critères"],
+  ["Granulomatose éosinophilique avec polyangéite (GEPA) – critères de classification", "ANCA GEPA Churg-Strauss vascularite", "ACR/EULAR", 2022, "10.1002/art.41982", "Vascularites associées aux ANCA", "critères"],
+  ["Pseudo-polyarthrite rhizomélique et vascularites des gros vaisseaux (Horton, Takayasu)", "PPR pseudo-polyarthrite rhizomélique Horton artérite à cellules géantes Takayasu aortite", "EULAR", 2025, "10.1016/j.ard.2026.06.009", "Horton, Takayasu et pseudo-polyarthrite rhizomélique"],
+  ["Artérite à cellules géantes et artérite de Takayasu", "Horton artérite à cellules géantes Takayasu", "ACR/VF", 2021, "10.1002/art.41774", "Horton, Takayasu et pseudo-polyarthrite rhizomélique"],
+  ["Imagerie des vascularites des gros vaisseaux (échographie, TEP, IRM)", "Horton artérite à cellules géantes Takayasu aortite échographie TEP", "EULAR", 2023, "10.1136/ard-2023-224543", "Horton, Takayasu et pseudo-polyarthrite rhizomélique"],
+  ["Artérite à cellules géantes (Horton) – critères de classification", "Horton artérite à cellules géantes", "ACR/EULAR", 2022, "10.1136/ard-2022-223480", "Horton, Takayasu et pseudo-polyarthrite rhizomélique", "critères"],
+  ["Artérite de Takayasu – critères de classification", "Takayasu", "ACR/EULAR", 2022, "10.1002/art.42324", "Horton, Takayasu et pseudo-polyarthrite rhizomélique", "critères"],
+  ["Périartérite noueuse", "PAN périartérite noueuse vascularite", "ACR/VF", 2021, "10.1002/art.41776", "Périartérite noueuse"],
+  ["Maladie de Behçet", "Behçet aphtose", "EULAR", 2025, "10.1016/j.ard.2026.02.009", "Maladie de Behçet"],
+  ["Maladie de Still (de l'adulte et forme systémique de l'enfant)", "Still auto-inflammatoire", "EULAR/PReS", 2024, "10.1136/ard-2024-225851", "Maladie de Still"],
+  ["Fièvre méditerranéenne familiale", "FMF fièvre méditerranéenne colchicine auto-inflammatoire", "EULAR", 2016, "10.1136/annrheumdis-2015-208690", "Fièvre méditerranéenne familiale"],
+  ["Maladies auto-inflammatoires liées à l'IL-1 (CAPS, TRAPS, MKD, DIRA)", "CAPS Muckle-Wells TRAPS MKD DIRA auto-inflammatoire anakinra canakinumab", "EULAR/ACR", 2021, "10.1136/annrheumdis-2021-221801", "Maladies auto-inflammatoires liées à l'IL-1"],
+  ["Purpura thrombopénique immunologique (PTI)", "PTI thrombopénie", "ASH", 2019, "10.1182/bloodadvances.2019000966", "Purpura thrombopénique immunologique (PTI)"],
+  ["Purpura thrombopénique immunologique (PTI) – consensus international", "PTI thrombopénie", "Consensus international", 2019, "10.1182/bloodadvances.2019000812", "Purpura thrombopénique immunologique (PTI)"],
+  ["Purpura thrombotique thrombocytopénique (PTT) – traitement", "PTT microangiopathie thrombotique ADAMTS13 caplacizumab", "ISTH", 2020, "10.1111/jth.15010", "Purpura thrombotique thrombocytopénique (PTT)"],
+  ["Maladie associée aux IgG4 – critères de classification", "IgG4", "ACR/EULAR", 2019, "10.1136/annrheumdis-2019-216561", "Maladie associée aux IgG4", "critères"],
+  ["Sarcoïdose – traitement", "sarcoïdose", "ERS", 2021, "10.1183/13993003.04079-2020", "Sarcoïdose"],
+  ["Sarcoïdose – diagnostic et dépistage des atteintes", "sarcoïdose", "ATS", 2020, "10.1164/rccm.202002-0251ST", "Sarcoïdose"],
+  ["Vaccinations au cours des rhumatismes inflammatoires auto-immuns", "vaccins vaccination immunodéprimé immunosuppresseur", "EULAR", 2019, "10.1136/annrheumdis-2019-215882", "Vaccinations"],
+  ["Vaccinations au cours des maladies rhumatismales", "vaccins vaccination immunodéprimé immunosuppresseur", "ACR", 2022, "10.1002/art.42386", "Vaccinations"],
+  ["Dépistage et prophylaxie des infections (tuberculose, hépatites, pneumocystose…)", "infections tuberculose hépatite pneumocystose prophylaxie immunosuppresseur bilan", "EULAR", 2022, "10.1136/ard-2022-223335", "Infections : dépistage et prophylaxie"],
+  ["Traitements de fond, procréation, grossesse et allaitement", "grossesse allaitement contraception procréation immunosuppresseur", "EULAR", 2024, "10.1016/j.ard.2025.02.023", "Grossesse et procréation"],
+  ["Santé reproductive (contraception, grossesse, traitements)", "grossesse allaitement contraception procréation lupus SAPL", "ACR", 2020, "10.1002/art.41191", "Grossesse et procréation"],
+  ["Santé de la femme, contraception et grossesse au cours du lupus et du SAPL", "grossesse contraception ménopause lupus SAPL antiphospholipides", "EULAR", 2016, "10.1136/annrheumdis-2016-209770", "Grossesse et procréation"],
+  ["Ostéoporose cortico-induite – prévention et traitement", "corticoïdes corticothérapie ostéoporose", "ACR", 2022, "10.1002/art.42646", "Ostéoporose cortico-induite"],
+  ["Risque cardiovasculaire (dont lupus et SAPL)", "cardiovasculaire lupus SAPL antiphospholipides athérome", "EULAR", 2022, "10.1136/annrheumdis-2021-221733", "Risque cardiovasculaire"]
 ];
 // Documents patients en accès libre : [titre, mots-clés, source, année ou null, URL, "PDF" | "web"] — uniquement des documents gratuits
 const P = [
@@ -545,7 +555,7 @@ setInterval(() => { if (tab !== "accueil" || matchMedia("(prefers-reduced-motion
   const el = $("rot"); el.classList.add("out");
   setTimeout(() => { rotI = (rotI + 1) % ROT.length; el.textContent = ROT[rotI]; el.classList.remove("out"); }, 350); }, 2600);
 let tplOpen = null;
-const go = t => { tab = t; relT = relR = null; tplOpen = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
+const go = t => { tab = t; relT = relR = rmal = null; tplOpen = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
 $("accueil").onclick = e => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };
 $("home").onclick = e => { e.preventDefault(); q.value = ""; go("accueil"); };
 $("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
@@ -566,11 +576,11 @@ const HINT = {
   pnds: `${ICON} : copie une phrase pour le courrier, à l'attention du médecin traitant, avec le lien du PNDS · ${ICON2} : copie en plus la phrase pour le patient avec son document · 📄 : documents patients liés · ☆ : favoris.`,
   patients: `Documents pour les patients et leurs proches, en accès libre : livrets « 100 questions », livrets de centres de référence et d'associations, pages « Les réponses à vos questions » de FAI²R. ${ICON} : copie une phrase prête à coller dans le courrier du patient, avec le lien.`
 };
-$("rcats").onclick = e => { if (e.target.closest("#relRClear")) { relR = null; render(); return; }
-  if (e.target.tagName !== "BUTTON") return; rcat = e.target.textContent; render(); };
+$("rcats").onclick = e => { if (e.target.closest("#relRClear")) relR = null; else if (e.target.closest("[data-back]")) rmal = null; else return; render(); scrollTo(0, 0); };
+$("rtiles").onclick = e => { const b = e.target.closest("[data-mal]"); if (b) { rmal = RM[b.dataset.mal][0]; render(); scrollTo(0, 0); } };
 $("pcats").onclick = e => { if (e.target.closest("#relClear")) { relT = null; render(); return; }
   if (e.target.tagName !== "BUTTON") return; pcat = e.target.textContent; render(); };
-$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = relR = null; tplOpen = null;
+$("tabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.tab; relT = relR = rmal = null; tplOpen = null;
   history.replaceState(null, "", "#" + tab); render(); };
 async function copy(text){
   try { await navigator.clipboard.writeText(text); return; } catch {}
@@ -578,7 +588,7 @@ async function copy(text){
   document.body.append(t); t.select(); document.execCommand("copy"); t.remove();
 }
 list.onclick = e => { const l = e.target.closest(".rel");
-  if (l && l.dataset.r) { relR = l.dataset.r; tab = "recos"; rcat = "Toutes"; q.value = ""; history.replaceState(null, "", "#recos"); render(); scrollTo(0, 0); return; }
+  if (l && l.dataset.r) { relR = l.dataset.r; tab = "recos"; rmal = null; q.value = ""; history.replaceState(null, "", "#recos"); render(); scrollTo(0, 0); return; }
   if (l) { relT = l.dataset.t; tab = "patients"; pcat = "Tous"; q.value = ""; history.replaceState(null, "", "#patients"); render(); scrollTo(0, 0); return; }
   const c = e.target.closest(".cp");
   if (c) { copy(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return; }
@@ -612,13 +622,13 @@ const relDocs = t => { const re = REL[t] && new RegExp(REL[t]); return re ? P.fi
   .sort((a, b) => q100(b) - q100(a) || (b[5] === "PDF") - (a[5] === "PDF") || (b[3] ?? 0) - (a[3] ?? 0)) : []; };
 // Date de version pour le tri « plus récents » : mise à jour, sinon mois du PDF, sinon année.
 // PNDS → recommandations internationales de la même maladie (même motif que pour les documents patients).
-const rTxt = r => norm(r[0] + " " + r[1] + " " + r[2] + " " + r[5]), crit = r => r[6] === "critères";
-const RCATS = ["Toutes", ...new Set(D.map(d => d[1]).concat(R.map(r => r[5])))].filter(c => c === "Toutes" || R.some(r => r[5] === c)).concat("Critères de classification");
-// Tri : par catégorie, puis dans l'ordre de la liste R (regroupée par maladie, critères après les recommandations).
-const rsort = (a, b) => RCATS.indexOf(a[5]) - RCATS.indexOf(b[5]) || R.indexOf(a) - R.indexOf(b);
+const rmi = r => RM.findIndex(m => m[0] === r[5]), rcat = r => RM[rmi(r)][1];
+const rTxt = r => norm(r[0] + " " + r[1] + " " + r[2] + " " + r[5] + " " + rcat(r));
+// Tri : par maladie (ordre de RM), puis dans l'ordre de la liste R (critères après les recommandations).
+const rsort = (a, b) => rmi(a) - rmi(b) || R.indexOf(a) - R.indexOf(b);
 const relRecos = t => { const re = REL[t] && new RegExp(REL[t]); return re ? R.filter(r => re.test(norm(r[0] + " " + r[1]))).sort(rsort) : []; };
 const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
-let sortRecent = false, relT = null, relR = null, rcat = "Toutes";
+let sortRecent = false, relT = null, relR = null, rmal = null;
 function card([t, c, y, pdf, page, maj]){
   const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t), nR = relRecos(t).length;
   return `<div class="card">
@@ -640,7 +650,9 @@ const refR = ([t, , soc, y, doi, , c]) => `${c ? "Critères de classification" :
 const cardR = r => `<div class="card">
     <a class="t" href="${DOI + r[4]}" target="_blank" rel="noopener">${r[0]}</a>
     <span class="acts"><button class="cp" data-s="${refR(r)}" title="Copier la référence (avec le lien)" aria-label="Copier la référence">${ICON}</button></span>
-    <div class="m"><span class="pill" style="${CC(r[5])}">${r[5]}</span><b>${r[2]}</b><span>${r[3]}</span></div></div>`;
+    <div class="m">${rmal ? "" : `<span class="pill" style="${CC(rcat(r))}">${r[5]}</span>`}<b>${r[2]}</b><span>${r[3]}</span></div></div>`;
+// Accueil de l'onglet « Recos » : une tuile par maladie, regroupées par catégorie.
+$("rtiles").innerHTML = [...new Set(RM.map(m => m[1]))].map(c => `<h3 class="rh">${c}</h3><div class="ctiles">${RM.map(([m, mc], i) => mc !== c ? "" : (r => `<button class="ctile" data-mal="${i}"><span class="ctt">${m}</span><span class="pill" style="${CC(c)}">${r.length} reco${r.length > 1 ? "s" : ""}</span><span class="rs">${[...new Set(r.map(x => x[2]))].join(" · ")}</span></button>`)(R.filter(x => x[5] === m))).join("")}</div>`).join("");
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
@@ -659,6 +671,7 @@ function render(){
   $("list").style.display = $("bar").style.display = help ? "none" : "";
   $("guide").style.display = tab === "aide" ? "block" : "none";
   $("conseils").style.display = tab === "conseils" ? "block" : "none";
+  $("rtiles").style.display = tab === "recos" && !relR && !rmal && !s ? "" : "none";
   if (help) { $("cats").style.display = $("pcats").style.display = $("rcats").style.display = $("empty").style.display = "none"; return; }
   $("sortBtn").style.display = tab === "pnds" ? "" : "none";
   $("cats").style.display = tab === "pnds" ? "" : "none";
@@ -666,12 +679,14 @@ function render(){
   $("rcats").style.display = tab === "recos" ? "" : "none";
   if (tab === "recos") {
     $("rcats").innerHTML = relR ? `<button class="chip" id="relRClear">Recommandations liées au PNDS « ${relR} » ✕</button>`
-      : RCATS.map(c => `<button aria-pressed="${c===rcat}" style="${CC(c)}">${c}</button>`).join("");
-    const r = relR ? relRecos(relR) : R.filter(x => (rcat === "Toutes" || (rcat === "Critères de classification" ? crit(x) : x[5] === rcat)) && rTxt(x).includes(s)).sort(rsort);
+      : rmal && !s ? `<button class="back" data-back>← Toutes les maladies</button>` : "";
+    const tiles = !relR && !rmal && !s;
+    $("list").style.display = $("bar").style.display = tiles ? "none" : "";
+    const r = tiles ? [] : relR ? relRecos(relR) : R.filter(x => (s ? rTxt(x).includes(s) : x[5] === rmal)).sort(rsort);
     list.innerHTML = r.map(cardR).join("");
-    $("count").textContent = `${r.length} recommandation${r.length > 1 ? "s" : ""}`;
+    $("count").textContent = `${rmal && !s ? rmal + " · " : ""}${r.length} recommandation${r.length > 1 ? "s" : ""}`;
     $("empty").textContent = nD ? `Aucune recommandation internationale. ${nD} PNDS correspond${nD > 1 ? "ent" : ""} à « ${q.value.trim()} » : onglet PNDS.` : "Aucune recommandation pour cette recherche.";
-    $("empty").style.display = r.length ? "none" : "block";
+    $("empty").style.display = r.length || tiles ? "none" : "block";
     return;
   }
   if (tab === "patients") {
@@ -692,7 +707,7 @@ function render(){
   $("empty").textContent = cat===FAV && !favs.size ? "Aucun favori : cliquez sur ☆ pour en ajouter." : nP ? `Aucun PNDS. ${nP} document${nP > 1 ? "s" : ""} patient${nP > 1 ? "s" : ""} correspond${nP > 1 ? "ent" : ""} : onglet Patients.` : "Aucun résultat.";
   $("empty").style.display = r.length ? "none" : "block";
 }
-q.oninput = () => { relT = relR = null; tplOpen = null;
+q.oninput = () => { relT = relR = rmal = null; tplOpen = null;
   if (tab === "accueil" && q.value.trim()) { const s = norm(q.value.trim());
     tab = D.some(d => norm(d[0] + " " + d[1]).includes(s)) ? "pnds" : P.some(p => norm(p[0] + " " + p[1] + " " + p[2]).includes(s)) ? "patients" : R.some(r => rTxt(r).includes(s)) ? "recos" : T.some(x => norm(x.titre + " " + x.texte).includes(s)) ? "conseils" : "pnds";
     history.replaceState(null, "", "#" + tab); }
