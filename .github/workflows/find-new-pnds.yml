@@ -1,8 +1,8 @@
 name: Détection de nouveaux PNDS
 
+# Lancement manuel uniquement : la HAS bloque les robots de GitHub (erreur 503 chaque jour).
+# La veille est faite tous les 15 jours par une tâche planifiée Claude.
 on:
-  schedule:
-    - cron: "43 6 * * *" # chaque jour (les flux RSS ne gardent que les dernières publications)
   workflow_dispatch:
 
 permissions:
