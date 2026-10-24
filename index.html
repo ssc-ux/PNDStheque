@@ -158,10 +158,29 @@ footer{border-top:0}
 .boutons .tn{margin-left:6px;color:var(--muted);font-variant-numeric:tabular-nums}
 .astuce{max-width:620px;margin:18px auto 0;color:var(--muted);font-size:.82rem}
 .astuce a{white-space:nowrap}
+.tuto{margin:40px auto 0;padding:20px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh)}
+.tuto h2{margin:0 0 14px;font-size:1.02rem;text-wrap:balance}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0;padding:0;list-style:none;counter-reset:st}
+.steps li{display:grid;gap:8px;align-content:start;min-width:0;counter-increment:st}
+.steps b::before{content:counter(st) ". "}
+.steps li:last-child{grid-column:1/-1}
+.steps li>span{color:var(--muted);font-size:.82rem}
+.shot{padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);min-width:0}
+.shot .card{box-shadow:none}.shot .fav{display:none}.shot .rel{pointer-events:none}
+.shot .cp.hot{color:var(--fg);outline:2.5px solid #e11d48;outline-offset:1px;border-radius:50%}
+.word{display:grid;gap:7px;font-size:.8rem}.word i{height:7px;border-radius:2px;background:var(--line)}.word i:first-child{height:9px;background:#2b579a}
+.kbd{display:inline-block;padding:0 5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;background:var(--card);font-weight:700;color:var(--fg)}
+.caret{display:inline-block;width:2px;height:12px;background:#e11d48;vertical-align:middle;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.caret{animation:none}}
+.paper{padding:8px;border-radius:3px;background:#fff;color:#111;box-shadow:0 1px 3px rgb(0 0 0/.15);overflow-wrap:anywhere}
+.paper td{font-size:11px!important;line-height:1.4}.paper img{width:64px;height:64px}.paper a{pointer-events:none}
+@media (max-width:720px){.steps{grid-template-columns:1fr}}
 .home footer{text-align:center}
 /* Livrets « 100 questions » mis en avant */
 .card.q100{background:color-mix(in srgb,var(--k2) 8%,var(--card));border-color:color-mix(in srgb,var(--k2) 40%,var(--line))}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha512-ZDSPMa/JM1D+7kdg2x3BsruQ6T/JpJo3jWDWkCZsP+5yVyp1KfESqLI+7RqB5k24F7p2cV7i2YHh/890y6P6Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 <div class="wrap">
@@ -185,6 +204,14 @@ footer{border-top:0}
       <button type="button" data-go="conseils">Conseils courrier<span class="tn" id="nTile2"></span></button>
     </div>
     <p class="astuce">🔎 Astuce : tapez une maladie ou un médicament, l'onglet qui contient des résultats s'ouvre tout seul. <a href="#aide" id="homeAide">Mode d'emploi</a></p>
+    <div class="tuto">
+      <h2>Insérer le PNDS et le livret patient dans un courrier</h2>
+      <ol class="steps">
+        <li><b>Cliquez sur l'icône de la tuile</b><div class="shot" id="tuto1"></div><span>Icône lien : phrase pour le médecin traitant. Double feuille : médecin traitant + patient.</span></li>
+        <li><b>Collez dans le courrier</b><div class="shot word"><i></i><i style="width:90%"></i><i style="width:70%"></i><div>Suivi &amp; rendez-vous… <span class="caret"></span></div><i style="width:80%"></i></div><span>Placez le curseur puis <span class="kbd">Ctrl</span> + <span class="kbd">V</span> (<span class="kbd">⌘</span> + <span class="kbd">V</span> sur Mac).</span></li>
+        <li><b>Résultat</b><div class="shot"><div class="paper" id="tuto3"></div></div><span>Encadré, liens cliquables et QR codes à scanner sont insérés d'un coup.</span></li>
+      </ol>
+    </div>
   </section>
   <div class="cats" id="cats"></div>
   <div class="cats" id="rcats"></div>
@@ -214,11 +241,11 @@ footer{border-top:0}
     <ul>
       <li><span class="ic" id="gi1"></span> copie une phrase prête à coller, <strong>à l'attention du médecin traitant</strong>, avec le lien du PNDS et la mention de sa synthèse d'une à deux pages.</li>
       <li><span class="ic" id="gi2"></span> copie <strong>en plus</strong> une phrase destinée au <strong>patient</strong>, avec le lien du document patient le plus adapté : un courrier complet en un clic.</li>
-      <li>Collez ensuite (Ctrl+V / Cmd+V) dans votre logiciel de courrier.</li>
+      <li>Collez ensuite (Ctrl+V / Cmd+V) dans votre logiciel de courrier : le texte arrive mis en forme (encadré, liens cliquables) avec un <strong>QR code</strong> par lien, que le patient ou le médecin traitant peut scanner sur la version papier. Si le logiciel n'accepte que du texte, seul le texte avec le lien est collé.</li>
     </ul>
     <div class="ex"><b>Exemple :</b> vous rédigez le courrier de consultation d'une patiente lupique. Tapez « lupus », puis cliquez sur <span class="ic" id="gi4"></span> : il ne reste plus qu'à coller. Vous obtenez :
       <blockquote>Information pour le médecin traitant : le Protocole National de Diagnostic et de Soins (PNDS) de la HAS « Lupus systémique de l'adulte et de l'enfant » (2024) est disponible ici : https://www.has-sante.fr/…/pnds_ls.pdf. Il comporte une synthèse d'une à deux pages qui vous est destinée et reprend l'essentiel de la prise en charge.<br><br>
-      Pour mieux comprendre votre maladie, vous pouvez consulter le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024), conçu pour les patients et leurs proches et accessible gratuitement : https://www.fai2r.org/…/LUPUS_100Q_FAI2R-2024.pdf</blockquote>
+      Information pour le patient : Pour mieux comprendre votre maladie, vous pouvez consulter le livret « Le lupus – 100 questions pour mieux gérer la maladie » (FAI²R, 2024), conçu pour les patients et leurs proches et accessible gratuitement : https://www.fai2r.org/…/LUPUS_100Q_FAI2R-2024.pdf</blockquote>
       Avec <span class="ic" id="gi5"></span> seul, vous n'obtenez que le premier paragraphe (pour le médecin traitant).</div>
 
     <h3>3. Recommandations internationales (onglet « Recos »)</h3>
@@ -233,7 +260,7 @@ footer{border-top:0}
     <ul>
       <li>Documents <strong>gratuits</strong> et vérifiés : livrets « 100 questions », livrets et fiches des centres de référence, des filières de santé et des associations de patients, pages « Les réponses à vos questions » de FAI²R.</li>
       <li>Depuis une fiche PNDS, le lien <strong>« n doc. patients »</strong> affiche directement les documents de la même maladie.</li>
-      <li><span class="ic" id="gi3"></span> copie une phrase prête à coller dans le courrier du patient, avec le lien.</li>
+      <li><span class="ic" id="gi3"></span> copie une phrase prête à coller dans le courrier du patient, avec le lien et son QR code.</li>
     </ul>
     <div class="ex"><b>Exemple :</b> sur la fiche PNDS « Vascularites associées aux ANCA », cliquez sur « doc. patients » : s'affichent les fiches patients GPA, GEPA et PAM de France Vascularites et les pages FAI²R correspondantes. Choisissez celle qui correspond à la maladie de votre patient et cliquez sur <span class="ic" id="gi6"></span>.</div>
     <div class="ex"><b>Exemple :</b> un patient débute un traitement par colchicine ou tocilizumab ? Tapez le nom du médicament dans l'onglet « Patients » : une fiche dédiée (précautions, vaccins…) est disponible.</div>
@@ -557,7 +584,7 @@ setInterval(() => { if (tab !== "accueil" || matchMedia("(prefers-reduced-motion
   setTimeout(() => { rotI = (rotI + 1) % ROT.length; el.textContent = ROT[rotI]; el.classList.remove("out"); }, 350); }, 2600);
 let tplOpen = null;
 const go = t => { tab = t; relT = relR = rmal = null; tplOpen = null; history.replaceState(null, "", t === "accueil" ? location.pathname + location.search : "#" + t); render(); scrollTo(0, 0); };
-$("accueil").onclick = e => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };
+$("accueil").onclick = e => { if (cpClick(e)) return; const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };
 $("home").onclick = e => { e.preventDefault(); q.value = ""; go("accueil"); };
 $("homeAide").onclick = e => { e.preventDefault(); go("aide"); };
 // Onglet « Conseils patients » : un bloc modifiable par trame, avec copie et réinitialisation.
@@ -588,11 +615,32 @@ async function copy(text){
   const t = Object.assign(document.createElement("textarea"), { value: text }); // repli si l'API presse-papiers est bloquée
   document.body.append(t); t.select(); document.execCommand("copy"); t.remove();
 }
+// Copie mise en forme pour Word : chaque paragraphe dans un encadré, titre « Information pour… » en italique souligné,
+// lien cliquable et QR code du lien à droite. Texte brut en parallèle pour les logiciels qui n'acceptent que du texte.
+const URLS = /https?:\/\/\S+?(?=[.,;)]?(?:\s|$))/g;
+const qrSrc = u => { try { const c = qrcode(0, "M"); c.addData(u); c.make(); return c.createDataURL(4, 0); } catch { return ""; } };
+const BG = "#F6E3D9";
+function rich(text){
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return `<table style="border-collapse:collapse;width:100%" bgcolor="${BG}">${text.split("\n\n").map(p => {
+    const u = (p.match(URLS) || [])[0], qr = u && qrSrc(u);
+    const h = esc(p).replace(URLS, m => `<a href="${m}" style="color:#1F4FBF">${m}</a>`).replace(/^(Information pour [^:]+?) :/, "<i><u>$1</u></i> :");
+    return `<tr><td bgcolor="${BG}" style="background:${BG};padding:6px 8px;font-family:Arial,sans-serif;font-size:11pt;vertical-align:middle">${h}</td>${qr ? `<td bgcolor="${BG}" style="background:${BG};padding:6px 8px;width:96px;vertical-align:middle"><img src="${qr}" width="90" height="90" alt="QR code"></td>` : ""}</tr>`;
+  }).join("")}</table>`;
+}
+async function copyRich(text){
+  const html = rich(text);
+  try { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) })]); return; } catch {}
+  const d = Object.assign(document.createElement("div"), { innerHTML: html }); d.style.cssText = "position:fixed;left:-9999px";
+  document.body.append(d); getSelection().selectAllChildren(d); const ok = document.execCommand("copy"); getSelection().removeAllRanges(); d.remove();
+  if (!ok) await copy(text);
+}
+const cpClick = e => { const c = e.target.closest(".cp"); if (!c) return false;
+  copyRich(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return true; };
 list.onclick = e => { const l = e.target.closest(".rel");
   if (l && l.dataset.r) { relR = l.dataset.r; tab = "recos"; rmal = null; q.value = ""; history.replaceState(null, "", "#recos"); render(); scrollTo(0, 0); return; }
   if (l) { relT = l.dataset.t; tab = "patients"; pcat = "Tous"; q.value = ""; history.replaceState(null, "", "#patients"); render(); scrollTo(0, 0); return; }
-  const c = e.target.closest(".cp");
-  if (c) { copy(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return; }
+  if (cpClick(e)) return;
   const b = e.target.closest(".fav"); if (!b) return;
   const t = b.dataset.t; favs.has(t) ? favs.delete(t) : favs.add(t); store.set([...favs]); render(); };
 // "récent" = mis en ligne par la HAS il y a moins de 12 mois (mois tiré du chemin du PDF, ex. "2026-02/…")
@@ -641,7 +689,7 @@ function card([t, c, y, pdf, page, maj]){
     <div class="m"><span class="pill" style="${CC(c)}">${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${nR ? `<button class="rel" data-r="${t}">${nR} reco${nR > 1 ? "s" : ""}</button>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
-const phraseP = (t, src, y, url, kind) => `Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
+const phraseP = (t, src, y, url, kind) => `Information pour le patient : Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
 const cardP = ([t, kw, src, y, url, kind]) => `<div class="card${/100 questions/i.test(t) ? " q100" : ""}">
     <a class="t" href="${url}" target="_blank" rel="noopener">${t}</a>
     <span class="acts"><button class="cp" data-s="${phraseP(t, src, y, url, kind)}" title="Copier une phrase pour le courrier du patient (avec le lien)" aria-label="Copier une phrase pour le courrier du patient">${ICON}</button></span>
@@ -654,6 +702,10 @@ const cardR = r => `<div class="card">
     <div class="m">${rmal ? "" : `<span class="pill" style="${CC(rcat(r))}">${r[5]}</span>`}<b>${r[2]}</b><span>${r[3]}</span></div></div>`;
 // Accueil de l'onglet « Recos » : une tuile par maladie, regroupées par catégorie.
 $("rtiles").innerHTML = [...new Set(RM.map(m => m[1]))].map(c => `<h3 class="rh">${c}</h3><div class="ctiles">${RM.map(([m, mc], i) => mc !== c ? "" : (r => `<button class="ctile" data-mal="${i}"><span class="ctt">${m}</span><span class="pill" style="${CC(c)}">${r.length} reco${r.length > 1 ? "s" : ""}</span><span class="rs">${[...(RM[i][2] ? ["PNDS HAS"] : []), ...new Set(r.map(x => x[2]))].join(" · ")}</span></button>`)(R.filter(x => x[5] === m))).join("")}</div>`).join("");
+// Tutoriel de l'accueil : vraie tuile (icône à cliquer entourée) et aperçu de ce qui sera collé.
+{ const d = D.find(x => x[0] === "Artérite de Takayasu");
+  $("tuto1").innerHTML = card(d); $("tuto1").querySelectorAll(".cp")[1]?.classList.add("hot");
+  $("tuto3").innerHTML = rich($("tuto1").querySelectorAll(".cp")[1].dataset.s); }
 const PCATS = ["Tous", "Livrets PDF", "En ligne"];
 let pcat = "Tous";
 function render(){
