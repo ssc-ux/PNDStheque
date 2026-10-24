@@ -33,6 +33,7 @@ jobs:
           git diff --quiet index.html && { echo "Aucune mise à jour."; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          node scripts/make-qr.mjs && git add qr
           git commit -am "Mise à jour automatique des PNDS (nouvelles versions HAS)"
           git push origin HEAD
           git push origin HEAD:master || true

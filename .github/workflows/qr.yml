@@ -1,0 +1,28 @@
+name: QR codes des liens
+
+# Régénère qr/ quand les liens de index.html changent (ajout ou modification d'un PNDS, d'un document patient ou d'une reco).
+on:
+  push:
+    branches: [master]
+    paths: [index.html]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  qr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/make-qr.mjs
+      - run: |
+          git add qr
+          git diff --cached --quiet && { echo "QR codes à jour."; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "QR codes mis à jour"
+          git push origin HEAD

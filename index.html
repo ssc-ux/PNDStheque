@@ -180,7 +180,6 @@ footer{border-top:0}
 /* Livrets « 100 questions » mis en avant */
 .card.q100{background:color-mix(in srgb,var(--k2) 8%,var(--card));border-color:color-mix(in srgb,var(--k2) 40%,var(--line))}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha512-ZDSPMa/JM1D+7kdg2x3BsruQ6T/JpJo3jWDWkCZsP+5yVyp1KfESqLI+7RqB5k24F7p2cV7i2YHh/890y6P6Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 <div class="wrap">
@@ -618,7 +617,9 @@ async function copy(text){
 // Copie mise en forme pour Word : chaque paragraphe dans un encadré, titre « Information pour… » en italique souligné,
 // lien cliquable et QR code du lien à droite. Texte brut en parallèle pour les logiciels qui n'acceptent que du texte.
 const URLS = /https?:\/\/\S+?(?=[.,;)]?(?:\s|$))/g;
-const qrSrc = u => { try { const c = qrcode(0, "M"); c.addData(u); c.make(); return c.createDataURL(4, 0); } catch { return ""; } };
+// QR codes pré-générés dans qr/ par scripts/make-qr.mjs (même empreinte FNV-1a) : Word ignore les images data: mais télécharge celles du site.
+const qrName = u => { let h = 0x811c9dc5; for (const c of new TextEncoder().encode(u)) h = Math.imul(h ^ c, 16777619) >>> 0; return h.toString(16).padStart(8, "0") + ".gif"; };
+const qrSrc = u => new URL("qr/" + qrName(u), location.href).href;
 const BG = "#F6E3D9";
 function rich(text){
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
