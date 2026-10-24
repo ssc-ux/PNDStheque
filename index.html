@@ -623,10 +623,10 @@ const qrSrc = u => new URL("qr/" + qrName(u), location.href).href;
 const BG = "#F6E3D9";
 function rich(text){
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return `<table style="border-collapse:collapse;width:100%" bgcolor="${BG}">${text.split("\n\n").map(p => {
+  return `<table width="100%" style="border-collapse:collapse;width:100%" bgcolor="${BG}">${text.split("\n\n").map(p => {
     const u = (p.match(URLS) || [])[0], qr = u && qrSrc(u);
     const h = esc(p).replace(URLS, m => `<a href="${m}" style="color:#1F4FBF">${m}</a>`).replace(/^(Information pour [^:]+?) :/, "<i><u>$1</u></i> :");
-    return `<tr><td bgcolor="${BG}" style="background:${BG};padding:6px 8px;font-family:Arial,sans-serif;font-size:11pt;vertical-align:middle">${h}</td>${qr ? `<td bgcolor="${BG}" style="background:${BG};padding:6px 8px;width:96px;vertical-align:middle"><img src="${qr}" width="90" height="90" alt="QR code"></td>` : ""}</tr>`;
+    return `<tr><td width="84%" bgcolor="${BG}" style="width:84%;background:${BG};padding:6px 8px;font-family:Arial,sans-serif;font-size:11pt;vertical-align:middle">${h}</td>${qr ? `<td width="16%" align="center" bgcolor="${BG}" style="width:16%;background:${BG};padding:6px 4px;vertical-align:middle;text-align:center"><img src="${qr}" width="90" height="90" alt="QR code"></td>` : ""}</tr>`;
   }).join("")}</table>`;
 }
 async function copyRich(text){
