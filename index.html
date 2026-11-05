@@ -59,6 +59,24 @@ h1 a{color:inherit;text-decoration:none}
 .fav[aria-pressed=true]{color:var(--star)}
 .cp:hover,.fav:hover{color:var(--fg);background:var(--chip)}
 .cp svg{width:17px;height:17px}
+.bil{position:relative;background:none;border:0;cursor:pointer;color:var(--muted);padding:6px;line-height:0;border-radius:6px}
+.bil:hover{color:var(--fg);background:var(--chip)}.bil svg{width:17px;height:17px}.bil[aria-expanded=true]{color:var(--accent);background:var(--chip)}
+.card.open,.card.open:hover{grid-column:1/-1;transform:none}
+.bilp{grid-column:1/-1;position:relative;z-index:1;border-top:1px dashed var(--line);padding-top:12px;display:grid;gap:10px;font-size:.92rem}
+.bilh{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--chip)}
+.seg button{border:0;background:none;padding:6px 14px;font-weight:600;font-size:.85rem;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--accent)}
+.bilp h4{margin:6px 0 0;font-size:.8rem;font-weight:600;color:var(--muted)}
+.bit{display:flex;gap:10px;align-items:baseline;padding:2px 0;cursor:pointer}
+.bit input{accent-color:var(--accent);margin:0;flex:none;transform:translateY(2px)}
+.bit small{color:var(--muted);font-size:.8rem}
+.bilp .src{color:var(--muted);font-size:.82rem}.bilp .src a{color:var(--accent)}
+.bilf{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.bilf select{font:inherit;font-size:.85rem;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
+.bilf .go{border:0;background:var(--accent);color:#fff;padding:7px 14px;border-radius:10px;cursor:pointer;font-weight:600;margin-left:auto}
+.bilf .done{color:var(--new);font-size:.85rem}
+.bilv{overflow-x:auto;font-size:.85rem}
 .cp.ok::after{content:"Copié";position:absolute;right:0;top:-24px;white-space:nowrap;font-size:.72rem;line-height:1.4;background:var(--fg);color:var(--bg);padding:2px 7px;border-radius:4px}
 #empty{color:var(--muted);display:none;padding:24px 0}
 /* Conseils */
@@ -166,7 +184,7 @@ footer{border-top:0}
 .steps li:last-child{grid-column:1/-1}
 .steps li>span{color:var(--muted);font-size:.82rem}
 .shot{padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);min-width:0}
-.shot .card{box-shadow:none}.shot .fav{display:none}.shot .rel{pointer-events:none}
+.shot .card{box-shadow:none}.shot .fav,.shot .bil{display:none}.shot .rel{pointer-events:none}
 .shot .cp.hot{color:var(--fg);outline:2.5px solid #e11d48;outline-offset:1px;border-radius:50%}
 .word{display:grid;gap:7px;font-size:.8rem}.word i{height:7px;border-radius:2px;background:var(--line)}.word i:first-child{height:9px;background:#2b579a}
 .kbd{display:inline-block;padding:0 5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;background:var(--card);font-weight:700;color:var(--fg)}
@@ -556,6 +574,526 @@ Une fiche d'information a été conseillée au patient : https://www.association
 - Surveillance de l'aorte à moyen et long terme (recherche d'une dilatation ou d'un anévrisme).
 Une fiche d'information a été conseillée au patient : https://www.association-vascularites.org/images/fiches_individuelles_vascularites/fiche_ACG_v05_10_2020.pdf` }
 ];
+// Bilans biologiques : titre du PNDS → { initial / suivi : [page du PDF (#page=), [[groupe, [[examen, 1 = pré-coché | 0 = selon contexte, précision ou rythme]]]]], ns : note de suivi }.
+// Relevés dans le PDF du PNDS (synthèse, bilan initial, suivi) : à relire à chaque mise à jour du PNDS.
+const B = {
+  "Lupus systémique de l'adulte et de l'enfant": {
+    initial: [49, [
+      ["Diagnostic", [["Anticorps antinucléaires (IFI sur cellules HEp-2, avec titre et aspect)", 1], ["Anticorps anti-ADN natif (double brin) d'isotype IgG", 1],
+        ["Anticorps anti-ENA : anti-Sm, anti-SSA (Ro60), anti-SSB, anti-RNP", 1], ["Complément : CH50, C3, C4", 1],
+        ["Anticoagulant circulant lupique, anticorps anticardiolipine et anti-β2GP1 (IgG et IgM)", 1]]],
+      ["Atteintes d'organe", [["Hémogramme avec réticulocytes", 1], ["Test de Coombs direct", 1], ["Créatininémie avec DFG (CKD-EPI ; Schwartz chez l'enfant)", 1],
+        ["Rapport protéinurie/créatininurie sur échantillon", 1], ["ECBU avec étude du sédiment urinaire (hématurie, leucocyturie, cylindres)", 1],
+        ["Électrophorèse des protéines sériques", 1], ["CRP", 1]]],
+      ["Diagnostic différentiel", [["Sérologies VIH, VHC, parvovirus B19", 1], ["Anticorps anti-CCP", 0, "si doute avec une polyarthrite rhumatoïde"],
+        ["Anticorps anti-mitochondries, anti-LKM, anti-actine, ANCA", 0, "selon la symptomatologie"]]],
+      ["Maladie associée", [["TSH, anticorps anti-TPO et anti-thyroglobuline", 0, "selon le contexte"], ["IgG, IgA, IgM", 0, "enfant : recherche d'un déficit immunitaire"]]],
+      ["Avant traitement (selon les options envisagées)", [["Ionogramme sanguin, glycémie, albuminémie", 1], ["Calcémie, phosphorémie", 1], ["CPK", 1], ["TP, TCA", 1],
+        ["Bilan lipidique", 1], ["IgA sériques", 1], ["Test de grossesse", 0, "femme en âge de procréer"],
+        ["Sérologie VHB (Ag HBs, Ac anti-HBs, Ac anti-HBc)", 0, "avant corticoïdes à dose immunosuppressive, immunosuppresseur ou biothérapie"],
+        ["Activité TPMT", 0, "avant azathioprine, non systématique"], ["Fractions C1q, C1r, C1s, C2 du complément", 0, "si CH50 effondré persistant en rémission"]]]]],
+    suivi: [109, [
+      ["Examens essentiels", [["Bandelette urinaire ou protéinurie sur échantillon, quantifiée si positive (rapport protéinurie/créatininurie)", 1, "tous les 3 à 6 mois"],
+        ["Recherche d'hématurie (bandelette ou ECBU)", 0, "si protéinurie"], ["Hémogramme", 1, "à chaque consultation"], ["Créatininémie", 1, "à chaque consultation"],
+        ["Transaminases, phosphatases alcalines", 1, "à chaque consultation"], ["C3 voire C4", 1, "à chaque consultation"],
+        ["Anticorps anti-ADN natif", 1, "pas plus souvent que tous les 6 à 12 mois"]]],
+      ["Selon le contexte", [["Glycémie à jeun, bilan lipidique", 0, "1 fois par an si corticoïdes, tacrolimus ou autre facteur de risque"],
+        ["Sérologies VHC, VHB, VIH", 0, "si immunosuppresseur ou biothérapie"], ["Dosage sanguin d'hydroxychloroquine", 0, "surtout si doute sur l'observance"],
+        ["Anticorps antiphospholipides et anti-SSA", 0, "en vue d'une grossesse"]]]]],
+    ns: "Consultation tous les mois si lupus évolutif ou grossesse, tous les 3 mois en situation intermédiaire et chez l'enfant, tous les 6 mois en quiescence. Les anticorps antinucléaires ne sont pas à répéter."
+  },
+  "Syndrome des anti-phospholipides": {
+    initial: [22, [
+      ["Anticorps antiphospholipides", [["Anticoagulant circulant de type lupique (dRVVT et TCA sensible), idéalement hors anticoagulant", 1],
+        ["Anticorps anticardiolipine IgG et IgM", 1], ["Anticorps anti-β2GP1 IgG et IgM", 1],
+        ["Contrôle des anticorps positifs", 1, "à 12 semaines au moins pour confirmer la persistance"]]],
+      ["Retentissement et maladie associée", [["Hémogramme, réticulocytes", 1], ["Test direct à l'antiglobuline (Coombs)", 0, "si anémie"],
+        ["Créatininémie, transaminases", 1], ["Bandelette urinaire, rapport protéinurie/créatininurie si positive", 1],
+        ["Anticorps antinucléaires, anti-ADN natif, anti-ENA", 1]]]]],
+    suivi: [59, [
+      ["Atteinte d'organe et hématologique", [["Créatininémie, transaminases, hémogramme, réticulocytes", 1, "à chaque consultation"],
+        ["Bandelette urinaire ou protéinurie sur échantillon, quantifiée si positive", 1, "à chaque consultation"]]],
+      ["Suivi immunologique", [["Anticorps antiphospholipides (anticardiolipine, anti-β2GP1, anticoagulant circulant)", 1, "1 fois par an les premières années, puis selon l'évolution"],
+        ["Anticorps anti-ADN natif et anti-ENA", 1, "même sans signe de maladie systémique"]]],
+      ["Autres", [["Glycémie à jeun, triglycérides, cholestérol total, HDL, LDL", 1, "1 fois par an"],
+        ["INR", 0, "si AVK, selon les modalités habituelles"]]]]]
+  },
+  "Sclérodermie systémique": {
+    initial: [28, [
+      ["Diagnostic", [["Anticorps antinucléaires (IFI sur cellules HEp-2)", 1], ["Anticorps anti-centromères, anti-topoisomérase 1 (Scl70), anti-ARN polymérase III", 1],
+        ["Anticorps anti-U1RNP, anti-PM-Scl, anti-Ku", 0, "selon le contexte (chevauchement)"]]],
+      ["Bilan initial", [["NFS, plaquettes", 1], ["Ionogramme sanguin, créatininémie, uricémie, CRP", 1], ["Glycémie à jeun, calcémie, phosphorémie", 1],
+        ["Albuminémie, ASAT, ALAT, γGT, bilirubine totale, phosphatases alcalines", 1], ["CPK", 1],
+        ["Bandelette urinaire (± ECBU, rapport protéinurie/créatininurie)", 1], ["NT-proBNP (ou BNP)", 1], ["TSH", 1],
+        ["Réticulocytes, schizocytes, haptoglobine, LDH", 0, "si suspicion de crise rénale"]]],
+      ["Atteintes associées", [["Aldolase", 0, "si myopathie de chevauchement"], ["Facteur rhumatoïde, anticorps anti-CCP", 0, "si arthrites"]]]]],
+    suivi: [81, [
+      ["À chaque visite", [["NFS, plaquettes", 1, "à chaque visite"], ["Ionogramme sanguin, créatininémie, uricémie, CRP", 1, "à chaque visite"],
+        ["Albuminémie, bilan hépatique", 1, "à chaque visite"], ["CPK", 1, "à chaque visite"],
+        ["Bandelette urinaire (± rapport protéinurie/créatininurie)", 1, "à chaque visite"],
+        ["Réticulocytes, schizocytes, haptoglobine, LDH", 0, "si suspicion de crise rénale"]]],
+      ["Au moins une fois par an", [["Glycémie à jeun, calcémie", 1, "au moins 1 fois par an"], ["Électrophorèse des protéines", 1, "au moins 1 fois par an"],
+        ["NT-proBNP (ou BNP)", 1, "au moins 1 fois par an"], ["TSH", 1, "au moins 1 fois par an"], ["Acide folique, vitamine B12", 1, "au moins 1 fois par an"]]],
+      ["Selon le contexte", [["Anticorps antinucléaires et spécifiques de la ScS", 0, "à 6-12 mois si négatifs ou sans spécificité au bilan initial"]]]]],
+    ns: "Consultation tous les 3 mois les 3 premières années, tous les 6 mois en forme cutanée limitée sans atteinte viscérale ; bilan des atteintes viscérales tous les ans. Les anticorps antinucléaires ne sont pas à répéter."
+  },
+  "Maladie (syndrome) de Sjögren": {
+    initial: [23, [
+      ["Biologie standard", [["NFS, plaquettes", 1], ["Ionogramme sanguin, calcémie, phosphorémie, créatininémie", 1], ["Éléments figurés urinaires, rapport protéinurie/créatininurie sur échantillon", 1],
+        ["Bilan hépatique", 1], ["CRP", 1], ["TSH", 1], ["CPK", 1]]],
+      ["Immunologie et activité lymphocytaire B", [["Anticorps antinucléaires, anti-SSA/Ro60, anti-SSB", 1], ["Facteurs rhumatoïdes", 1], ["β2-microglobuline", 1],
+        ["Électrophorèse des protéines plasmatiques et immunofixation", 1], ["Dosage pondéral des immunoglobulines", 1], ["Complément C3, C4", 1], ["Cryoglobulinémie", 1]]],
+      ["Comorbidités", [["Bilan lipidique", 1]]],
+      ["Diagnostic différentiel", [["Sérologies VHB, VHC, VIH (et réplication virale si positive)", 1], ["Dosage des IgG4", 0, "selon le contexte"], ["Enzyme de conversion de l'angiotensine", 0, "selon le contexte"]]],
+      ["Autre maladie auto-immune", [["Anticorps des myosites", 0, "selon le contexte"], ["Anticorps anti-ADN natif", 0, "si suspicion de lupus"], ["Anticorps anti-CCP", 0, "si suspicion de polyarthrite rhumatoïde"],
+        ["Anticorps antithyroïdiens", 0, "selon le contexte"]]],
+      ["Avant une grossesse", [["Anticorps anti-SSA/Ro60 et Ro52", 0, "projet de grossesse"], ["Anticardiolipine, anti-β2GP1, anticoagulant de type lupique", 0, "projet de grossesse"]]]]],
+    suivi: [80, [
+      ["À chaque visite", [["NFS, plaquettes", 1, "à chaque visite"], ["Ionogramme sanguin, créatininémie et DFG", 1, "à chaque visite"], ["CRP", 1, "à chaque visite"],
+        ["Rapport protéinurie/créatininurie sur échantillon (± ECBU)", 1, "à chaque visite"], ["Albuminémie, bilan hépatique, CPK", 1, "à chaque visite"],
+        ["Électrophorèse des protéines, dosage pondéral des IgG", 1, "à chaque visite"],
+        ["Facteur rhumatoïde, C3, C4, cryoglobulinémie", 0, "si cryoglobulinémie positive initialement, vascularite, atteinte glomérulaire ou maladie évolutive"]]],
+      ["Non systématiques", [["LDH", 0, "si suspicion de lymphome"], ["TSH", 0, "selon la clinique et les antécédents"]]]]],
+    ns: "Consultation tous les 1 à 3 mois en cas de grossesse, une fois par an ou tous les 2 ans dans les formes quiescentes. Les anticorps anti-SSA ne sont pas à répéter."
+  },
+  "Dermatomyosite de l'enfant et de l'adulte": {
+    initial: [20, [
+      ["Diagnostic", [["Enzymes musculaires : CK, ASAT, LDH, aldolase", 1], ["Anticorps antinucléaires (IFI)", 1],
+        ["Autoanticorps spécifiques des myosites (anti-Mi2, anti-MDA5, anti-TIF1γ, anti-NXP2, anti-SAE) et associés aux myosites", 1], ["VS, CRP", 1]]],
+      ["Sévérité", [["NFS", 1], ["ASAT, ALAT, γGT, créatininémie", 1], ["Glycémie, triglycérides, cholestérol à jeun", 1],
+        ["Albuminémie", 0, "si œdèmes"], ["NT-proBNP, troponine", 0, "si suspicion d'atteinte cardiaque"]]],
+      ["Avant traitement", [["Ionogramme sanguin, bilan hépatique complet", 1], ["Sérologies VIH, VHB, VHC", 1], ["Test IGRA (Quantiféron)", 1]]]]],
+    suivi: [54, [
+      ["Biologie", [["CK", 1, "1 à plusieurs fois par an selon la sévérité et le traitement"], ["Hémogramme", 1, "1 à plusieurs fois par an selon la sévérité et le traitement"],
+        ["Transaminases", 0, "contrôles répétés sous traitement hépatotoxique"], ["Glycémie, triglycérides, cholestérol à jeun", 1, "1 fois par an"],
+        ["Calcémie, phosphorémie, 25-OH vitamine D", 0, "sous corticoïdes"]]]]],
+    ns: "Au moins deux consultations par an en centre expert tant que la maladie est active. Le dosage répété des anticorps spécifiques des myosites n'est pas validé."
+  },
+  "Myosite à inclusions": {
+    initial: [13, [
+      ["Biologie", [["CPK", 1], ["Anticorps antinucléaires, anti-SSA, anti-SSB", 1], ["Anticorps spécifiques des myosites", 1, "pour le diagnostic différentiel"]]]]],
+    suivi: [41, []],
+    ns: "Aucun suivi paraclinique n'est recommandé en l'absence de traitement spécifique. Le suivi des CPK n'est d'aucune utilité."
+  },
+  "Vascularites associées aux ANCA (GPA, GEPA, PAM)": {
+    initial: [22, [
+      ["Diagnostic", [["ANCA : dépistage par test antigène-spécifique anti-PR3 et anti-MPO (± IFI)", 1], ["Anticorps anti-membrane basale glomérulaire", 0, "si atteinte rénale"]]],
+      ["Bilan lésionnel et pré-thérapeutique", [["Hémogramme, plaquettes", 1], ["TP, TCA, fibrinogène, CRP", 1],
+        ["Ionogramme sanguin et urinaire, créatininémie avec DFG", 1], ["Bandelette urinaire, rapport protéinurie/créatininurie sur échantillon, recherche d'hématurie microscopique", 1],
+        ["ASAT, ALAT, γGT, phosphatases alcalines, bilirubine totale", 1], ["Glycémie, bilan lipidique", 1], ["Électrophorèse des protéines plasmatiques", 1], ["CPK, LDH", 1],
+        ["Troponine, BNP ou NT-proBNP", 0, "GEPA ou suspicion d'atteinte cardiaque"], ["Bilan étiologique d'une hyperéosinophilie", 0, "si suspicion de GEPA"],
+        ["Bilan phosphocalcique", 0, "si corticothérapie ≥ 7,5 mg/j pendant plus de 3 mois"]]]]],
+    suivi: [84, [
+      ["Entretien et suivi au long cours", [["Hémogramme, plaquettes, ionogramme sanguin, créatininémie et DFG, glycémie, CRP", 1, "tous les 3 mois"],
+        ["Bandelette urinaire", 1, "tous les 3 mois"], ["Calcémie, ASAT, ALAT, γGT, phosphatases alcalines", 1, "tous les 3 mois"],
+        ["Albuminémie", 0, "tous les 3 mois si atteinte rénale ou dénutrition"], ["ECBU, rapport protéinurie/créatininurie", 0, "tous les 3 mois si atteinte rénale"],
+        ["ANCA (test antigène-spécifique)", 1, "tous les 3 à 6 mois selon le contexte"], ["Électrophorèse des protéines sériques, dosage pondéral des IgG, IgA, IgM", 1, "tous les 6 mois"],
+        ["Lymphocytes T CD4+", 0, "tous les 6 mois si rituximab"]]],
+      ["Pendant l'induction", [["Mêmes examens", 0, "tous les mois (ou avant chaque perfusion IV)"]]]]],
+    ns: "Consultation à J0, J30 puis tous les 3 mois jusqu'à la rémission ; ensuite tous les 3 à 6 mois, tous les 6 mois pendant au moins 2 ans, puis tous les ans pendant 5 à 10 ans."
+  },
+  "Vascularites nécrosantes systémiques (PAN)": {
+    initial: [23, [
+      ["Diagnostic", [["ANCA (IFI et test antigène-spécifique anti-PR3, anti-MPO)", 1], ["Sérologie VHB, complétée si positive par la charge virale (ADN VHB)", 1]]],
+      ["Bilan lésionnel et pré-thérapeutique", [["Hémogramme, plaquettes", 1], ["TP, TCA, fibrinogène, CRP", 1],
+        ["Ionogramme sanguin et urinaire, créatininémie avec DFG", 1], ["Bandelette urinaire, rapport protéinurie/créatininurie, recherche d'hématurie microscopique", 1],
+        ["Transaminases, γGT, phosphatases alcalines, bilirubine", 1], ["Glycémie, électrophorèse des protéines, CPK, LDH, bilan lipidique", 1],
+        ["Bilan étiologique d'une hyperéosinophilie", 0, "si suspicion de GEPA"]]]]],
+    suivi: [74, [
+      ["Entretien et suivi au long cours", [["Hémogramme, plaquettes, ionogramme sanguin, créatininémie et DFG, glycémie, CRP", 1, "tous les 3 mois"],
+        ["Bandelette urinaire", 1, "tous les 3 mois"], ["Calcémie, ASAT, ALAT, γGT, phosphatases alcalines", 1, "tous les 3 mois"],
+        ["ECBU, rapport protéinurie/créatininurie", 0, "tous les 3 mois si atteinte rénale"],
+        ["Électrophorèse des protéines sériques, dosage pondéral des IgG, IgA, IgM", 1, "tous les 6 mois"], ["Lymphocytes T CD4+", 0, "tous les 6 mois si rituximab"]]],
+      ["Pendant l'induction", [["Mêmes examens", 0, "tous les mois"]]]]],
+    ns: "Consultation tous les 3 à 6 mois, puis tous les 6 mois pendant au moins 2 ans, puis tous les ans pendant 5 à 10 ans."
+  },
+  "Artérite à cellules géantes (Horton)": {
+    initial: [16, [
+      ["Inflammation", [["CRP", 1], ["Fibrinogène (ou VS)", 0, "si CRP normale ou quasi normale"], ["Hémogramme", 1]]],
+      ["Diagnostic différentiel", [["Phosphatases alcalines, γGT", 1], ["ANCA anti-MPO et anti-PR3", 1], ["Facteur rhumatoïde, anticorps anti-CCP", 0, "si manifestations articulaires"]]],
+      ["Avant corticothérapie", [["Glycémie veineuse à jeun, HbA1c", 0, "sujets à risque de diabète"]]]]],
+    suivi: [39, [
+      ["Activité de la maladie", [["CRP et fibrinogène", 1, "au moins 1 fois par mois"]]],
+      ["Surveillance de la corticothérapie", [["Kaliémie", 1, "1 à 2 semaines après le début"], ["Glycémie veineuse en fin de matinée", 1, "quelques jours après le début, puis à 1 mois"],
+        ["HbA1c, bilan lipidique à jeun", 1, "tous les 3 mois"]]]]],
+    ns: "Sous tocilizumab, les marqueurs de l'inflammation ne s'élèvent généralement pas, même en cas de rechute."
+  },
+  "Artérite de Takayasu": {
+    initial: [13, [
+      ["Syndrome inflammatoire", [["CRP, VS", 1], ["Électrophorèse des protéines (α2- et γ-globulines)", 1], ["Haptoglobine, orosomucoïde", 0, "pour confirmer le syndrome inflammatoire"], ["Hémogramme", 1]]],
+      ["Diagnostic différentiel", [["Anticorps antinucléaires, facteur rhumatoïde", 1, "négatifs en l'absence de connectivite associée"]]]]],
+    suivi: [32, [
+      ["Activité de la maladie", [["CRP, VS", 1, "à chaque consultation (critère d'activité NIH)"]]],
+      ["Surveillance de la corticothérapie", [["Glycémie à jeun", 1, "régulièrement sous corticoïdes"], ["Kaliémie", 0, "sous corticoïdes"], ["Bilan lipidique", 1, "prise en charge du risque cardiovasculaire"]]]]],
+    ns: "Il n'existe pas de marqueur biologique spécifique ; l'absence de syndrome inflammatoire n'exclut pas une maladie active."
+  },
+  "Maladie de Behçet": {
+    initial: [26, [
+      ["Biologie", [["CRP", 1, "syndrome inflammatoire inconstant, surtout si atteinte vasculaire"]]]]],
+    suivi: [44, [
+      ["Biologie", [["CRP", 0, "peu sensible pour juger de l'activité"]]]]],
+    ns: "Aucun examen biologique ne confirme le diagnostic : le typage HLA de classe I ne doit pas être réalisé. Le suivi de l'activité repose sur l'interrogatoire et l'examen clinique. Les examens de surveillance des traitements s'ajoutent selon les molécules."
+  },
+  "Syndrome de Cogan": {
+    initial: [17, [
+      ["Biologie", [["CRP, hémogramme", 1, "syndrome inflammatoire chez environ 3 patients sur 4"], ["Sérologie syphilitique", 1, "négative par définition"], ["Bilan hépatique", 1]]],
+      ["Selon la présentation", [["Anticorps antinucléaires, ANCA, complément", 0, "bilan immunologique selon la présentation"],
+        ["Bilan infectieux : tuberculose, maladie de Lyme", 0, "diagnostic différentiel"], ["Anticorps anti-CCP", 0, "si point d'appel articulaire"]]]]],
+    suivi: [29, [
+      ["Biologie", [["CRP", 1, "suivi du syndrome inflammatoire éventuel"],
+        ["Hémogramme, créatininémie, transaminases, γGT, phosphatases alcalines", 0, "selon les traitements prescrits"]]]]],
+    ns: "L'absence de syndrome inflammatoire n'exclut pas une évolutivité du syndrome de Cogan."
+  },
+  "Cryoglobulinémies": {
+    initial: [31, [
+      ["Bilan initial", [["Recherche, dosage et typage des cryoglobulines", 1], ["Hémogramme", 1], ["Créatininémie avec DFG", 1],
+        ["ASAT, ALAT, γGT, phosphatases alcalines, bilirubine", 1], ["CRP, fibrinogène", 1], ["TSH", 1], ["Bilan lipidique, glycémie, calcémie, vitamine D", 1],
+        ["Facteur rhumatoïde, C3, C4, CH50", 1], ["Anticorps antinucléaires, anti-ENA, ANCA, anti-LKM, anti-muscle lisse, anti-mitochondries", 1],
+        ["Immunofixation des protéines sériques, dosage pondéral des immunoglobulines", 1], ["Marqueurs virologiques VHC, VHB, VIH", 1],
+        ["ECBU, rapport protéinurie/créatininurie, albuminurie/créatininurie", 1]]],
+      ["Selon le type", [["Immunofixation des protides urinaires", 0, "cryoglobulinémie de type I"],
+        ["Phénotypage lymphocytaire", 0, "type I ou II"], ["Myélogramme avec cytométrie en flux", 0, "type I"]]]]],
+    suivi: [59, [
+      ["Examens systématiques", [["Hémogramme, créatininémie et DFG, tests hépatiques", 1], ["CRP", 1], ["Facteurs rhumatoïdes, C3, C4, CH50", 1],
+        ["Électrophorèse des protéines sériques", 1], ["Recherche, dosage et typage des cryoglobulines", 1], ["Bilan lipidique, glycémie", 1],
+        ["ECBU, protéinurie sur échantillon (ou bandelette), quantifiée si positive", 1], ["Albuminémie", 0, "si protéinurie"]]],
+      ["Au cas par cas", [["Hémogramme, électrophorèse des protéines, créatininémie, calcémie, LDH", 0, "si gammapathie monoclonale : 1/an si pic < 15 g/L, 2/an si < 30 g/L, tous les 3 mois au-delà"]]]]],
+    ns: "Contrôles tous les 3 à 6 mois, puis une fois par semestre dès que la rémission est obtenue."
+  },
+  "Maladie de Still de l'adulte": {
+    initial: [16, [
+      ["Biologie", [["NFS, plaquettes, frottis", 1], ["TP, TCA, fibrinogène", 1], ["Ionogramme sanguin, urée, créatininémie", 1],
+        ["ASAT, ALAT, phosphatases alcalines, γGT, bilirubine", 1], ["LDH", 1], ["Ferritinémie, ferritine glycosylée", 1], ["CK", 1],
+        ["Électrophorèse des protéines sériques", 1], ["CRP", 1], ["D-dimères, PDF", 0, "si suspicion de CIVD"], ["Triglycérides", 0, "si suspicion de syndrome d'activation macrophagique"]]],
+      ["Microbiologie", [["Hémocultures, ECBU", 1], ["Sérologies VIH, VHB, VHC, EBV, CMV", 1],
+        ["Autres sérologies virales, bactériennes, parasitaires, PCR, recherche de tuberculose", 0, "selon le contexte"]]],
+      ["Immunologie", [["Anticorps antinucléaires, anti-ADN, anti-ECT, complément C3, C4, CH50", 1], ["Facteurs rhumatoïdes, anticorps anti-CCP", 1], ["ANCA", 1],
+        ["Immunofixation sérique, chaînes légères libres, β2-microglobuline", 1]]],
+      ["Avant traitement", [["Test IGRA (QuantiFERON ou T-SPOT.TB)", 1], ["Glycémie à jeun, bilan lipidique", 1], ["Test de grossesse", 0, "femme en âge de procréer"]]]]],
+    suivi: [31, [
+      ["Biologie", [["Hémogramme, CRP", 1, "tous les mois pendant 3 mois puis tous les 3 mois"],
+        ["Transaminases", 0, "si méthotrexate, tocilizumab, anakinra ou AINS : tous les mois pendant 3 mois puis tous les 3 mois"],
+        ["Ionogramme, créatininémie", 1, "tous les 3 mois la 1re année puis tous les 6 mois"],
+        ["Ferritine, ferritine glycosylée", 0, "si suspicion de poussée"], ["Fibrinogène, triglycérides", 0, "si suspicion de syndrome d'activation macrophagique"]]],
+      ["Sous corticoïdes", [["Glycémie à jeun, HbA1c", 0, "tous les 3 mois"], ["25-OH vitamine D, calcémie, albuminémie", 0, "sous corticoïdes"], ["Bilan lipidique", 0, "1 fois par an"]]]]]
+  },
+  "Fièvre méditerranéenne familiale": {
+    initial: [15, [
+      ["Diagnostic", [["CRP en crise et hors crise", 1, "élévation obligatoire en crise"], ["Hémogramme", 1], ["Analyse génétique du gène MEFV", 1, "avec consentement, confrontée à la clinique"]]],
+      ["Complications", [["Créatininémie, rapport protéinurie/créatininurie sur échantillon", 1, "dépistage de l'amylose AA"], ["Transaminases", 1]]]]],
+    suivi: [32, [
+      ["Inflammation résiduelle", [["CRP hors crise (au moins 10 jours après la dernière crise)", 1, "tous les 6 à 12 mois"],
+        ["Protéine SAA", 0, "chez l'enfant, et au moins une fois chez l'adulte pour exclure une dissociation SAA/CRP"]]],
+      ["Complications et tolérance", [["Créatininémie, rapport protéinurie/créatininurie sur échantillon", 1, "tous les 6 à 12 mois"], ["Bilan hépatique, CPK", 1, "tous les 6 à 12 mois (colchicine)"]]]]],
+    ns: "Pendant une grossesse : consultation tous les 2 mois avec hémogramme et CRP."
+  },
+  "Syndromes périodiques associés à la cryopyrine (CAPS)": {
+    initial: [23, [
+      ["Diagnostic", [["NFS, VS, CRP", 1], ["Protéine SAA", 1], ["Analyse du gène NLRP3 (laboratoire de référence)", 1]]],
+      ["Retentissement rénal", [["Urée, créatininémie", 1], ["Rapport microalbuminurie/créatininurie sur échantillon (ou bandelette urinaire)", 1]]]]],
+    suivi: [48, [
+      ["Sous anti-IL-1", [["NFS, VS, CRP, protéine SAA", 1, "tous les 3 à 6 mois"], ["Transaminases, bilirubine totale, γGT", 1, "tous les 3 à 6 mois"],
+        ["Cholestérol total, HDL, LDL, triglycérides", 1, "tous les 6 mois"],
+        ["Urée, créatininémie, rapport microalbuminurie/créatininurie (ou bandelette urinaire)", 1, "tous les 6 mois"], ["Protéinurie des 24 heures", 0, "si protéinurie"]]],
+      ["Selon le contexte", [["Calcémie, phosphorémie, 25-OH vitamine D", 0, "si facteur de risque d'ostéoporose"],
+        ["Hémocultures, ECBU", 0, "si fièvre sous biothérapie"]]]]]
+  },
+  "PFAPA (fièvre périodique)": {
+    initial: [15, [
+      ["Pendant une crise", [["NFS, CRP", 1], ["Ionogramme sanguin, urée, créatininémie", 1], ["Hémoculture, bilan urinaire", 1], ["ASAT, ALAT", 0, "si douleurs abdominales"]]],
+      ["En dehors d'une crise", [["NFS, CRP", 1], ["IgG, IgA, IgM", 1], ["Urée, créatininémie", 1]]],
+      ["Selon le contexte", [["Frottis (corps de Jolly), sérologies vaccinales, anticorps naturels de groupe", 0, "si critères de déficit immunitaire"],
+        ["Acide mévalonique urinaire pendant un épisode fébrile", 0, "si suspicion de déficit en mévalonate kinase"]]]]],
+    suivi: [32, []],
+    ns: "PFAPA classique de l'enfant : pas de surveillance biologique particulière, le bilan dépend de l'évolution et des traitements."
+  },
+  "Amylose AA": {
+    initial: [8, [
+      ["Retentissement", [["CRP, fibrinogène, VS", 1], ["Protéine SAA", 1, "au moins une fois avec la CRP (dissociation possible)"], ["Hémogramme", 1],
+        ["Créatininémie avec DFG, rapport protéinurie/créatininurie sur échantillon", 1], ["Albuminémie", 0, "si protéinurie"]]],
+      ["Bilan étiologique (selon l'orientation)", [["Facteur rhumatoïde, anticorps antinucléaires, anti-CCP, HLA-B27", 0, "si rhumatisme"],
+        ["Calprotectine fécale, ANCA", 0, "si suspicion de MICI"], ["IgG, IgA, IgM, sérologies vaccinales", 0, "si suspicion de déficit immunitaire"],
+        ["Immunofixation sang et urines, chaînes légères libres", 0, "si suspicion d'hémopathie"], ["Analyse génétique", 0, "si maladie auto-inflammatoire évoquée"]]]]],
+    suivi: [22, [
+      ["Examens généraux", [["CRP, hémogramme", 1, "4 fois par an"], ["Créatininémie avec DFG", 1, "4 fois par an"],
+        ["Rapport protéinurie/créatininurie sur échantillon", 1, "4 fois par an"], ["Albuminémie", 0, "4 fois par an si protéinurie glomérulaire"],
+        ["Protéine SAA", 1, "1 fois par an si corrélée à la CRP"]]]]]
+  },
+  "Polychondrite chronique atrophiante": {
+    initial: [20, [
+      ["Biologie standard", [["NFS (recherche d'une myélodysplasie)", 1], ["CRP", 1, "syndrome inflammatoire absent dans 40 % des poussées"], ["Créatininémie, bilan hépatique", 1]]],
+      ["Bilan immunologique (diagnostics différentiels)", [["Anticorps antinucléaires et anti-ENA", 1], ["Facteurs rhumatoïdes, anticorps anti-CCP", 1], ["ANCA anti-MPO et anti-PR3", 1],
+        ["Typage HLA-B27", 0, "si nécessaire"]]]]],
+    suivi: [33, [
+      ["Biologie", [["CRP", 1, "suivi du syndrome inflammatoire éventuel"], ["Hémogramme", 1, "recherche d'une myélodysplasie"],
+        ["Créatininémie, transaminases, γGT, phosphatases alcalines", 0, "selon les traitements"], ["Glycémie, bilan lipidique", 0, "1 fois par an si corticoïdes ou tocilizumab"]]]]],
+    ns: "Les anticorps anti-cartilage, anti-collagène de type 2 et anti-matrilline 1 sont inutiles. L'absence de syndrome inflammatoire n'exclut pas une maladie évolutive."
+  },
+  "Uvéites chroniques non infectieuses": {
+    initial: [29, [
+      ["Toutes uvéites (selon l'interrogatoire et l'aspect)", [["Anticorps antinucléaires", 0, "utiles pour la classification, surtout chez l'enfant"], ["Sérologie syphilis", 0, "si pubère"],
+        ["IGRA (QuantiFERON) ou IDR à la tuberculine", 0, "selon le contexte"], ["HLA-B27", 0, "si uvéite antérieure aiguë"],
+        ["Sérologies Lyme, toxocarose, toxoplasmose, bartonellose", 0, "selon l'exposition"]]],
+      ["Uvéite granulomateuse ou intermédiaire", [["NFS, CRP", 1], ["Enzyme de conversion de l'angiotensine, lysozyme", 1], ["Ionogramme sanguin, calcémie, calciurie/créatininurie", 1],
+        ["Électrophorèse des protéines sériques", 1], ["ASAT, ALAT, γGT", 1], ["IGRA (QuantiFERON) et/ou IDR à la tuberculine", 1]]]]],
+    suivi: [51, []],
+    ns: "Pas de surveillance biologique propre à l'uvéite : suivi en médecine interne, rhumatologie ou pédiatrie tous les 3 à 6 mois selon la maladie sous-jacente et les traitements."
+  },
+  "Purpura thrombopénique immunologique de l'adulte": {
+    initial: [22, [
+      ["Examens systématiques", [["Hémogramme avec frottis sanguin manuel", 1], ["Groupe sanguin ABO, Rhésus, RAI", 1], ["Réticulocytes, haptoglobine, LDH, bilirubine libre", 1],
+        ["TP, TCA, fibrinogène", 1], ["Bilan hépatique, créatininémie", 1], ["Électrophorèse des protéines sériques, dosage pondéral des immunoglobulines", 1],
+        ["Sérologies VHB, VHC, VIH 1 et 2", 1], ["Anticorps antinucléaires (si positifs : anti-ENA, anti-ADN)", 1]]],
+      ["Selon le contexte", [["Numération plaquettaire sur tube citraté", 0, "si agrégats plaquettaires"], ["Test direct à l'antiglobuline", 0, "si marqueurs d'hémolyse"],
+        ["Anticoagulant circulant, anticardiolipine et anti-β2GP1 IgG et IgM", 0, "lupus, antécédent de thrombose ou obstétrical, avant agoniste de la TPO ou splénectomie"],
+        ["Sérologies EBV, CMV", 0, "si contexte infectieux évocateur"], ["Myélogramme", 0, "syndrome tumoral, autre cytopénie ou échec de la 1re ligne"]]]]],
+    suivi: [59, [
+      ["Surveillance", [["Hémogramme", 1, "de 1 à 2 fois par semaine en phase instable à tous les 6 mois si plaquettes stables"],
+        ["Hémogramme", 0, "en cas de saignement ou avant tout geste invasif"],
+        ["Anticorps antinucléaires et bilan immunologique", 0, "1 fois par an si AAN isolés au diagnostic"], ["Dosage pondéral des immunoglobulines", 0, "1 fois par an après rituximab"]]]]]
+  },
+  "Anémie hémolytique auto-immune de l'adulte": {
+    initial: [20, [
+      ["Hémolyse et diagnostic", [["Hémogramme, réticulocytes, frottis sanguin", 1], ["Haptoglobine, LDH, bilirubine libre", 1],
+        ["Test direct à l'antiglobuline avec spécificité (IgG, C3d)", 1], ["Recherche et titrage des agglutinines froides", 0, "si TDA de type complément"], ["Groupe sanguin, RAI", 1]]],
+      ["Anticorps chauds : bilan étiologique", [["Anticorps antinucléaires (si > 1/80 : anti-ADN natif, anti-ECT)", 1], ["Immunophénotypage des lymphocytes B circulants", 1],
+        ["Électrophorèse et immunofixation des protéines plasmatiques", 1], ["Dosage pondéral des IgG, IgA, IgM", 1], ["Sérologies VIH, VHC, VHB", 1],
+        ["Anticoagulant circulant, anticardiolipine, anti-β2GP1", 0, "si AAN > 1/80, lupus, thrombose ou avant splénectomie"],
+        ["Sérologies ou PCR EBV, CMV, parvovirus B19", 0, "si contexte infectieux"]]],
+      ["Anticorps froids : bilan étiologique", [["Électrophorèse et immunofixation des protéines sériques", 0, "AHAI à anticorps froids"],
+        ["Immunophénotypage des lymphocytes B circulants", 0, "AHAI à anticorps froids"], ["Complément CH50, C3, C4", 0, "avant inhibiteur du complément"],
+        ["Sérologie Mycoplasma pneumoniae, EBV, CMV", 0, "si contexte infectieux aigu"]]]]],
+    suivi: [34, [
+      ["Réponse au traitement", [["Hémogramme, réticulocytes", 1, "jusqu'à la rémission puis selon l'évolution"], ["Haptoglobine, LDH, bilirubine libre", 1, "jusqu'à la normalisation"]]]]],
+    ns: "La rémission complète est une normalisation de l'hémoglobine et des paramètres d'hémolyse sans traitement, à 2 reprises à 4 semaines d'intervalle."
+  },
+  "Purpura thrombotique thrombocytopénique": {
+    initial: [56, [
+      ["Diagnostic (urgence)", [["NFS, plaquettes, réticulocytes", 1], ["Frottis sanguin : recherche de schizocytes", 1], ["LDH, haptoglobine, bilirubine libre", 1],
+        ["Activité ADAMTS13 (± anticorps anti-ADAMTS13)", 1], ["Test de Coombs érythrocytaire", 1], ["TQ, TCA, temps de thrombine, fibrinogène", 1]]],
+      ["Retentissement", [["Ionogramme sanguin complet, créatininémie", 1], ["Ionogramme urinaire, créatininurie, sédiment urinaire, rapport protéinurie/créatininurie", 1],
+        ["Troponine", 1], ["Bilan hépatique", 1], ["Protides totaux, électrophorèse des protéines sériques", 1], ["Vitamine B12", 1, "avant transfusion"]]],
+      ["Cause et terrain", [["Sérologies VIH, VHC, VHB", 1], ["Anticorps antinucléaires (si positifs : anti-ADN natif, C3, C4, CH50)", 1],
+        ["Anticardiolipine, anti-β2GP1", 1], ["β-hCG", 0, "femme en âge de procréer"], ["Recherche d'E. coli producteur de shigatoxine dans les selles", 0, "si diarrhée"]]],
+      ["Bilan pré-transfusionnel", [["Groupe ABO-RH1, phénotype RH-KEL1 (2 déterminations), RAI", 1]]]]],
+    suivi: [56, [
+      ["PTT auto-immun au long cours", [["NFS, plaquettes", 1, "régulièrement, et en urgence si suspicion de rechute"], ["Créatininémie, ionogramme, DFG, LDH", 1, "régulièrement"],
+        ["Activité ADAMTS13", 1, "à 1 mois puis tous les 3 mois pendant des années (organisé à l'hôpital)"]]],
+      ["Comorbidités", [["Glycémie à jeun, HbA1c", 1, "régulièrement"], ["Bilan lipidique", 1, "régulièrement"],
+        ["Kaliémie, calcémie, phosphorémie, glycémie", 0, "sous corticoïdes"]]]]]
+  },
+  "Aplasies médullaires acquises et constitutionnelles": {
+    initial: [14, [
+      ["Diagnostic", [["Hémogramme avec réticulocytes, frottis sanguin", 1], ["Myélogramme avec caryotype médullaire, biopsie ostéomédullaire", 1, "en milieu spécialisé"],
+        ["Recherche d'un clone HPN (cytométrie en flux)", 1], ["Hémoglobine fœtale (avant transfusion), α-fœtoprotéine", 1]]],
+      ["Bilan étiologique", [["Dosage pondéral des immunoglobulines, sous-populations lymphocytaires", 1], ["Anticorps antinucléaires, anti-ADN natif, facteur rhumatoïde", 1],
+        ["Bilan hépatique complet", 1], ["Sérologie (ou PCR) parvovirus B19", 1],
+        ["Caryotype avec cassures chromosomiques, longueur des télomères, panel génétique", 0, "si suspicion d'aplasie constitutionnelle"]]],
+      ["Pré-thérapeutique", [["Groupe sanguin, phénotype érythrocytaire étendu, RAI", 1], ["Typage HLA du patient et de la fratrie", 0, "si moins de 40 ans ou greffe envisagée"],
+        ["Sérologies VIH, VHB, VHC, EBV, CMV (HSV, VZV chez l'enfant)", 1], ["Ionogramme sanguin, urée, créatininémie", 1]]]]],
+    suivi: [44, [
+      ["Suivi", [["Hémogramme, ionogramme sanguin, urée, créatininémie, bilan hépatique complet", 1, "à chaque consultation ou hôpital de jour"],
+        ["Ferritinémie", 0, "sous eltrombopag"], ["Recherche d'un clone HPN", 1, "1 fois par an ou si symptômes"],
+        ["Myélogramme avec cytogénétique", 1, "tous les 12 à 18 mois, à vie (en milieu spécialisé)"]]]]]
+  },
+  "Syndromes hyperéosinophiliques": {
+    initial: [23, [
+      ["HE > 1500/mm³ persistante sans point d'appel", [["Contrôle de la NFS", 1], ["Ionogramme sanguin, créatininémie", 1], ["Bilan hépatique complet", 1], ["LDH, CPK", 1],
+        ["Calcémie, phosphorémie", 1], ["Troponine, BNP", 1], ["Électrophorèse des protéines plasmatiques", 1], ["Tryptase sérique", 1], ["Vitamine B12", 1], ["IgE totales", 1],
+        ["CRP", 1], ["Sérologie VIH", 1], ["Sérologie toxocarose", 1], ["Examen parasitologique des selles (méthode de Baermann si suspicion d'anguillulose)", 1],
+        ["Autres sérologies parasitaires, sérologie HTLV-1", 0, "selon le contexte"]]],
+      ["Deuxième intention", [["Transcrit de fusion FIP1L1-PDGFRA, phénotypage lymphocytaire T, clonalité T", 0, "si bilan de première intention négatif"]]]]],
+    suivi: [68, [
+      ["HE liée à FIP1L1-PDGFRA", [["NFS, ionogramme sanguin, bilan hépatique complet", 0, "chaque semaine jusqu'à normalisation, puis tous les 3 mois"],
+        ["Transcrit FIP1L1-PDGFRA", 0, "à 3 mois de l'imatinib, tous les 6 mois pendant 2 ans, puis 1 fois par an"]]],
+      ["Autres HE et SHE", [["NFS", 1, "au moins 1 fois par an, plus souvent selon le traitement"], ["Phénotypage lymphocytaire", 0, "1 fois par an si forme lymphoïde"]]]]]
+  },
+  "Angioedème héréditaire": {
+    initial: [28, [
+      ["Diagnostic hors crise", [["Dosage du C4", 1], ["C1-inhibiteur pondéral et fonctionnel", 1], ["Recherche du variant pathogène (génétique)", 0, "selon le contexte"],
+        ["Dosage du C1q", 0, "si suspicion d'angiœdème acquis"]]]]],
+    suivi: [73, [
+      ["Sous androgènes", [["NFS", 0, "visite initiale, à 6 mois, puis 1 fois par an"], ["ASAT, ALAT, γGT, phosphatases alcalines, bilirubine", 0, "visite initiale, à 6 mois, puis 1 fois par an"],
+        ["Bilan lipidique, glycémie à jeun", 0, "visite initiale, à 6 mois, puis 1 fois par an"]]],
+      ["Sous lanadelumab ou berotralstat", [["ASAT, ALAT (± γGT, phosphatases alcalines, bilirubine)", 0, "selon le traitement"], ["TP, TCA", 0, "sous lanadelumab"]]]]],
+    ns: "Le dosage du C1-inhibiteur en crise, du C3 et du CH50 est inutile au diagnostic. La surveillance biologique dépend du traitement de fond."
+  },
+  "Mastocytoses non avancées de l'adulte": {
+    initial: [33, [
+      ["Biologie", [["Tryptase sérique basale", 1], ["Recherche de la mutation KIT D816V dans le sang", 1], ["NFS, plaquettes", 1], ["Bilan hépatique, albuminémie", 1],
+        ["Myélogramme et biopsie ostéomédullaire", 0, "en milieu spécialisé pour confirmer une mastocytose systémique"]]]]],
+    suivi: [59, [
+      ["Activité de la mastocytose", [["Tryptase sérique", 1, "à 6-12 mois puis 1 fois par an"], ["NFS, plaquettes", 1, "à 6-12 mois puis 1 fois par an"],
+        ["Bilan hépatique, albuminémie", 1, "à 6-12 mois puis 1 fois par an"]]]]],
+    ns: "Une hausse isolée et confirmée de la tryptase, ou une anomalie de la NFS, du bilan hépatique ou de l'albumine, doit faire rechercher une forme avancée."
+  },
+  "Déficits immunitaires héréditaires": {
+    initial: [21, [
+      ["Première intention (en ville)", [["Hémogramme avec formule leucocytaire en valeur absolue", 1], ["Dosage pondéral des IgG, IgA, IgM", 1],
+        ["Électrophorèse des protéines sériques", 1, "chez l'adulte"], ["Sérologie tétanos", 1], ["Autres sérologies post-vaccinales", 0, "non remboursées en ville"],
+        ["Complément C3, C4, CH50, AP50", 0, "si antécédent personnel ou familial de méningite à méningocoque"]]],
+      ["Deuxième intention (spécialisé)", [["Sous-populations lymphocytaires T CD4+, CD8+, B, NK", 0, "si lymphopénie ou orientation clinique"]]]]],
+    suivi: [32, [
+      ["Sous immunoglobulines", [["Taux résiduel d'IgG", 1, "jusqu'à l'équilibre (> 8 g/L), puis 1 à 2 fois par an"]]]]]
+  },
+  "Hémophilie A acquise": {
+    initial: [10, [
+      ["Diagnostic", [["TP, TCA (ou TCK), fibrinogène", 1, "TCA isolément allongé"], ["Test de correction du TCA par plasma témoin", 1], ["Dosage du FVIII", 1],
+        ["Titrage de l'anticorps anti-FVIII (Bethesda)", 1], ["Facteur Willebrand (activité et antigène)", 1], ["Numération sanguine", 1]]],
+      ["Bilan étiologique", [["Facteur rhumatoïde, anticorps anti-CCP, anticorps antinucléaires", 1], ["Électrophorèse des protéines sériques", 1],
+        ["Sérologies VIH, VHB, VHC", 1], ["β-hCG", 0, "femme en âge de procréer"]]]]],
+    suivi: [45, [
+      ["Jusqu'à la rémission complète", [["TCA, FVIII, facteur Willebrand, titrage de l'anticorps anti-FVIII", 1, "au moins 1 fois par semaine"], ["Numération sanguine", 1, "au moins 1 fois par semaine"],
+        ["Calcémie, glycémie, ionogramme sanguin, créatininémie", 1, "au moins 1 fois par semaine sous corticoïdes et immunosuppresseurs"]]],
+      ["Après la rémission", [["TCA, FVIII, facteur Willebrand, anticorps anti-FVIII, numération sanguine", 1, "1 fois par mois pendant 6 mois, tous les 2-3 mois jusqu'à 12 mois, puis tous les 6 mois"]]]]]
+  },
+  "Syndromes de Willebrand acquis": {
+    initial: [11, [
+      ["Diagnostic (1re intention)", [["Facteur Willebrand antigène (VWF:Ag) et activité (VWF:Act)", 1], ["Activité coagulante du FVIII (FVIII:C)", 1], ["TCA", 1, "un TCA normal n'exclut pas le diagnostic"]]],
+      ["Orientation étiologique", [["NFS avec frottis sanguin", 1], ["Électrophorèse des protéines sériques", 1], ["Immunofixation", 0, "si pic monoclonal"]]]]],
+    suivi: [14, []],
+    ns: "Consultation de suivi annuelle en centre de ressources et de compétences (CRC-MHR) ; la surveillance dépend surtout de la pathologie associée."
+  },
+  "Syndrome hémolytique et urémique (SHU)": {
+    initial: [14, [
+      ["Confirmation du diagnostic", [["NFS, plaquettes, réticulocytes, recherche de schizocytes", 1], ["Haptoglobine, LDH, bilirubine libre", 1], ["Test de Coombs", 1],
+        ["Ionogramme sanguin complet, urée, créatininémie avec DFG", 1], ["Ionogramme urinaire, créatininurie, protéinurie", 1], ["Activité ADAMTS13", 1, "avant toute administration de plasma"]]],
+      ["Sévérité", [["Calcium, phosphore, albuminémie", 1], ["Troponine, CPK, lipase, glycémie", 1], ["ASAT, ALAT, bilirubine", 1]]],
+      ["Étiologie", [["Recherche de STEC par PCR (gènes stx) dans les selles ou sur écouvillon rectal", 1],
+        ["SHU atypique : complément C3, C4, facteurs H et I, CD46, anticorps anti-facteur H", 0, "avant toute plasmathérapie"],
+        ["Ferritine, folates, vitamine B12", 0, "si anémie"], ["TP, TCA, fibrinogène, D-dimères", 0, "diagnostic différentiel (CIVD)"],
+        ["Recherche de variants génétiques de la voie alterne du complément", 0, "SHU atypique"]]]]],
+    suivi: [23, [
+      ["À 1 mois et 6 mois", [["NFS, plaquettes, réticulocytes", 1, "à 1 mois et 6 mois"], ["Ionogramme sanguin, protidémie, albuminémie, urée, créatininémie", 1, "à 1 mois et 6 mois"],
+        ["Protéinurie, albuminurie, créatininurie sur échantillon", 1, "à 1 mois et 6 mois"]]],
+      ["À 1 an (en plus)", [["Bilan lipidique, uricémie, bilan martial", 1, "à 1 an"], ["Bilan phosphocalcique", 1, "à 1 an, selon le DFG"],
+        ["Glycémie à jeun, peptide C", 0, "si antécédent de pancréatite"]]]]],
+    ns: "Après un SHU, le patient garde un suivi de maladie rénale chronique, même en cas de récupération complète."
+  },
+  "Neutropénies chroniques": {
+    initial: [24, [
+      ["Chez l'adulte", [["NFS avec plaquettes et réticulocytes, frottis (recherche de LGL)", 1], ["Dosage pondéral des IgG, IgA, IgM", 1], ["Électrophorèse des protéines sériques", 1],
+        ["Immunophénotypage lymphocytaire", 1], ["Anticorps antinucléaires, anti-ADN natif, facteurs rhumatoïdes", 1], ["CRP", 1],
+        ["Ionogramme sanguin, urée, créatininémie, albuminurie", 1], ["Myélogramme avec cytogénétique médullaire", 0, "à discuter"]]],
+      ["Chez l'enfant", [["Anticorps anti-polynucléaires neutrophiles", 0, "première intention chez l'enfant"], ["Sérologies vaccinales", 0, "au diagnostic"],
+        ["Diagnostic génétique avec étude familiale", 0, "si suspicion de neutropénie congénitale"]]]]],
+    suivi: [109, [
+      ["Suivi au long cours", [["NFS avec plaquettes et réticulocytes", 1, "2 à 4 fois par an"], ["CRP", 1, "2 fois par an avant 5 ans, puis 1 fois par an"],
+        ["Ionogramme sanguin, urée, créatininémie, albuminurie", 1, "1 fois par an"], ["IgG, IgA, IgM", 1, "tous les 5 ans"],
+        ["NGS myéloïde sur sang (dont EIF6, TP53)", 0, "1 fois par an (neutropénie congénitale), en milieu spécialisé"]]]]],
+    ns: "Consultation d'hématologie tous les 6 mois et consultation dentaire annuelle."
+  },
+  "Purpura thrombopénique immunologique de l'enfant et de l'adolescent": {
+    initial: [12, [
+      ["Bilan initial", [["NFS, plaquettes, réticulocytes, frottis (recherche de schizocytes)", 1], ["TCA, TP, fibrinogène", 1],
+        ["Créatininémie, bandelette urinaire (protéinurie, hématurie)", 1], ["ASAT, ALAT, γGT, bilirubine", 1], ["Dosage pondéral des IgG, IgA, IgM", 1],
+        ["Anticorps antinucléaires", 0, "après 8 ans ou si contexte familial de lupus"], ["Groupe sanguin, Rhésus, RAI", 1]]],
+      ["PTI persistant ou chronique, ou avant 2e ligne", [["Bilan martial", 0, "PTI persistant ou chronique"], ["Test direct à l'antiglobuline", 0, "PTI persistant ou chronique"],
+        ["Anticoagulant circulant, anticardiolipine, anti-β2GP1 IgG et IgM", 0, "PTI persistant ou chronique"], ["Anticorps antithyroïdiens", 0, "PTI persistant ou chronique"],
+        ["Sérologies vaccinales (tétanos, pneumocoque), immunophénotypage lymphocytaire", 0, "PTI persistant ou chronique"]]]]],
+    suivi: [15, [
+      ["Numération plaquettaire", [["NFS, plaquettes", 1, "à J6-J8 puis vers J21 après traitement, puis mensuelle si > 30 G/L et asymptomatique"],
+        ["NFS, plaquettes", 0, "en urgence en cas de signes hémorragiques"]]]]],
+    ns: "Chez l'enfant, on limite au maximum le nombre de NFS systématiques."
+  },
+  "Anémie hémolytique auto-immune de l'enfant et de l'adolescent": {
+    initial: [25, [
+      ["Toutes AHAI", [["Hémogramme, réticulocytes, frottis sanguin", 1], ["Bilirubine libre et conjuguée, urée, créatininémie, ionogramme, LDH, haptoglobine", 1],
+        ["Examen direct à l'antiglobuline (Coombs direct)", 1], ["Groupe sanguin avec phénotype étendu, RAI", 1], ["Bandelette urinaire", 1]]],
+      ["Anticorps chauds : bilan étiologique", [["IgG, IgA, IgM, sérologies post-vaccinales", 1], ["Phénotypage lymphocytaire T, B, NK, Tαβ doubles négatifs, vitamine B12", 0, "si critère évocateur de déficit immunitaire"],
+        ["Sérologies VHB, VHC, VIH", 1], ["PCR parvovirus B19", 0, "si réticulocytopénie"], ["Rapport protéinurie/créatininurie", 1], ["Anticorps antinucléaires", 1],
+        ["ASAT, ALAT, γGT, bilirubine", 1], ["TSH, anticorps anti-TPO", 1],
+        ["Anti-ENA, anti-ADN natif, antiphospholipides, C3, C4", 0, "si AAN ≥ 1/160, protéinurie ou signes de lupus"]]],
+      ["Anticorps froids", [["Sérologies ou PCR CMV, EBV, parvovirus B19, HHV6, PCR Mycoplasma pneumoniae", 0, "selon la clinique"]]]]],
+    suivi: [16, [
+      ["Suivi", [["Hémogramme, réticulocytes, marqueurs d'hémolyse", 1, "1 à 2 fois par semaine au début, puis espacé ; 1 à 2 fois par an en rémission"]]]]],
+    ns: "Toute poussée ou complication justifie un nouveau bilan étiologique."
+  },
+  "Maladie associée aux IgG4": {
+    initial: [23, [
+      ["Suspicion de maladie associée aux IgG4", [["NFS, plaquettes", 1, "hyperéosinophilie"], ["Bilan hépatique", 1], ["Créatininémie, rapport protéinurie/créatininurie, ECBU", 1],
+        ["CRP", 1], ["Glycémie à jeun, HbA1c", 1], ["Électrophorèse des protéines sériques", 1], ["Dosage des IgG4 sériques", 1], ["C3, C4, CH50", 1],
+        ["Élastase fécale", 0, "si stéatorrhée"]]]]],
+    suivi: [47, [
+      ["Avant chaque consultation", [["NFS", 1, "avant chaque consultation"], ["Ionogramme sanguin, créatininémie, ECBU, rapport protéinurie/créatininurie", 1, "avant chaque consultation"],
+        ["Bilan hépatique", 1, "avant chaque consultation"], ["CRP", 1, "avant chaque consultation"], ["IgG4 sériques", 1, "avant chaque consultation"]]],
+      ["Selon le contexte", [["C3, C4", 0, "si consommation du complément au diagnostic"], ["Dosage pondéral des immunoglobulines", 0, "par exemple 1 fois par an sous rituximab"],
+        ["Glycémie à jeun, HbA1c, bilan lipidique", 0, "si atteinte pancréatique ou corticothérapie"]]]]],
+    ns: "Aucun biomarqueur n'est bien corrélé au risque de rechute. Une élévation isolée des IgG4 sans autre signe ne justifie pas de reprendre le traitement, mais de rapprocher la surveillance."
+  },
+  "Maladie de Castleman": {
+    initial: [6, [
+      ["Premiers examens", [["Hémogramme", 1], ["Bilan hépatique, électrophorèse des protides, CRP, LDH", 1], ["Créatininémie, créatininurie, protéinurie", 1], ["Sérologie VIH", 1],
+        ["Charge virale HHV-8 (PCR quantitative)", 0, "si suspicion de forme associée à HHV-8"]]]]],
+    suivi: [20, [
+      ["Forme unicentrique", [["Hémogramme, CRP, électrophorèse des protides", 1, "à M6, M12, M24 (± M60) puis si symptômes"]]],
+      ["Forme multicentrique idiopathique", [["Hémogramme, CRP, fibrinogène, transaminases, bilirubine, électrophorèse des protides, bilan lipidique", 0, "à M1, M3, M6 et M12 sous siltuximab, tocilizumab ou corticoïdes"],
+        ["Hémogramme, CRP, électrophorèse des protides, phénotypage lymphocytaire (CD19, CD20)", 0, "à M6, M12, M24 sous rituximab"]]]]],
+    ns: "Le rythme de surveillance est fixé par le centre de référence."
+  },
+  "Sarcoïdose pulmonaire": {
+    initial: [15, [
+      ["Bilan initial", [["NFS, plaquettes", 1], ["Ionogramme sanguin, créatininémie", 1], ["ASAT, ALAT, γGT, phosphatases alcalines, bilirubine", 1],
+        ["Calcémie, calciurie des 24 heures", 1], ["Électrophorèse des protéines plasmatiques", 1], ["Enzyme de conversion de l'angiotensine", 1],
+        ["Calcitriol (1,25-OH vitamine D)", 0, "si la 25-OH vitamine D est dosée"]]],
+      ["Bilan pré-thérapeutique", [["IDR à la tuberculine ou test IGRA", 0, "si risque de tuberculose ou avant anti-TNF"],
+        ["Sérologies VIH, VHB, VHC", 0, "avant corticoïdes ou immunosuppresseur"], ["Glycémie à jeun, HbA1c", 0, "avant corticoïdes"]]]]],
+    suivi: [84, [
+      ["Suivi", [["Calcémie, créatininémie, phosphatases alcalines", 1, "1 fois par an"],
+        ["Enzyme de conversion de l'angiotensine", 0, "si élevée au départ, pour juger de l'activité"]]]]],
+    ns: "Le suivi repose surtout sur les EFR (spirométrie tous les 3 à 6 mois en cas d'atteinte pulmonaire) et un ECG annuel."
+  },
+  "Amylose AL": {
+    initial: [19, [
+      ["Hémopathie sous-jacente", [["Dosage des chaînes légères libres sériques", 1], ["Électrophorèse et immunofixation des protides sériques et urinaires", 1],
+        ["Myélogramme ± BOM avec immunophénotypage plasmocytaire", 1, "en milieu spécialisé"]]],
+      ["Bilan d'extension", [["Rapport protéinurie/créatininurie (ou protéinurie des 24 h), bandelette urinaire", 1], ["Ionogramme sanguin, urée, créatininémie", 1],
+        ["Protidémie, albuminémie", 1], ["Ferritine, bilan martial", 1], ["Hémogramme avec recherche de corps de Jolly", 1],
+        ["Transaminases, phosphatases alcalines, γGT, bilirubine totale et directe", 1], ["Facteur X", 1], ["TSH", 1], ["Troponine, BNP ou NT-proBNP", 1],
+        ["Cycle du cortisol (± test au Synacthène)", 0, "si symptômes évocateurs"]]]]],
+    suivi: [37, [
+      ["Réponse hématologique", [["Chaînes légères libres sériques", 1, "généralement tous les 3 mois, y compris après le traitement"],
+        ["Électrophorèse et immunofixation des protides sériques et urinaires", 1, "selon la réponse"]]],
+      ["Atteinte des organes", [["Troponine, BNP ou NT-proBNP", 1, "systématique si atteinte cardiaque"],
+        ["Créatininémie, protidémie, albuminémie, ionogramme sanguin, protéinurie des 24 h", 1, "régulièrement"]]]]]
+  },
+  "Amyloses cardiaques": {
+    initial: [16, [
+      ["Biomarqueurs", [["NT-proBNP et troponine", 1], ["Créatininémie avec DFG, protéinurie", 1]]],
+      ["Recherche de gammapathie", [["Chaînes légères libres sériques", 1], ["Électrophorèse et immunofixation des protéines sériques et urinaires, protéinurie de Bence Jones", 1]]],
+      ["Typage", [["Analyse génétique du gène TTR", 0, "si amylose ATTR à la scintigraphie"]]]]],
+    suivi: [24, [
+      ["Amylose AL", [["NT-proBNP, troponine", 1, "tous les mois pendant le traitement"], ["Chaînes légères libres sériques", 1, "selon le protocole hématologique"]]],
+      ["Amylose ATTR", [["NT-proBNP, troponine", 1, "au moins tous les 6 mois"]]]]],
+    ns: "Amylose ATTR : consultation spécialisée au moins tous les 6 mois, échographie cardiaque et Holter-ECG tous les ans."
+  },
+  "Maladie de Fabry": {
+    initial: [31, [
+      ["Diagnostic", [["Activité α-galactosidase A", 1, "chez l'homme"], ["Analyse du gène GLA", 1, "indispensable chez la femme"], ["Lyso-Gb3 plasmatique (± Gb3 urinaire)", 1]]],
+      ["Bilan initial", [["Créatininémie avec DFG", 1], ["Rapports albuminurie/créatininurie et protéinurie/créatininurie", 1], ["Ionogramme sanguin", 1],
+        ["Glycémie à jeun", 1], ["Bilan phosphocalcique", 1], ["NFS", 1], ["Bilan lipidique", 1], ["Troponine ultrasensible, NT-proBNP ou BNP", 1]]]]],
+    suivi: [31, [
+      ["Au minimum 1 fois par an (homme) ou tous les 2 ans (femme)", [["Créatininémie avec DFG", 1, "1 fois par an (homme), tous les 2 ans (femme)"],
+        ["Rapports albuminurie/créatininurie et protéinurie/créatininurie", 1, "1 fois par an (homme), tous les 2 ans (femme)"], ["Ionogramme sanguin", 1, "1 fois par an (homme), tous les 2 ans (femme)"],
+        ["Troponine, NT-proBNP ou BNP", 1, "1 fois par an (homme), tous les 2 ans (femme)"], ["Lyso-Gb3 plasmatique", 1, "1 fois par an (homme), tous les 2 ans (femme)"],
+        ["Glycémie à jeun, bilan lipidique", 0, "si besoin"], ["Anticorps anti-agalsidase", 0, "1 fois par an sous enzymothérapie"]]]]],
+    ns: "Surveillance rénale et cardiaque plus rapprochée en cas d'atteinte viscérale avancée."
+  },
+  "Maladie de Gaucher": {
+    initial: [42, [
+      ["Diagnostic", [["Activité de la glucocérébrosidase", 1], ["Génotypage du gène GBA", 1],
+        ["Génotypage du CYP2D6", 0, "avant éliglustat, inutile chez l'enfant"]]],
+      ["Bilan initial", [["Hémogramme", 1], ["TP, TCA", 1], ["Ionogramme, glucose, urée, créatininémie", 1], ["Phosphore, calcium, vitamine D", 1],
+        ["ASAT, ALAT, phosphatases alcalines, γGT, bilirubine", 1], ["Électrophorèse des protides, immunofixation, chaînes légères libres", 1, "non systématique chez l'enfant"],
+        ["Biomarqueurs : chitotriosidase, CCL18, LysoGL1", 1]]]]],
+    suivi: [42, [
+      ["Adulte (MG1 et MG3)", [["Hémogramme", 1, "M3, M6, M12, puis tous les 6 mois"], ["Ionogramme, glucose, urée, créatininémie, bilan phosphocalcique, bilan hépatique", 1, "M3, M6, M12, puis tous les 6 mois"],
+        ["TP, TCA", 1, "M3, M6, M12, puis 1 fois par an"], ["Électrophorèse des protides", 1, "M3, M6, M12, puis 1 fois par an"],
+        ["Chitotriosidase, CCL18, LysoGL1", 1, "M3, M6, M12, puis tous les 6 mois les 2e et 3e années, puis 1 fois par an"],
+        ["Anticorps anti-enzyme", 0, "si réaction allergique ou perte d'efficacité sous enzymothérapie"]]]]],
+    ns: "Sans indication de traitement au bilan initial, la biologie devient annuelle, sauf l'hémogramme surveillé tous les 6 mois."
+  }
+};
 // DATA-END
 const Y = new Date().getFullYear();
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -572,6 +1110,7 @@ $("cats").onclick = e => {
   if (e.target.tagName !== "BUTTON") return; cat = e.target.textContent;
   [...$("cats").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === cat)); render(); };
 const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>';
+const ICON3 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v14a2 2 0 0 0 4 0V3M10 12h4"/></svg>';
 const ICON2 = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>';
 for (const [id, ic] of [["gi1", ICON], ["gi2", ICON2], ["gi3", ICON], ["gi4", ICON2], ["gi5", ICON], ["gi6", ICON]]) document.getElementById(id).innerHTML = ic;
 let tab = ["#pnds", "#recos", "#patients", "#aide", "#conseils"].includes(location.hash) ? location.hash.slice(1) : "accueil";
@@ -625,7 +1164,7 @@ function rich(text){
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return `<table width="100%" style="border-collapse:collapse;width:100%" bgcolor="${BG}">${text.split("\n\n").map(p => {
     const u = (p.match(URLS) || [])[0], qr = u && qrSrc(u);
-    const h = esc(p).replace(URLS, m => `<a href="${m}" style="color:#1F4FBF">${m}</a>`).replace(/^(Information pour [^:]+?) :/, "<i><u>$1</u></i> :");
+    const h = esc(p).replace(URLS, m => `<a href="${m}" style="color:#1F4FBF">${m}</a>`).replace(/^(Information pour [^:]+?) :/, "<i><u>$1</u></i> :").replace(/^(Bilan biologique (?:initial|de suivi))/, "<i><u>$1</u></i>").replace(/\n/g, "<br>");
     return `<tr><td width="88%" bgcolor="${BG}" style="width:88%;background:${BG};padding:6px 8px;font-family:Arial,sans-serif;font-size:10pt;vertical-align:middle">${h}</td>${qr ? `<td width="12%" align="center" bgcolor="${BG}" style="width:12%;background:${BG};padding:6px 4px;vertical-align:middle;text-align:center"><img src="${qr}" width="64" height="64" style="width:1.7cm;height:1.7cm" alt="QR code"></td>` : ""}</tr>`;
   }).join("")}</table>`;
 }
@@ -638,7 +1177,15 @@ async function copyRich(text){
 }
 const cpClick = e => { const c = e.target.closest(".cp"); if (!c) return false;
   copyRich(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return true; };
-list.onclick = e => { const l = e.target.closest(".rel");
+list.onchange = e => { const x = e.target;
+  if (x.dataset.bi) bil.on[`${bil.m} ${x.dataset.bi}`] = x.checked; else if (x.matches("[data-bf]")) bil.f = x.value; else if (x.matches("[data-binc]")) bil.inc = x.checked; else return;
+  bilRedraw(); };
+list.onclick = e => { const bb = e.target.closest(".bil"), bm = e.target.closest("[data-bm]");
+  if (bb) { bil = bil?.t === bb.dataset.b ? null : { t: bb.dataset.b, m: "initial", f: "l", inc: false, on: {} }; render(); return; }
+  if (bm) { bil.m = bm.dataset.bm; render(); return; }
+  if (e.target.closest("[data-bcp]")) { const p = e.target.closest(".bilp"), d = p.querySelector(".done");
+    copyRich(bilText(p.dataset.main)).then(() => { d.hidden = false; setTimeout(() => d.hidden = true, 1500); }); return; }
+  const l = e.target.closest(".rel");
   if (l && l.dataset.r) { relR = l.dataset.r; tab = "recos"; rmal = null; q.value = ""; history.replaceState(null, "", "#recos"); render(); scrollTo(0, 0); return; }
   if (l) { relT = l.dataset.t; tab = "patients"; pcat = "Tous"; q.value = ""; history.replaceState(null, "", "#patients"); render(); scrollTo(0, 0); return; }
   if (cpClick(e)) return;
@@ -678,16 +1225,41 @@ const rTxt = r => norm(r[0] + " " + r[1] + " " + r[2] + " " + r[5] + " " + rcat(
 const rsort = (a, b) => rmi(a) - rmi(b) || R.indexOf(a) - R.indexOf(b);
 const relRecos = t => { const re = REL[t] && new RegExp(REL[t]); return re ? R.filter(r => re.test(norm(r[0] + " " + r[1]))).sort(rsort) : []; };
 const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
+// Bilan biologique ouvert sous une carte : { t: titre, m: "initial" | "suivi", f: "l" (liste) | "p" (en ligne), inc: phrase médecin traitant, on: { "m g.i": coché } }.
+let bil = null;
+const bilOn = (m, g, i) => bil.on[`${m} ${g}.${i}`] ?? !!B[bil.t][m][1][g][1][i][1];
+function bilText(main){
+  const { t, m, f, inc } = bil, y = D.find(d => d[0] === t)[2], xs = [];
+  B[t][m][1].forEach(([, it], g) => it.forEach(([l, , n], i) => bilOn(m, g, i) && xs.push(m === "suivi" && n ? `${l} (${n})` : l)));
+  const h = `Bilan biologique ${m === "initial" ? "initial" : "de suivi"} d'après le PNDS de la HAS « ${t} »${y ? ` (${y})` : ""}, à adapter au patient :`;
+  const b = f === "p" ? `${h} ${xs.join(" ; ")}.` : `${h}\n${xs.map(x => "- " + x).join("\n")}`;
+  return (inc ? phrase(t, y, main).replace(/&quot;/g, '"') + "\n\n" : "") + b;
+}
+function bilPanel(main){
+  const { t, m, f, inc } = bil, [pg, gs] = B[t][m];
+  return `<div class="bilp" data-main="${main}">
+    <div class="bilh"><div class="seg" role="group" aria-label="Type de bilan">${["initial", "suivi"].map(k => `<button data-bm="${k}" aria-pressed="${k === m}">Bilan ${k === "initial" ? "initial" : "de suivi"}</button>`).join("")}</div>
+      <span class="src">Source : <a href="${main}#page=${pg}" target="_blank" rel="noopener">PNDS p. ${pg}</a></span></div>
+    ${m === "suivi" && B[t].ns ? `<span class="src">${B[t].ns}</span>` : ""}
+    ${gs.length ? "" : `<span class="src">Pas d'examen biologique systématique dans ce PNDS.</span>`}
+    ${gs.map(([gn, it], g) => `<h4>${gn}</h4>${it.map(([l, , n], i) => `<label class="bit"><input type="checkbox" data-bi="${g}.${i}"${bilOn(m, g, i) ? " checked" : ""}><span>${l}${n ? ` <small>· ${n}</small>` : ""}</span></label>`).join("")}`).join("")}
+    ${gs.length ? `<div class="bilf"><label>Format <select data-bf><option value="l"${f === "l" ? " selected" : ""}>liste</option><option value="p"${f === "p" ? " selected" : ""}>en ligne</option></select></label>
+      <label class="bit"><input type="checkbox" data-binc${inc ? " checked" : ""}><span>avec la phrase pour le médecin traitant</span></label>
+      <button class="go" data-bcp>Copier le bilan</button><span class="done" hidden>Copié ✓</span></div>
+    <div class="bilv">${rich(bilText(main))}</div>` : ""}</div>`;
+}
+const bilRedraw = () => { const p = list.querySelector(".bilp"); if (p) p.querySelector(".bilv").innerHTML = rich(bilText(p.dataset.main)); };
 let sortRecent = false, relT = null, relR = null, rmal = null;
 function card([t, c, y, pdf, page, maj]){
   const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t), nR = tab === "recos" ? 0 : relRecos(t).length;
-  return `<div class="card">
+  return `<div class="card${bil?.t === t ? " open" : ""}">
     <a class="t" href="${main}" target="_blank" rel="noopener">${t}</a>
     <span class="acts">
       <button class="cp" data-s="${phrase(t, y, main)}" title="Copier la phrase pour le médecin traitant (avec le lien)" aria-label="Copier une phrase pour le courrier">${ICON}</button>
       ${rel.length ? `<button class="cp" data-s="${phrase(t, y, main)}&#10;&#10;${phraseP(rel[0][0], rel[0][2], rel[0][3], rel[0][4], rel[0][5])}" title="Copier les deux phrases : médecin traitant + patient" aria-label="Copier les phrases médecin traitant et patient">${ICON2}</button>` : ""}
+      ${B[t] ? `<button class="bil" data-b="${t}" aria-expanded="${bil?.t === t}" title="Bilan biologique initial et de suivi" aria-label="Bilan biologique du PNDS">${ICON3}</button>` : ""}
       <button class="fav" data-t="${t}" aria-pressed="${on}" aria-label="Favori" title="Favori">${on ? "★" : "☆"}</button></span>
-    <div class="m"><span class="pill" style="${CC(c)}">${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${nR ? `<button class="rel" data-r="${t}">${nR} reco${nR > 1 ? "s" : ""}</button>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div></div>`;
+    <div class="m"><span class="pill" style="${CC(c)}">${c}</span>${y ? `<span>${y}</span>` : ""}${badge(y, pdf, maj)}${pdf && page ? `<a href="${J + page}" target="_blank" rel="noopener">page HAS</a>` : ""}${nR ? `<button class="rel" data-r="${t}">${nR} reco${nR > 1 ? "s" : ""}</button>` : ""}${rel.length ? `<button class="rel" data-t="${t}">${rel.length} doc. patient${rel.length > 1 ? "s" : ""}</button>` : ""}</div>${bil?.t === t ? bilPanel(main) : ""}</div>`;
 }
 // Phrase prête à coller dans le courrier du patient.
 const phraseP = (t, src, y, url, kind) => `Information pour le patient : Pour mieux comprendre votre maladie, vous pouvez consulter ${kind === "PDF" ? "le livret" : "les informations en ligne"} « ${t} » (${src}${y ? `, ${y}` : ""}), conçu pour les patients et leurs proches et accessible gratuitement : ${url}`.replace(/"/g, "&quot;");
