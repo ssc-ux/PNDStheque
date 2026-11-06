@@ -76,7 +76,7 @@ h1 a{color:inherit;text-decoration:none}
 .bilf select{font:inherit;font-size:.85rem;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
 .bilf .go{border:0;background:var(--accent);color:#fff;padding:7px 14px;border-radius:10px;cursor:pointer;font-weight:600;margin-left:auto}
 .bilf .done{color:var(--new);font-size:.85rem}
-.bilv{overflow-x:auto;font-size:.85rem}
+.bilv{margin:0;overflow-x:auto;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font:.85rem/1.5 "Plus Jakarta Sans",system-ui,sans-serif;white-space:pre-wrap}
 .cp.ok::after{content:"Copié";position:absolute;right:0;top:-24px;white-space:nowrap;font-size:.72rem;line-height:1.4;background:var(--fg);color:var(--bg);padding:2px 7px;border-radius:4px}
 #empty{color:var(--muted);display:none;padding:24px 0}
 /* Conseils */
@@ -1164,7 +1164,7 @@ function rich(text){
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return `<table width="100%" style="border-collapse:collapse;width:100%" bgcolor="${BG}">${text.split("\n\n").map(p => {
     const u = (p.match(URLS) || [])[0], qr = u && qrSrc(u);
-    const h = esc(p).replace(URLS, m => `<a href="${m}" style="color:#1F4FBF">${m}</a>`).replace(/^(Information pour [^:]+?) :/, "<i><u>$1</u></i> :").replace(/^(Bilan biologique (?:initial|de suivi))/, "<i><u>$1</u></i>").replace(/\n/g, "<br>");
+    const h = esc(p).replace(URLS, m => `<a href="${m}" style="color:#1F4FBF">${m}</a>`).replace(/^(Information pour [^:]+?) :/, "<i><u>$1</u></i> :");
     return `<tr><td width="88%" bgcolor="${BG}" style="width:88%;background:${BG};padding:6px 8px;font-family:Arial,sans-serif;font-size:10pt;vertical-align:middle">${h}</td>${qr ? `<td width="12%" align="center" bgcolor="${BG}" style="width:12%;background:${BG};padding:6px 4px;vertical-align:middle;text-align:center"><img src="${qr}" width="64" height="64" style="width:1.7cm;height:1.7cm" alt="QR code"></td>` : ""}</tr>`;
   }).join("")}</table>`;
 }
@@ -1178,13 +1178,13 @@ async function copyRich(text){
 const cpClick = e => { const c = e.target.closest(".cp"); if (!c) return false;
   copyRich(c.dataset.s).then(() => { c.classList.add("ok"); setTimeout(() => c.classList.remove("ok"), 1500); }); return true; };
 list.onchange = e => { const x = e.target;
-  if (x.dataset.bi) bil.on[`${bil.m} ${x.dataset.bi}`] = x.checked; else if (x.matches("[data-bf]")) bil.f = x.value; else if (x.matches("[data-binc]")) bil.inc = x.checked; else return;
+  if (x.dataset.bi) bil.on[`${bil.m} ${x.dataset.bi}`] = x.checked; else if (x.matches("[data-bf]")) bil.f = x.value; else return;
   bilRedraw(); };
 list.onclick = e => { const bb = e.target.closest(".bil"), bm = e.target.closest("[data-bm]");
-  if (bb) { bil = bil?.t === bb.dataset.b ? null : { t: bb.dataset.b, m: "initial", f: "l", inc: false, on: {} }; render(); return; }
+  if (bb) { bil = bil?.t === bb.dataset.b ? null : { t: bb.dataset.b, m: "initial", f: "l", on: {} }; render(); return; }
   if (bm) { bil.m = bm.dataset.bm; render(); return; }
   if (e.target.closest("[data-bcp]")) { const p = e.target.closest(".bilp"), d = p.querySelector(".done");
-    copyRich(bilText(p.dataset.main)).then(() => { d.hidden = false; setTimeout(() => d.hidden = true, 1500); }); return; }
+    copy(bilText()).then(() => { d.hidden = false; setTimeout(() => d.hidden = true, 1500); }); return; }
   const l = e.target.closest(".rel");
   if (l && l.dataset.r) { relR = l.dataset.r; tab = "recos"; rmal = null; q.value = ""; history.replaceState(null, "", "#recos"); render(); scrollTo(0, 0); return; }
   if (l) { relT = l.dataset.t; tab = "patients"; pcat = "Tous"; q.value = ""; history.replaceState(null, "", "#patients"); render(); scrollTo(0, 0); return; }
@@ -1225,18 +1225,18 @@ const rTxt = r => norm(r[0] + " " + r[1] + " " + r[2] + " " + r[5] + " " + rcat(
 const rsort = (a, b) => rmi(a) - rmi(b) || R.indexOf(a) - R.indexOf(b);
 const relRecos = t => { const re = REL[t] && new RegExp(REL[t]); return re ? R.filter(r => re.test(norm(r[0] + " " + r[1]))).sort(rsort) : []; };
 const vdate = ([, , y, pdf, , maj]) => maj || (pdf ? pdf.slice(0, 7) : y ? y + "-01" : "0");
-// Bilan biologique ouvert sous une carte : { t: titre, m: "initial" | "suivi", f: "l" (liste) | "p" (en ligne), inc: phrase médecin traitant, on: { "m g.i": coché } }.
+// Bilan biologique ouvert sous une carte : { t: titre, m: "initial" | "suivi", f: "l" (liste) | "p" (en ligne), on: { "m g.i": coché } }.
 let bil = null;
 const bilOn = (m, g, i) => bil.on[`${m} ${g}.${i}`] ?? !!B[bil.t][m][1][g][1][i][1];
-function bilText(main){
-  const { t, m, f, inc } = bil, y = D.find(d => d[0] === t)[2], xs = [];
+function bilText(){
+  const { t, m, f } = bil, y = D.find(d => d[0] === t)[2], xs = [];
   B[t][m][1].forEach(([, it], g) => it.forEach(([l, , n], i) => bilOn(m, g, i) && xs.push(m === "suivi" && n ? `${l} (${n})` : l)));
-  const h = `Bilan biologique ${m === "initial" ? "initial" : "de suivi"} d'après le PNDS de la HAS « ${t} »${y ? ` (${y})` : ""}, à adapter au patient :`;
+  const h = `Bilan biologique ${m === "initial" ? "initial" : "de suivi"} (PNDS HAS « ${t} »${y ? `, ${y}` : ""}) :`;
   const b = f === "p" ? `${h} ${xs.join(" ; ")}.` : `${h}\n${xs.map(x => "- " + x).join("\n")}`;
-  return (inc ? phrase(t, y, main).replace(/&quot;/g, '"') + "\n\n" : "") + b;
+  return b;
 }
 function bilPanel(main){
-  const { t, m, f, inc } = bil, [pg, gs] = B[t][m];
+  const { t, m, f } = bil, [pg, gs] = B[t][m];
   return `<div class="bilp" data-main="${main}">
     <div class="bilh"><div class="seg" role="group" aria-label="Type de bilan">${["initial", "suivi"].map(k => `<button data-bm="${k}" aria-pressed="${k === m}">Bilan ${k === "initial" ? "initial" : "de suivi"}</button>`).join("")}</div>
       <span class="src">Source : <a href="${main}#page=${pg}" target="_blank" rel="noopener">PNDS p. ${pg}</a></span></div>
@@ -1244,11 +1244,10 @@ function bilPanel(main){
     ${gs.length ? "" : `<span class="src">Pas d'examen biologique systématique dans ce PNDS.</span>`}
     ${gs.map(([gn, it], g) => `<h4>${gn}</h4>${it.map(([l, , n], i) => `<label class="bit"><input type="checkbox" data-bi="${g}.${i}"${bilOn(m, g, i) ? " checked" : ""}><span>${l}${n ? ` <small>· ${n}</small>` : ""}</span></label>`).join("")}`).join("")}
     ${gs.length ? `<div class="bilf"><label>Format <select data-bf><option value="l"${f === "l" ? " selected" : ""}>liste</option><option value="p"${f === "p" ? " selected" : ""}>en ligne</option></select></label>
-      <label class="bit"><input type="checkbox" data-binc${inc ? " checked" : ""}><span>avec la phrase pour le médecin traitant</span></label>
       <button class="go" data-bcp>Copier le bilan</button><span class="done" hidden>Copié ✓</span></div>
-    <div class="bilv">${rich(bilText(main))}</div>` : ""}</div>`;
+    <pre class="bilv">${esc(bilText())}</pre>` : ""}</div>`;
 }
-const bilRedraw = () => { const p = list.querySelector(".bilp"); if (p) p.querySelector(".bilv").innerHTML = rich(bilText(p.dataset.main)); };
+const bilRedraw = () => { const p = list.querySelector(".bilp"); if (p) p.querySelector(".bilv").textContent = bilText(); };
 let sortRecent = false, relT = null, relR = null, rmal = null;
 function card([t, c, y, pdf, page, maj]){
   const main = pdf ? H + pdf : J + page, on = favs.has(t), rel = relDocs(t), nR = tab === "recos" ? 0 : relRecos(t).length;
