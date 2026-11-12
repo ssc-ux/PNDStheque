@@ -6,9 +6,8 @@
 <meta name="color-scheme" content="light">
 <title>PNDSthèque</title>
 <meta name="description" content="Répertoire des PNDS (HAS) en médecine interne — accès direct aux PDF.">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
+@font-face{font-family:"Plus Jakarta Sans";font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/plus-jakarta-sans.woff2) format("woff2")}
 :root{color-scheme:light;--k0:#2563eb;--k1:#db2777;--k2:#ea580c;--k3:#7c3aed;--k4:#0d9488;--sh:0 1px 2px rgba(16,24,40,.05),0 2px 8px rgba(16,24,40,.06);--pnds:#17794a;--bg:#f5f6fa;--card:#ffffff;--fg:#1c1d1f;--muted:#6d6f73;--line:#e4e7ee;--accent:#1f5fbf;--chip:#eceef3;--new:#1e7a4c;--old:#a0570a;--star:#d49a00;--c1:#1f5fbf;--c2:#0f8a6c;--c3:#c2410c;--c1s:#e8f0fb;--c2s:#e3f4ee;--c3s:#fcece3}
 :root[data-theme="dark"]{--k0:#7aa7ff;--k1:#f472b6;--k2:#fb923c;--k3:#a78bfa;--k4:#2dd4bf;--sh:0 1px 2px rgba(0,0,0,.4);--pnds:#5cc68e;--bg:#111318;--card:#1b1d21;--fg:#e9e8e4;--muted:#9b9ea4;--line:#2b2e33;--accent:#7aa7ff;--chip:#202329;--new:#63cf95;--old:#eaa452;--star:#f2c443;--c1:#7aa7ff;--c2:#4fd1a8;--c3:#fb9a61;--c1s:#1c2740;--c2s:#16302a;--c3s:#35231a;color-scheme:dark}
 *{box-sizing:border-box}
@@ -281,7 +280,7 @@ footer{border-top:0}
     <p class="note">Outil d'aide à l'orientation : il ne remplace ni l'avis médical ni la lecture des documents sources. Aucun cookie ni donnée personnelle n'est collecté.</p>
   </section>
   <footer>Sources : <a href="https://www.has-sante.fr/jcms/c_1340879/fr/protocoles-nationaux-de-diagnostic-et-de-soins-pnds" target="_blank" rel="noopener">HAS</a>, EULAR, ACR, FAI²R, MaRIH, centres de référence et associations de patients. Outil d'aide à l'orientation, qui ne remplace ni l'avis médical ni la lecture des documents sources. Aucune donnée personnelle collectée.<br>
-  Réalisé par Quentin Astouati.</footer>
+  Réalisé par Quentin Astouati · <a href="https://ssc-ux.github.io/MedInt-Tools/">Tous les outils MedInt Tools</a></footer>
 </div>
 <script>
 // DATA-START
@@ -592,7 +591,7 @@ $("conseils").innerHTML = `<p class="hint" id="chint">Paragraphes prêts à coll
   <div class="ctiles" id="ctiles">${T.map((x, i) => `<button class="ctile" id="ct${i}" data-open="${i}"><span class="ctt">${x.titre}</span>${(k => `<span class="pill" style="--cc:var(--k${k[1]})">${k[0]}</span>`)(/Lupus|SAPL|Horton/.test(x.court) ? ["Maladie", 3] : /Bilan/.test(x.court) ? ["Bilan", 4] : ["Médicament", 2])}</button>`).join("")}</div>` +
   T.map((x, i) => `<div class="tpl" id="tplBox${i}" hidden><button class="back" data-back>← Tous les conseils</button><h3>${x.titre}</h3>
     <p class="src">Source : ${x.sources.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join(" · ")}</p>
-    <textarea id="tpl${i}" spellcheck="false">${esc(x.texte)}</textarea>
+    <textarea id="tpl${i}" spellcheck="false" aria-label="${esc(x.titre)} : texte à adapter">${esc(x.texte)}</textarea>
     <div class="acts"><button data-copy="${i}">Copier</button><button class="sec" data-reset="${i}">Réinitialiser</button><span class="done" id="done${i}">Copié ✓</span></div></div>`).join("");
 $("conseils").onclick = e => { const c = e.target.dataset.copy, z = e.target.dataset.reset, o = e.target.closest("[data-open]");
   if (o) { tplOpen = +o.dataset.open; render(); scrollTo(0, 0); }
