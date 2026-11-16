@@ -134,7 +134,11 @@ footer{border-top:0}
 .logo{background:#1f5fbf}
 #accueil,.accroche{display:none}
 .home::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 45% at 20% 18%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%),radial-gradient(55% 40% at 85% 30%,color-mix(in srgb,var(--pnds) 13%,transparent),transparent 70%),radial-gradient(50% 40% at 50% 95%,color-mix(in srgb,var(--c3) 9%,transparent),transparent 70%)}
-.home .top{position:static;display:flex;flex-direction:column;border:0;background:none;box-shadow:none}
+.mit{display:inline-block;margin:0 0 8px;font-size:.8rem;font-weight:500;color:var(--muted);text-decoration:none}
+.mit:hover{color:var(--fg)}
+.home .top>a.mit{order:-2;align-self:flex-start;width:auto;margin:0 0 2px}
+@media (min-width:600px){.home .top>a.mit{position:absolute;left:16px;top:20px;margin:0}}
+.home .top{position:relative;display:flex;flex-direction:column;border:0;background:none;box-shadow:none}
 .home .top>:not(.tabs){width:100%;max-width:620px;margin-inline:auto}
 .home .tabs{order:-1;align-self:flex-end;gap:16px;margin:0 0 clamp(48px,14vh,120px);padding:0;background:none;border-radius:0}
 .home .tabs button{flex:none;padding:6px 0;font-size:.9rem;color:var(--muted);background:none;box-shadow:none}
@@ -183,6 +187,7 @@ footer{border-top:0}
 <body>
 <div class="wrap">
   <header class="top">
+    <a class="mit" href="https://ssc-ux.github.io/MedInt-Tools/" title="Retour à MedInt Tools">‹ MedInt Tools</a>
     <h1><a href="./" id="home" title="Accueil"><span class="logo" aria-hidden="true">P</span><span class="nm">PNDSthèque</span></a></h1>
     <p class="accroche" aria-live="polite">Pour <span id="rot">trouver un PNDS en 1 clic</span></p>
     <input id="q" type="search" placeholder="Rechercher : lupus, Horton, ANCA, colchicine…" autocomplete="off" aria-label="Rechercher">
